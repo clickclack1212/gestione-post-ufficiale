@@ -27,9 +27,6 @@ interface AppContextValue {
   toast: ToastMsg | null;
   showToast: (text: string, type?: ToastMsg['type']) => void;
   hideToast: () => void;
-
-  apiModalOpen: boolean;
-  setApiModalOpen: (v: boolean) => void;
 }
 
 const AppContext = createContext<AppContextValue | null>(null);
@@ -41,7 +38,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [activeModelIdx, setActiveModelIdx] = useState<number>(getActiveModelIdx);
   const [calendarEvents, setCalendarEvents] = useState<CalendarEvent[]>([]);
   const [toast, setToast] = useState<ToastMsg | null>(null);
-  const [apiModalOpen, setApiModalOpen] = useState(false);
 
   const showToast = useCallback((text: string, type: ToastMsg['type'] = 'info') => {
     setToast({ text, type });
@@ -56,11 +52,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     return () => clearTimeout(t);
   }, [toast, hideToast]);
 
-  // Show API modal if no API key
-  useEffect(() => {
-    if (!config.apiKey) setApiModalOpen(true);
-  }, []);
-
   return (
     <AppContext.Provider
       value={{
@@ -70,7 +61,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         activeModelIdx, setActiveModelIdx,
         calendarEvents, setCalendarEvents,
         toast, showToast, hideToast,
-        apiModalOpen, setApiModalOpen,
       }}
     >
       {children}

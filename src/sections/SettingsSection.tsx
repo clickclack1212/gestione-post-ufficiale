@@ -4,7 +4,7 @@ import { saveConfig } from '../services/storage';
 import { ALL_CURRENCIES, DEFAULT_LINK_IT, DEFAULT_LINK_EN } from '../constants/data';
 
 export function SettingsSection() {
-  const { config, setConfig, setApiModalOpen, showToast } = useApp();
+  const { config, setConfig, showToast } = useApp();
   const [form, setForm] = useState({ ...config });
 
   const set = (k: keyof typeof form, v: string | string[]) =>
@@ -29,18 +29,13 @@ export function SettingsSection() {
         {/* API Key */}
         <div className="space-y-1">
           <label className="block text-xs text-[var(--text3)] uppercase tracking-widest">API Key Gemini</label>
-          <div className="flex gap-2">
-            <input
-              type="password"
-              value={form.apiKey || ''}
-              placeholder="AIza..."
-              className="flex-1 font-mono text-sm"
-              onChange={e => set('apiKey', e.target.value)}
-            />
-            <button className="btn-sec text-sm" onClick={() => setApiModalOpen(true)}>
-              🔑 Modifica
-            </button>
-          </div>
+          <input
+            type="password"
+            value={form.apiKey || ''}
+            placeholder="AIza..."
+            className="w-full font-mono text-sm"
+            onChange={e => set('apiKey', e.target.value)}
+          />
           <p className="text-[10px] text-[var(--text3)]">
             Ottieni la tua chiave su{' '}
             <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer"

@@ -1,7 +1,6 @@
 import { useApp } from './context/AppContext';
 import { Header } from './components/Header';
 import { Toast } from './components/Toast';
-import { ApiModal } from './components/ApiModal';
 import { GeneraSection } from './sections/GeneraSection';
 import { ProgrammazioneSection } from './sections/ProgrammazioneSection';
 import { CalendarioSection } from './sections/CalendarioSection';
@@ -26,7 +25,6 @@ export function App() {
       </main>
 
       <Toast />
-      <ApiModal />
     </div>
   );
 }

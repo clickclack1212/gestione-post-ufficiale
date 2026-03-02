@@ -12,7 +12,7 @@ const TABS: { id: Tab; label: string; icon: string }[] = [
 ];
 
 export function Header() {
-  const { activeTab, setActiveTab, config, counter, activeModelIdx, setApiModalOpen } = useApp();
+  const { activeTab, setActiveTab, config, counter, activeModelIdx } = useApp();
   const model = GEMINI_MODELS[activeModelIdx] ?? GEMINI_MODELS[0];
   const hasKey = !!config.apiKey;
 
@@ -47,8 +47,8 @@ export function Header() {
                 ? 'border-[rgba(254,153,32,0.3)] text-[var(--gold)] bg-[rgba(254,153,32,0.08)] hover:bg-[rgba(254,153,32,0.15)]'
                 : 'border-[rgba(239,68,68,0.3)] text-[var(--red)] bg-[rgba(239,68,68,0.08)] hover:bg-[rgba(239,68,68,0.15)]'
               }`}
-            onClick={() => setApiModalOpen(true)}
-            title={hasKey ? 'API Key configurata' : 'Nessuna API Key'}
+            onClick={() => setActiveTab('settings')}
+            title={hasKey ? 'API Key configurata — vai a Config' : 'Nessuna API Key — vai a Config'}
           >
             <span className={`w-1.5 h-1.5 rounded-full ${hasKey ? 'bg-[var(--gold)]' : 'bg-[var(--red)]'}`} />
             {hasKey ? 'API OK' : 'API KEY'}
