@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Copy } from './Icon';
 
 interface Props {
   it: string;
@@ -17,7 +18,7 @@ export function BilingualResult({ it, en }: Props) {
 
   return (
     <div className="result-box animate-[slideUp_0.3s_ease]">
-      {/* Language tabs */}
+      {/* Language tabs — flag emoji kept intentionally */}
       <div className="flex gap-1 mb-3">
         <button
           className={`result-lang-tab ${tab === 'it' ? 'active' : ''}`}
@@ -44,16 +45,16 @@ export function BilingualResult({ it, en }: Props) {
       {/* Actions */}
       <div className="flex gap-2 mt-3 flex-wrap">
         <button
-          className="btn-sec text-sm"
+          className="btn-sec text-sm flex items-center gap-1.5"
           onClick={() => copyText(active)}
         >
-          📋 Copia {tab === 'it' ? 'IT' : 'EN'}
+          <Copy size={12} /> Copia {tab === 'it' ? 'IT' : 'EN'}
         </button>
         <button
-          className="btn-sec text-sm"
+          className="btn-sec text-sm flex items-center gap-1.5"
           onClick={() => copyText(`${it}\n\n──────────────\n\n${en}`)}
         >
-          📋 Copia Bilingue
+          <Copy size={12} /> Copia Bilingue
         </button>
       </div>
     </div>

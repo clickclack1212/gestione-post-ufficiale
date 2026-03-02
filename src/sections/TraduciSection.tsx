@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useGemini } from '../hooks/useGemini';
 import { buildTrPrompt } from '../services/prompts';
 import { LANG_NAMES } from '../constants/data';
+import { Globe, ArrowLeftRight, Clipboard, Copy, RotateCw } from '../components/Icon';
 
 interface LangDef {
   code: string;
@@ -79,7 +80,9 @@ export function TraduciSection() {
   return (
     <div className="max-w-2xl mx-auto space-y-4">
       <div className="card">
-        <div className="card-title">🌐 Traduzione Messaggio</div>
+        <div className="card-title flex items-center gap-1.5">
+          <Globe size={14} /> Traduzione Messaggio
+        </div>
 
         {/* Language selectors */}
         <div className="space-y-4 mb-5">
@@ -103,7 +106,7 @@ export function TraduciSection() {
               onClick={swapLangs}
               title="Inverti lingue e testo"
             >
-              <span className="text-base">⇄</span>
+              <ArrowLeftRight size={14} />
               <span className="text-xs">Inverti</span>
             </button>
             <div className="flex-1 h-px bg-[var(--border)]" />
@@ -126,8 +129,8 @@ export function TraduciSection() {
             <label className="mb-0">
               {from.flag} Testo in {from.label}
             </label>
-            <button className="btn-paste" onClick={pasteFromClipboard}>
-              📋 Incolla
+            <button className="btn-paste flex items-center gap-1" onClick={pasteFromClipboard}>
+              <Clipboard size={11} /> Incolla
             </button>
           </div>
           <textarea
@@ -150,7 +153,7 @@ export function TraduciSection() {
               <span className="spinner" /> Traducendo... {elapsed}s
             </span>
           ) : (
-            <span className="flex items-center gap-2">
+            <span className="flex items-center gap-2 justify-center">
               <span>{to.flag}</span>
               <span>Traduci in {to.label}</span>
             </span>
@@ -170,17 +173,17 @@ export function TraduciSection() {
             </div>
             <div className="flex gap-2">
               <button
-                className="btn-paste"
+                className="btn-paste flex items-center gap-1"
                 onClick={() => { setFromLang(toLang); setToLang(fromLang); setInputText(outputText); setOutputText(''); }}
                 title="Ritradurre questa versione"
               >
-                🔄 Ritradurre
+                <RotateCw size={11} /> Ritradurre
               </button>
               <button
-                className="btn-sec text-sm"
+                className="btn-sec text-sm flex items-center gap-1.5"
                 onClick={() => navigator.clipboard.writeText(outputText)}
               >
-                📋 Copia
+                <Copy size={12} /> Copia
               </button>
             </div>
           </div>

@@ -6,6 +6,7 @@ import { PhotoUploader } from '../components/PhotoUploader';
 import { BilingualResult } from '../components/BilingualResult';
 import { buildPrompt, parseBilingual } from '../services/prompts';
 import { TYPES, NO_FIELDS_MAIN } from '../constants/data';
+import { Icon, Zap, Camera } from '../components/Icon';
 import type { Tone } from '../types';
 
 function Field({
@@ -173,7 +174,9 @@ export function GeneraSection() {
     <div className="max-w-2xl mx-auto space-y-5">
       {/* Type grid */}
       <div className="card">
-        <div className="card-title">⚡ Genera Messaggio</div>
+        <div className="card-title flex items-center gap-1.5">
+          <Zap size={14} /> Genera Messaggio
+        </div>
         <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-5">
           {TYPES.map(t => (
             <button
@@ -181,10 +184,16 @@ export function GeneraSection() {
               onClick={() => { setSelectedType(t.id); setResult({ it: '', en: '' }); }}
               className={`type-card ${selectedType === t.id ? 'selected' : ''}`}
             >
-              <span className="text-lg mb-1 block">{t.icon}</span>
+              <span className="mb-1 flex justify-center text-[var(--gold)]">
+                <Icon name={t.icon} size={18} strokeWidth={1.5} />
+              </span>
               <span className="text-[10px] leading-tight text-center whitespace-pre-line">{t.name}</span>
               <span className="text-[9px] text-[var(--text3)] mt-0.5">{t.time}</span>
-              {t.shot && <span className="badge-photo text-[9px] mt-1">📸</span>}
+              {t.shot && (
+                <span className="badge-photo text-[9px] mt-1 flex items-center gap-0.5">
+                  <Camera size={9} /> Screenshot
+                </span>
+              )}
             </button>
           ))}
         </div>
@@ -223,7 +232,11 @@ export function GeneraSection() {
             <span className="flex items-center justify-center gap-2">
               <span className="spinner" /> Generando... {elapsed}s
             </span>
-          ) : `⚡ Genera ${activeType?.name ?? ''}`}
+          ) : (
+            <span className="flex items-center justify-center gap-2">
+              <Zap size={14} /> Genera {activeType?.name ?? ''}
+            </span>
+          )}
         </button>
       </div>
 

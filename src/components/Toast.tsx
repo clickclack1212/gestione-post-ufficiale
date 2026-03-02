@@ -1,4 +1,5 @@
 import { useApp } from '../context/AppContext';
+import { X } from './Icon';
 
 export function Toast() {
   const { toast, hideToast } = useApp();
@@ -19,7 +20,9 @@ export function Toast() {
       onClick={hideToast}
     >
       <span className="text-sm font-medium">{toast.text}</span>
-      <button className="opacity-60 hover:opacity-100 text-xs leading-none">✕</button>
+      <button className="opacity-60 hover:opacity-100 leading-none flex items-center">
+        <X size={13} />
+      </button>
     </div>
   );
 }

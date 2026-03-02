@@ -5,6 +5,7 @@ import { ToneSelector } from '../components/ToneSelector';
 import { BilingualResult } from '../components/BilingualResult';
 import { buildOptPrompt } from '../services/prompts';
 import { parseBilingual } from '../services/prompts';
+import { Sparkles } from '../components/Icon';
 import type { Tone } from '../types';
 
 const OPT_TYPES = [
@@ -37,7 +38,9 @@ export function OttimizzaSection() {
   return (
     <div className="max-w-2xl mx-auto space-y-5">
       <div className="card">
-        <div className="card-title">✨ Ottimizza Messaggio</div>
+        <div className="card-title flex items-center gap-1.5">
+          <Sparkles size={14} /> Ottimizza Messaggio
+        </div>
         <p className="text-[var(--text3)] text-sm mb-4">
           Incolla un testo scritto di getto e l&apos;AI lo riscriverà in modo professionale e ad alto impatto.
         </p>
@@ -85,7 +88,11 @@ export function OttimizzaSection() {
             <span className="flex items-center justify-center gap-2">
               <span className="spinner" /> Ottimizzando... {elapsed}s
             </span>
-          ) : '✨ Ottimizza'}
+          ) : (
+            <span className="flex items-center justify-center gap-2">
+              <Sparkles size={14} /> Ottimizza
+            </span>
+          )}
         </button>
       </div>
 

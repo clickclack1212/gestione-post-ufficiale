@@ -5,6 +5,7 @@ import { ToneSelector } from '../components/ToneSelector';
 import { BilingualResult } from '../components/BilingualResult';
 import { buildCalendarParsePrompt, buildCalendarNewsPrompt, parseBilingual } from '../services/prompts';
 import { ALL_CURRENCIES } from '../constants/data';
+import { Newspaper, Clipboard, X, Download, ClipboardList } from '../components/Icon';
 import type { CalendarEvent, Tone } from '../types';
 
 const IMPACT_COLORS: Record<string, string> = {
@@ -83,24 +84,26 @@ export function CalendarioSection() {
     <div className="max-w-3xl mx-auto space-y-5">
       {/* Import */}
       <div className="card">
-        <div className="card-title">📰 Importa Calendario Economico</div>
+        <div className="card-title flex items-center gap-1.5">
+          <Newspaper size={14} /> Importa Calendario Economico
+        </div>
         <p className="text-[var(--text3)] text-sm mb-4">
           Copia il testo da ForexFactory o simili e incollalo qui sotto — l&apos;AI estrarrà e strutturerà automaticamente tutti gli eventi.
         </p>
 
         {/* Quick paste buttons */}
         <div className="flex gap-2 mb-3">
-          <button className="btn-paste flex-1 justify-center" onClick={pasteCalendar}>
-            📋 Incolla dagli Appunti
+          <button className="btn-paste flex-1 justify-center flex items-center gap-1.5" onClick={pasteCalendar}>
+            <Clipboard size={12} /> Incolla dagli Appunti
           </button>
           {rawCalText && (
             <button
               className="px-3 py-1.5 text-xs border border-[var(--border)] rounded-[var(--radius-sm)]
-                text-[var(--text3)] hover:text-[var(--red)] transition-colors"
+                text-[var(--text3)] hover:text-[var(--red)] transition-colors flex items-center"
               onClick={() => setRawCalText('')}
               title="Svuota"
             >
-              ✕
+              <X size={13} />
             </button>
           )}
         </div>
@@ -126,7 +129,8 @@ export function CalendarioSection() {
         >
           {loading && newsResult.it === ''
             ? <span className="flex items-center justify-center gap-2"><span className="spinner" /> Importando... {elapsed}s</span>
-            : '📥 Importa & Analizza con AI'}
+            : <span className="flex items-center justify-center gap-2"><Download size={14} /> Importa &amp; Analizza con AI</span>
+          }
         </button>
       </div>
 
@@ -168,7 +172,9 @@ export function CalendarioSection() {
       {shown.length > 0 && (
         <div className="card overflow-x-auto">
           <div className="flex items-center justify-between mb-3">
-            <span className="card-title mb-0">📋 {shown.length} eventi</span>
+            <span className="card-title mb-0 flex items-center gap-1.5">
+              <ClipboardList size={13} /> {shown.length} eventi
+            </span>
             <ToneSelector value={tone} onChange={setTone} />
           </div>
 
@@ -206,7 +212,8 @@ export function CalendarioSection() {
           >
             {loading && newsResult.it !== ''
               ? <span className="flex items-center justify-center gap-2"><span className="spinner" /> Generando... {elapsed}s</span>
-              : '📰 Genera Post Notizie Gold'}
+              : <span className="flex items-center justify-center gap-2"><Newspaper size={14} /> Genera Post Notizie Gold</span>
+            }
           </button>
         </div>
       )}

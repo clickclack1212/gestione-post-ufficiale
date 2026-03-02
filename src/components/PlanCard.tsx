@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Icon, Copy, Globe } from './Icon';
 
 export interface PlanCardData {
   id: string;
@@ -38,7 +39,11 @@ export function PlanCard({ card, index }: Props) {
       {/* Header */}
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex items-center gap-2 flex-wrap min-w-0">
-          {card.icon && <span className="text-base leading-none">{card.icon}</span>}
+          {card.icon && (
+            <span className="text-[var(--gold)]">
+              <Icon name={card.icon} size={14} strokeWidth={1.75} />
+            </span>
+          )}
           <span className="text-[var(--gold)] font-mono text-xs font-semibold">{card.time}</span>
           {card.tag && (
             <span className={`text-[10px] px-2 py-0.5 rounded-full border font-medium uppercase tracking-wide ${tagCls}`}>
@@ -47,40 +52,36 @@ export function PlanCard({ card, index }: Props) {
           )}
           <span className="text-[var(--text2)] text-xs truncate">{card.label}</span>
           {card.shot && (
-            <span className="badge-photo text-[10px]">📸 Screenshot</span>
+            <span className="badge-photo text-[10px] flex items-center gap-1">
+              <Icon name="Camera" size={10} /> Screenshot
+            </span>
           )}
         </div>
         {/* Copy buttons */}
         <div className="flex gap-1 shrink-0">
           <button
-            className="btn-sec text-xs px-2 py-1"
+            className="btn-sec text-xs px-2 py-1 flex items-center gap-1"
             onClick={() => copyText(text)}
             title={`Copia ${lang.toUpperCase()}`}
           >
-            📋 {lang.toUpperCase()}
+            <Copy size={11} /> {lang.toUpperCase()}
           </button>
           <button
-            className="btn-sec text-xs px-2 py-1"
+            className="btn-sec text-xs px-2 py-1 flex items-center"
             onClick={() => copyText(`${card.it}\n\n──────────────\n\n${card.en}`)}
             title="Copia bilingue"
           >
-            🌐
+            <Globe size={11} />
           </button>
         </div>
       </div>
 
       {/* Language tabs */}
       <div className="flex gap-1 mb-2">
-        <button
-          className={`result-lang-tab text-xs ${lang === 'it' ? 'active' : ''}`}
-          onClick={() => setLang('it')}
-        >
+        <button className={`result-lang-tab text-xs ${lang === 'it' ? 'active' : ''}`} onClick={() => setLang('it')}>
           🇮🇹
         </button>
-        <button
-          className={`result-lang-tab text-xs ${lang === 'en' ? 'active' : ''}`}
-          onClick={() => setLang('en')}
-        >
+        <button className={`result-lang-tab text-xs ${lang === 'en' ? 'active' : ''}`} onClick={() => setLang('en')}>
           🇬🇧
         </button>
       </div>

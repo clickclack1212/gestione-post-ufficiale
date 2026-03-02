@@ -8,6 +8,7 @@ import {
   ALT_TYPES, ALT_TYPES_B, ALT_PLAN_INFO,
   ALT_NO_FIELDS_A, ALT_NO_FIELDS_B,
 } from '../constants/data';
+import { Icon, Diamond, Zap, Copy, Globe, Camera } from '../components/Icon';
 import type { PlanCardData } from '../components/PlanCard';
 import type { AltType, Tone } from '../types';
 
@@ -217,7 +218,9 @@ export function AltPlanPanel() {
     <div className="space-y-5">
       {/* Plan selector */}
       <div className="card">
-        <div className="card-title">◈ Alternativa Piano</div>
+        <div className="card-title flex items-center gap-1.5">
+          <Diamond size={14} /> Alternativa Piano
+        </div>
         <div className="flex gap-2 mb-4">
           {(['A', 'B'] as AltPlan[]).map(p => (
             <button
@@ -269,10 +272,16 @@ export function AltPlanPanel() {
                 className={`type-card ${selectedTypeId === t.id ? 'selected' : ''}`}
                 style={selectedTypeId === t.id ? { borderColor: t.color + '60', background: t.color + '14' } : {}}
               >
-                <span className="text-base mb-1 block">{t.icon}</span>
+                <span className="mb-1 flex justify-center" style={{ color: t.color }}>
+                  <Icon name={t.icon} size={18} strokeWidth={1.5} />
+                </span>
                 <span className="text-[10px] leading-tight text-center whitespace-pre-line">{t.name}</span>
                 <span className="text-[9px] text-[var(--text3)] mt-0.5">{t.time}</span>
-                {t.shot && <span className="badge-photo text-[9px] mt-1">📸</span>}
+                {t.shot && (
+                  <span className="badge-photo text-[9px] mt-1 flex items-center gap-0.5">
+                    <Camera size={9} /> Screenshot
+                  </span>
+                )}
               </button>
             ))}
           </div>
@@ -307,10 +316,15 @@ export function AltPlanPanel() {
         >
           {loading ? (
             <span className="flex items-center justify-center gap-2"><span className="spinner" /> Generando... {elapsed}s</span>
-          ) : mode === 'single'
-            ? `⚡ Genera ${activeType?.time} — ${activeType?.name?.replace('\n', ' ')}`
-            : `⚡ Genera Piano ${plan} Completo (${types.length} slot)`
-          }
+          ) : mode === 'single' ? (
+            <span className="flex items-center justify-center gap-2">
+              <Zap size={14} /> Genera {activeType?.time} — {activeType?.name?.replace('\n', ' ')}
+            </span>
+          ) : (
+            <span className="flex items-center justify-center gap-2">
+              <Zap size={14} /> Genera Piano {plan} Completo ({types.length} slot)
+            </span>
+          )}
         </button>
       </div>
 
@@ -318,14 +332,22 @@ export function AltPlanPanel() {
       {mode === 'single' && (singleResult.it || singleResult.en) && (
         <div className="card animate-[slideUp_0.3s_ease]">
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-lg">{activeType?.icon}</span>
+            <span className="text-[var(--gold)]">
+              <Icon name={activeType?.icon || ''} size={18} />
+            </span>
             <span className="text-[var(--gold)] font-mono text-sm">{activeType?.time}</span>
             <span className="text-[var(--text2)] text-sm">{activeType?.name?.replace('\n', ' ')}</span>
           </div>
           <div className="flex gap-2 flex-wrap mb-3">
-            <button className="btn-sec text-sm" onClick={() => navigator.clipboard.writeText(singleResult.it)}>📋 IT</button>
-            <button className="btn-sec text-sm" onClick={() => navigator.clipboard.writeText(singleResult.en)}>📋 EN</button>
-            <button className="btn-sec text-sm" onClick={() => navigator.clipboard.writeText(`${singleResult.it}\n\n──────────────\n\n${singleResult.en}`)}>🌐 Bilingue</button>
+            <button className="btn-sec text-sm flex items-center gap-1.5" onClick={() => navigator.clipboard.writeText(singleResult.it)}>
+              <Copy size={12} /> IT
+            </button>
+            <button className="btn-sec text-sm flex items-center gap-1.5" onClick={() => navigator.clipboard.writeText(singleResult.en)}>
+              <Copy size={12} /> EN
+            </button>
+            <button className="btn-sec text-sm flex items-center gap-1.5" onClick={() => navigator.clipboard.writeText(`${singleResult.it}\n\n──────────────\n\n${singleResult.en}`)}>
+              <Globe size={12} /> Bilingue
+            </button>
           </div>
           <pre className="text-xs text-[var(--text2)] whitespace-pre-wrap leading-relaxed">{singleResult.it}</pre>
         </div>

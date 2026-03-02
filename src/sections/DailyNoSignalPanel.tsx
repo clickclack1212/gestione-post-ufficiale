@@ -6,6 +6,7 @@ import { PhotoUploader } from '../components/PhotoUploader';
 import { PlanCard } from '../components/PlanCard';
 import { buildNSPrompt, parseBilingual, todayItalian } from '../services/prompts';
 import { DAILY_SLOTS_NS } from '../constants/data';
+import { ClipboardList, Clipboard, Copy, Globe, Zap, Camera } from '../components/Icon';
 import type { PlanCardData } from '../components/PlanCard';
 import type { Tone } from '../types';
 
@@ -62,7 +63,9 @@ export function DailyNoSignalPanel() {
   return (
     <div className="space-y-5">
       <div className="card">
-        <div className="card-title">📋 Giornaliera Senza Segnale · {DAILY_SLOTS_NS.length} Slot</div>
+        <div className="card-title flex items-center gap-1.5">
+          <ClipboardList size={14} /> Giornaliera Senza Segnale · {DAILY_SLOTS_NS.length} Slot
+        </div>
         <p className="text-[var(--text3)] text-xs mb-4">
           Piano per giorni senza segnale gratuito sul canale. Focus su VIP Room e CopyTrading.
         </p>
@@ -90,7 +93,11 @@ export function DailyNoSignalPanel() {
                 >
                   <span className="text-[var(--gold)] font-mono text-[11px]">{s.time}</span>
                   <span className="block text-xs mt-0.5 leading-tight">{s.label}</span>
-                  {s.shot && <span className="badge-photo text-[9px] mt-1">📸</span>}
+                  {s.shot && (
+                    <span className="badge-photo text-[9px] mt-1 flex items-center gap-0.5">
+                      <Camera size={9} /> Screenshot
+                    </span>
+                  )}
                 </button>
               ))}
             </div>
@@ -101,9 +108,9 @@ export function DailyNoSignalPanel() {
           <div className="space-y-1">
             <div className="flex items-center justify-between">
               <label className="mb-0 text-xs text-[var(--text3)] uppercase tracking-widest">Notizie del Giorno</label>
-              <button className="btn-paste text-[10px] py-1 px-2"
+              <button className="btn-paste text-[10px] py-1 px-2 flex items-center gap-1"
                 onClick={async () => { try { const t = await navigator.clipboard.readText(); if (t) setNews(t); } catch {} }}>
-                📋 Incolla
+                <Clipboard size={10} /> Incolla
               </button>
             </div>
             <textarea className="w-full" rows={2} placeholder="CPI, NFP, Fed..."
@@ -112,9 +119,9 @@ export function DailyNoSignalPanel() {
           <div className="space-y-1">
             <div className="flex items-center justify-between">
               <label className="mb-0 text-xs text-[var(--text3)] uppercase tracking-widest">Contesto Mercato</label>
-              <button className="btn-paste text-[10px] py-1 px-2"
+              <button className="btn-paste text-[10px] py-1 px-2 flex items-center gap-1"
                 onClick={async () => { try { const t = await navigator.clipboard.readText(); if (t) setExtra(t); } catch {} }}>
-                📋 Incolla
+                <Clipboard size={10} /> Incolla
               </button>
             </div>
             <textarea className="w-full" rows={2} placeholder="Gold trend, livelli..."
@@ -142,10 +149,15 @@ export function DailyNoSignalPanel() {
             <span className="flex items-center justify-center gap-2">
               <span className="spinner" /> Generando... {elapsed}s
             </span>
-          ) : mode === 'single'
-            ? `⚡ Genera Slot ${activeSlot?.time}`
-            : `⚡ Genera Intera Giornata (${DAILY_SLOTS_NS.length} slot)`
-          }
+          ) : mode === 'single' ? (
+            <span className="flex items-center justify-center gap-2">
+              <Zap size={14} /> Genera Slot {activeSlot?.time}
+            </span>
+          ) : (
+            <span className="flex items-center justify-center gap-2">
+              <Zap size={14} /> Genera Intera Giornata ({DAILY_SLOTS_NS.length} slot)
+            </span>
+          )}
         </button>
       </div>
 
@@ -156,9 +168,15 @@ export function DailyNoSignalPanel() {
             <span className="text-[var(--text2)] text-sm">{activeSlot?.label}</span>
           </div>
           <div className="flex gap-2 flex-wrap mb-3">
-            <button className="btn-sec text-sm" onClick={() => navigator.clipboard.writeText(singleResult.it)}>📋 IT</button>
-            <button className="btn-sec text-sm" onClick={() => navigator.clipboard.writeText(singleResult.en)}>📋 EN</button>
-            <button className="btn-sec text-sm" onClick={() => navigator.clipboard.writeText(`${singleResult.it}\n\n──────────────\n\n${singleResult.en}`)}>🌐 Bilingue</button>
+            <button className="btn-sec text-sm flex items-center gap-1.5" onClick={() => navigator.clipboard.writeText(singleResult.it)}>
+              <Copy size={12} /> IT
+            </button>
+            <button className="btn-sec text-sm flex items-center gap-1.5" onClick={() => navigator.clipboard.writeText(singleResult.en)}>
+              <Copy size={12} /> EN
+            </button>
+            <button className="btn-sec text-sm flex items-center gap-1.5" onClick={() => navigator.clipboard.writeText(`${singleResult.it}\n\n──────────────\n\n${singleResult.en}`)}>
+              <Globe size={12} /> Bilingue
+            </button>
           </div>
           <pre className="text-xs text-[var(--text2)] whitespace-pre-wrap leading-relaxed">{singleResult.it}</pre>
         </div>

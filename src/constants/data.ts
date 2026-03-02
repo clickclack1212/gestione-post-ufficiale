@@ -12,18 +12,18 @@ export const DEFAULT_LINK_IT = 'https://t.me/m/jYmEudCONzYy';
 export const DEFAULT_LINK_EN = 'https://t.me/m/b9dalhvdOWJh';
 
 export const TYPES: MessageType[] = [
-  { id: 'buongiorno',           icon: '🌅', name: 'Buongiorno',                 time: '07:00', shot: false },
-  { id: 'risultati_ieri',       icon: '📊', name: 'Risultati Ieri',             time: '08:00', shot: true  },
-  { id: 'ready_segnale',        icon: '🎯', name: 'Ready Segnale',              time: '09:30', shot: false },
-  { id: 'segnale_xauusd',       icon: '📡', name: 'Segnale XAUUSD',             time: '10:00', shot: true  },
-  { id: 'risultato_segnale',    icon: '✅', name: 'Risultato Segnale',          time: 'Dopo',  shot: true  },
-  { id: 'notizie_giorno',       icon: '📰', name: 'Notizie Gold',               time: '13:00', shot: false },
-  { id: 'risultati_clienti',    icon: '🏆', name: 'Risultati Clienti',          time: 'Live',  shot: true  },
-  { id: 'aggiornamento',        icon: '🔄', name: 'Aggiornamento Trade',        time: 'Live',  shot: true  },
-  { id: 'chiusura_giornata',    icon: '🌙', name: 'Chiusura Giornata',          time: '17:00', shot: true  },
-  { id: 'engagement',           icon: '💡', name: 'Engagement',                 time: 'Varie', shot: false },
-  { id: 'primi_risultati',      icon: '⚡', name: 'Primi Risultati',            time: 'Mat.',  shot: true  },
-  { id: 'primi_risultati_copy', icon: '🚀', name: 'Primi Risultati\nCopyTrading', time: 'Mat.', shot: true  },
+  { id: 'buongiorno',           icon: 'Sunrise',       name: 'Buongiorno',                  time: '07:00', shot: false },
+  { id: 'risultati_ieri',       icon: 'BarChart2',     name: 'Risultati Ieri',              time: '08:00', shot: true  },
+  { id: 'ready_segnale',        icon: 'Target',        name: 'Ready Segnale',               time: '09:30', shot: false },
+  { id: 'segnale_xauusd',       icon: 'Radio',         name: 'Segnale XAUUSD',              time: '10:00', shot: true  },
+  { id: 'risultato_segnale',    icon: 'CheckCircle',   name: 'Risultato Segnale',           time: 'Dopo',  shot: true  },
+  { id: 'notizie_giorno',       icon: 'Newspaper',     name: 'Notizie Gold',                time: '13:00', shot: false },
+  { id: 'risultati_clienti',    icon: 'Trophy',        name: 'Risultati Clienti',           time: 'Live',  shot: true  },
+  { id: 'aggiornamento',        icon: 'RefreshCw',     name: 'Aggiornamento Trade',         time: 'Live',  shot: true  },
+  { id: 'chiusura_giornata',    icon: 'Moon',          name: 'Chiusura Giornata',           time: '17:00', shot: true  },
+  { id: 'engagement',           icon: 'Lightbulb',     name: 'Engagement',                  time: 'Varie', shot: false },
+  { id: 'primi_risultati',      icon: 'Zap',           name: 'Primi Risultati',             time: 'Mat.',  shot: true  },
+  { id: 'primi_risultati_copy', icon: 'Rocket',        name: 'Primi Risultati\nCopyTrading',time: 'Mat.',  shot: true  },
 ];
 
 export const DAILY_SLOTS: DailySlot[] = [
@@ -55,49 +55,49 @@ export const DAILY_SLOTS_NS: DailySlot[] = [
 ];
 
 export const ALT_TYPES: AltType[] = [
-  { id: 'alt_mindset',   icon: '☀️', name: 'Mindset\nApertura',        time: '07:00', shot: false, color: '#22c55e' },
-  { id: 'alt_social_am', icon: '🥇', name: 'Social Proof\nMattina',     time: '08:00', shot: true,  color: '#3b82f6' },
-  { id: 'alt_ready',     icon: '🎯', name: 'Ready\nSegnale',            time: '09:00', shot: false, color: '#f97316' },
-  { id: 'alt_segnale',   icon: '📡', name: 'Segnale\nGold',             time: '10:00', shot: false, color: '#FE9920' },
-  { id: 'alt_update',    icon: '⚡️', name: 'Update +\nMini Lezione',    time: '11:30', shot: true,  color: '#FE9920' },
-  { id: 'alt_educativo', icon: '📖', name: 'Post\nEducativo',           time: '13:00', shot: false, color: '#f97316' },
-  { id: 'alt_social_pm', icon: '💬', name: 'Social Proof\n+ Scarsità',  time: '15:00', shot: true,  color: '#3b82f6' },
-  { id: 'alt_segnale2',  icon: '📊', name: '2° Segnale\no Recap',       time: '16:30', shot: false, color: '#FE9920' },
-  { id: 'alt_antiscuse', icon: '💪', name: 'Mindset\nAnti-Scuse',       time: '18:00', shot: false, color: '#22c55e' },
-  { id: 'alt_carosello', icon: '🏆', name: 'Carosello\nRisultati',      time: '19:30', shot: true,  color: '#3b82f6' },
-  { id: 'alt_recap',     icon: '📋', name: 'Recap\nGiornata',           time: '21:00', shot: false, color: '#a855f7' },
-  { id: 'alt_chiusura',  icon: '🌙', name: 'Chiusura\nMotivazionale',   time: '22:30', shot: false, color: '#a855f7' },
+  { id: 'alt_mindset',   icon: 'Sun',           name: 'Mindset\nApertura',        time: '07:00', shot: false, color: '#22c55e' },
+  { id: 'alt_social_am', icon: 'Medal',         name: 'Social Proof\nMattina',    time: '08:00', shot: true,  color: '#3b82f6' },
+  { id: 'alt_ready',     icon: 'Target',        name: 'Ready\nSegnale',           time: '09:00', shot: false, color: '#f97316' },
+  { id: 'alt_segnale',   icon: 'Radio',         name: 'Segnale\nGold',            time: '10:00', shot: false, color: '#FE9920' },
+  { id: 'alt_update',    icon: 'Zap',           name: 'Update +\nMini Lezione',   time: '11:30', shot: true,  color: '#FE9920' },
+  { id: 'alt_educativo', icon: 'BookOpen',      name: 'Post\nEducativo',          time: '13:00', shot: false, color: '#f97316' },
+  { id: 'alt_social_pm', icon: 'MessageCircle', name: 'Social Proof\n+ Scarsità', time: '15:00', shot: true,  color: '#3b82f6' },
+  { id: 'alt_segnale2',  icon: 'BarChart2',     name: '2° Segnale\no Recap',      time: '16:30', shot: false, color: '#FE9920' },
+  { id: 'alt_antiscuse', icon: 'Shield',        name: 'Mindset\nAnti-Scuse',      time: '18:00', shot: false, color: '#22c55e' },
+  { id: 'alt_carosello', icon: 'Trophy',        name: 'Carosello\nRisultati',     time: '19:30', shot: true,  color: '#3b82f6' },
+  { id: 'alt_recap',     icon: 'ClipboardList', name: 'Recap\nGiornata',          time: '21:00', shot: false, color: '#a855f7' },
+  { id: 'alt_chiusura',  icon: 'Moon',          name: 'Chiusura\nMotivazionale',  time: '22:30', shot: false, color: '#a855f7' },
 ];
 
 export const ALT_TYPES_B: AltType[] = [
-  { id: 'b_buongiorno',  icon: '🌅', name: 'Buongiorno\nSolo Chi È Dentro', time: '07:00', shot: false, color: '#22c55e' },
-  { id: 'b_risultato',   icon: '💰', name: 'Risultato VIP/Copy\ndi Ieri',   time: '08:00', shot: true,  color: '#3b82f6' },
-  { id: 'b_carosello',   icon: '💬', name: 'Carosello\nMini Feedback',      time: '09:00', shot: true,  color: '#3b82f6' },
-  { id: 'b_mindset',     icon: '🧠', name: 'Perché Chi È\nDentro Resta',    time: '10:30', shot: false, color: '#22c55e' },
-  { id: 'b_copytrading', icon: '⚙️', name: 'Come Funziona\nil CopyTrading', time: '12:00', shot: false, color: '#FE9920' },
-  { id: 'b_story',       icon: '📖', name: 'Storytelling\nViaggio Cliente', time: '13:30', shot: false, color: '#f97316' },
-  { id: 'b_recap_sett',  icon: '📊', name: 'Recap Settimanale\nVIP/Copy',   time: '15:00', shot: false, color: '#FE9920' },
-  { id: 'b_obiezioni',   icon: '❓', name: 'Q&A\nObiez. Classiche',         time: '16:30', shot: false, color: '#f97316' },
-  { id: 'b_hype_prox',   icon: '🔥', name: 'Hype\nSetup in Arrivo',         time: '18:00', shot: false, color: '#ef4444' },
-  { id: 'b_lifestyle',   icon: '🏖', name: 'Lifestyle +\nRisultati Cliente',time: '19:30', shot: true,  color: '#a855f7' },
-  { id: 'b_recap_day',   icon: '📋', name: 'Recap Giornata\nSolo Clienti',  time: '21:00', shot: false, color: '#a855f7' },
-  { id: 'b_chiusura',    icon: '🌙', name: 'Chiusura\nMentale Forte',       time: '22:30', shot: false, color: '#a855f7' },
+  { id: 'b_buongiorno',  icon: 'Sunrise',       name: 'Buongiorno\nSolo Chi È Dentro',  time: '07:00', shot: false, color: '#22c55e' },
+  { id: 'b_risultato',   icon: 'TrendingUp',    name: 'Risultato VIP/Copy\ndi Ieri',    time: '08:00', shot: true,  color: '#3b82f6' },
+  { id: 'b_carosello',   icon: 'MessageCircle', name: 'Carosello\nMini Feedback',       time: '09:00', shot: true,  color: '#3b82f6' },
+  { id: 'b_mindset',     icon: 'Brain',         name: 'Perché Chi È\nDentro Resta',     time: '10:30', shot: false, color: '#22c55e' },
+  { id: 'b_copytrading', icon: 'Settings2',     name: 'Come Funziona\nil CopyTrading',  time: '12:00', shot: false, color: '#FE9920' },
+  { id: 'b_story',       icon: 'BookOpen',      name: 'Storytelling\nViaggio Cliente',  time: '13:30', shot: false, color: '#f97316' },
+  { id: 'b_recap_sett',  icon: 'BarChart2',     name: 'Recap Settimanale\nVIP/Copy',    time: '15:00', shot: false, color: '#FE9920' },
+  { id: 'b_obiezioni',   icon: 'HelpCircle',    name: 'Q&A\nObiez. Classiche',          time: '16:30', shot: false, color: '#f97316' },
+  { id: 'b_hype_prox',   icon: 'Flame',         name: 'Hype\nSetup in Arrivo',          time: '18:00', shot: false, color: '#ef4444' },
+  { id: 'b_lifestyle',   icon: 'Waves',         name: 'Lifestyle +\nRisultati Cliente', time: '19:30', shot: true,  color: '#a855f7' },
+  { id: 'b_recap_day',   icon: 'ClipboardList', name: 'Recap Giornata\nSolo Clienti',   time: '21:00', shot: false, color: '#a855f7' },
+  { id: 'b_chiusura',    icon: 'Moon',          name: 'Chiusura\nMentale Forte',        time: '22:30', shot: false, color: '#a855f7' },
 ];
 
 export const WK_TYPES_SAB: WkType[] = [
-  { id: 'sab_buongiorno', icon: '☀️', name: 'Buongiorno\nWeekend',        time: '08:00', color: '#22c55e' },
-  { id: 'sab_recap',      icon: '📊', name: 'Weekly Recap\nMacro+Tecnica', time: '11:00', color: '#FFAD47' },
-  { id: 'sab_offerta',    icon: '🔥', name: 'Offerta\nScarsità',           time: '15:00', color: '#ef4444' },
-  { id: 'sab_risultati',  icon: '💰', name: 'Risultati Pips\nSettimana',   time: '18:00', color: '#3b82f6' },
+  { id: 'sab_buongiorno', icon: 'Sun',        name: 'Buongiorno\nWeekend',        time: '08:00', color: '#22c55e' },
+  { id: 'sab_recap',      icon: 'BarChart2',  name: 'Weekly Recap\nMacro+Tecnica',time: '11:00', color: '#FFAD47' },
+  { id: 'sab_offerta',    icon: 'Flame',      name: 'Offerta\nScarsità',          time: '15:00', color: '#ef4444' },
+  { id: 'sab_risultati',  icon: 'TrendingUp', name: 'Risultati Pips\nSettimana',  time: '18:00', color: '#3b82f6' },
 ];
 
 export const WK_TYPES_DOM: WkType[] = [
-  { id: 'dom_quiete',       icon: '⛈',  name: 'Quiete prima\ndella Tempesta', time: '09:00', color: '#22c55e' },
-  { id: 'dom_teaser',       icon: '🙂',  name: 'Teaser\nOutlook',              time: '11:00', color: '#f97316' },
-  { id: 'dom_outlook',      icon: '🚀',  name: 'Weekly Outlook\nCalendario',   time: '13:00', color: '#FFAD47' },
-  { id: 'dom_social_proof', icon: '💬',  name: 'Social Proof\nScreenshot',     time: '15:00', color: '#a855f7' },
-  { id: 'dom_recap',        icon: '📈',  name: 'Recap\nVIP vs Copy',           time: '17:00', color: '#3b82f6' },
-  { id: 'dom_urgenza',      icon: '⚠️',  name: 'Avviso\nRitardatari',          time: '20:00', color: '#ef4444' },
+  { id: 'dom_quiete',       icon: 'CloudLightning', name: 'Quiete prima\ndella Tempesta', time: '09:00', color: '#22c55e' },
+  { id: 'dom_teaser',       icon: 'Smile',          name: 'Teaser\nOutlook',              time: '11:00', color: '#f97316' },
+  { id: 'dom_outlook',      icon: 'Rocket',         name: 'Weekly Outlook\nCalendario',   time: '13:00', color: '#FFAD47' },
+  { id: 'dom_social_proof', icon: 'MessageCircle',  name: 'Social Proof\nScreenshot',     time: '15:00', color: '#a855f7' },
+  { id: 'dom_recap',        icon: 'TrendingUp',     name: 'Recap\nVIP vs Copy',           time: '17:00', color: '#3b82f6' },
+  { id: 'dom_urgenza',      icon: 'AlertTriangle',  name: 'Avviso\nRitardatari',          time: '20:00', color: '#ef4444' },
 ];
 
 export const ALT_PLAN_INFO = {

@@ -1,14 +1,15 @@
 import { useApp } from '../context/AppContext';
 import { GEMINI_MODELS } from '../constants/data';
+import { Icon, Diamond } from './Icon';
 import type { Tab } from '../types';
 
 const TABS: { id: Tab; label: string; icon: string }[] = [
-  { id: 'generate',  label: 'Genera',         icon: '⚡' },
-  { id: 'prog',      label: 'Programmazione',  icon: '📅' },
-  { id: 'calendar',  label: 'Calendario',      icon: '📰' },
-  { id: 'optimize',  label: 'Ottimizza',       icon: '✨' },
-  { id: 'translate', label: 'Traduci',         icon: '🌐' },
-  { id: 'settings',  label: 'Config',          icon: '⚙' },
+  { id: 'generate',  label: 'Genera',        icon: 'Zap'         },
+  { id: 'prog',      label: 'Programmazione', icon: 'CalendarDays'},
+  { id: 'calendar',  label: 'Calendario',     icon: 'Newspaper'   },
+  { id: 'optimize',  label: 'Ottimizza',      icon: 'Sparkles'    },
+  { id: 'translate', label: 'Traduci',        icon: 'Globe'       },
+  { id: 'settings',  label: 'Config',         icon: 'Settings'    },
 ];
 
 export function Header() {
@@ -22,7 +23,7 @@ export function Header() {
       <div className="flex items-center justify-between gap-3 px-4 py-3">
         {/* Logo */}
         <div className="flex items-center gap-2 min-w-0">
-          <span className="text-[var(--gold)] text-xl leading-none">◈</span>
+          <Diamond size={17} className="text-[var(--gold)] shrink-0" strokeWidth={1.5} />
           <div className="min-w-0">
             <div className="font-semibold text-sm text-[var(--text)] leading-tight tracking-tight">
               XAUUSD Post Panel
@@ -35,10 +36,7 @@ export function Header() {
 
         {/* Right side */}
         <div className="flex items-center gap-2 shrink-0">
-          {/* Model badge */}
-          <span className="badge text-xs hidden sm:inline-flex">
-            {model.label}
-          </span>
+          <span className="badge text-xs hidden sm:inline-flex">{model.label}</span>
 
           {/* API status */}
           <button
@@ -85,7 +83,7 @@ export function Header() {
                 : 'border-transparent text-[var(--text3)] hover:text-[var(--text2)] hover:bg-[var(--bg2)]'
               }`}
           >
-            <span className="text-sm">{tab.icon}</span>
+            <Icon name={tab.icon} size={13} />
             <span className="hidden sm:inline">{tab.label}</span>
           </button>
         ))}
