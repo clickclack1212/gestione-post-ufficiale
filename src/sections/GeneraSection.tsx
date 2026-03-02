@@ -1,0 +1,235 @@
+import { useState } from 'react';
+import { useApp } from '../context/AppContext';
+import { useGemini } from '../hooks/useGemini';
+import { ToneSelector } from '../components/ToneSelector';
+import { PhotoUploader } from '../components/PhotoUploader';
+import { BilingualResult } from '../components/BilingualResult';
+import { buildPrompt, parseBilingual } from '../services/prompts';
+import { TYPES, NO_FIELDS_MAIN } from '../constants/data';
+import type { Tone } from '../types';
+
+function Field({
+  label, name, value, onChange, placeholder = '', type = 'text',
+}: {
+  label: string; name: string; value: string;
+  onChange: (k: string, v: string) => void;
+  placeholder?: string; type?: string;
+}) {
+  return (
+    <div className="space-y-1">
+      <label className="block text-xs text-[var(--text3)] uppercase tracking-widest">{label}</label>
+      <input
+        type={type}
+        value={value}
+        placeholder={placeholder}
+        onChange={e => onChange(name, e.target.value)}
+      />
+    </div>
+  );
+}
+
+function FieldsForType({
+  typeId, fields, setField,
+}: {
+  typeId: string;
+  fields: Record<string, string>;
+  setField: (k: string, v: string) => void;
+}) {
+  if (NO_FIELDS_MAIN.includes(typeId)) return null;
+
+  switch (typeId) {
+    case 'risultati_ieri':
+    case 'primi_risultati':
+      return (
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <Field label="Pips Totali" name="pips"    value={fields.pips    ?? ''} onChange={setField} placeholder="85" />
+          <Field label="Operazioni" name="trades"   value={fields.trades  ?? ''} onChange={setField} placeholder="5" />
+          {typeId === 'risultati_ieri' && (
+            <Field label="Win Rate" name="winrate"  value={fields.winrate ?? ''} onChange={setField} placeholder="80%" />
+          )}
+        </div>
+      );
+
+    case 'segnale_xauusd':
+      return (
+        <div className="space-y-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="space-y-1">
+              <label className="block text-xs text-[var(--text3)] uppercase tracking-widest">Direzione</label>
+              <select value={fields.dir ?? 'BUY'} onChange={e => setField('dir', e.target.value)}>
+                <option value="BUY">BUY 🟢</option>
+                <option value="SELL">SELL 🔴</option>
+              </select>
+            </div>
+            <Field label="Entry"       name="entry" value={fields.entry ?? ''} onChange={setField} placeholder="2345.00" />
+            <Field label="Stop Loss"   name="sl"    value={fields.sl    ?? ''} onChange={setField} placeholder="2335.00" />
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            <Field label="TP1" name="tp1" value={fields.tp1 ?? ''} onChange={setField} placeholder="2355" />
+            <Field label="TP2" name="tp2" value={fields.tp2 ?? ''} onChange={setField} placeholder="2365" />
+            <Field label="TP3" name="tp3" value={fields.tp3 ?? ''} onChange={setField} placeholder="2375" />
+          </div>
+        </div>
+      );
+
+    case 'risultato_segnale':
+      return (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="space-y-1">
+            <label className="block text-xs text-[var(--text3)] uppercase tracking-widest">Esito</label>
+            <select value={fields.result ?? 'WIN'} onChange={e => setField('result', e.target.value)}>
+              <option value="WIN">WIN ✅</option>
+              <option value="LOSS">LOSS ❌</option>
+              <option value="BE">BREAK EVEN ⚖</option>
+            </select>
+          </div>
+          <Field label="Entry"  name="entry" value={fields.entry ?? ''} onChange={setField} placeholder="2345" />
+          <Field label="Uscita" name="exit"  value={fields.exit  ?? ''} onChange={setField} placeholder="2360" />
+          <Field label="Pips"   name="pips"  value={fields.pips  ?? ''} onChange={setField} placeholder="+45" />
+        </div>
+      );
+
+    case 'notizie_giorno':
+      return (
+        <div className="space-y-1">
+          <label className="block text-xs text-[var(--text3)] uppercase tracking-widest">Note Aggiuntive (opz.)</label>
+          <textarea
+            className="w-full"
+            value={fields.news ?? ''}
+            placeholder="Note, eventi del giorno, dati macro..."
+            rows={2}
+            onChange={e => setField('news', e.target.value)}
+          />
+        </div>
+      );
+
+    case 'risultati_clienti':
+      return (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <Field label="Descrizione Risultati" name="clienti" value={fields.clienti ?? ''} onChange={setField} placeholder="Profitti membri..." />
+          <Field label="Periodo"               name="periodo" value={fields.periodo ?? ''} onChange={setField} placeholder="settimana / mese" />
+        </div>
+      );
+
+    case 'aggiornamento':
+      return (
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <div className="space-y-1">
+            <label className="block text-xs text-[var(--text3)] uppercase tracking-widest">Situazione</label>
+            <select value={fields.status ?? 'in profitto'} onChange={e => setField('status', e.target.value)}>
+              <option value="in profitto">In profitto ✅</option>
+              <option value="in perdita">In perdita ⚠</option>
+              <option value="breakeven">Breakeven ⚖</option>
+              <option value="in attesa">In attesa ⏳</option>
+            </select>
+          </div>
+          <Field label="Pips Attuali" name="pips"    value={fields.pips    ?? ''} onChange={setField} placeholder="+30" />
+          <Field label="Note"         name="comment" value={fields.comment ?? ''} onChange={setField} placeholder="TP1 colpito..." />
+        </div>
+      );
+
+    case 'primi_risultati_copy':
+      return (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <Field label="Pips / Profitto" name="pips_copy"   value={fields.pips_copy   ?? ''} onChange={setField} placeholder="+55" />
+          <Field label="Operazioni"      name="trades_copy" value={fields.trades_copy ?? ''} onChange={setField} placeholder="2" />
+          <Field label="Orario"          name="ora_copy"    value={fields.ora_copy    ?? ''} onChange={setField} placeholder="stamattina" />
+          <Field label="Contesto"        name="ctx_copy"    value={fields.ctx_copy    ?? ''} onChange={setField} placeholder="Note..." />
+        </div>
+      );
+
+    default:
+      return null;
+  }
+}
+
+export function GeneraSection() {
+  const { config } = useApp();
+  const { loading, elapsed, run } = useGemini();
+
+  const [selectedType, setSelectedType] = useState(TYPES[0].id);
+  const [tone, setTone] = useState<Tone>('assertivo');
+  const [fields, setFields] = useState<Record<string, string>>({});
+  const [newsPhoto, setNewsPhoto] = useState<string | null>(null);
+  const [newsPhotoPreview, setNewsPhotoPreview] = useState<string | null>(null);
+  const [result, setResult] = useState({ it: '', en: '' });
+
+  const activeType = TYPES.find(t => t.id === selectedType)!;
+  const needsPhoto = activeType?.shot;
+  const showPhotoUpload = selectedType === 'notizie_giorno' || needsPhoto;
+
+  function setField(k: string, v: string) {
+    setFields(prev => ({ ...prev, [k]: v }));
+  }
+
+  async function handleGenerate() {
+    const prompt = buildPrompt(selectedType, config, tone, fields, newsPhoto);
+    if (!prompt) return;
+    const text = await run(prompt, 0.88, newsPhoto ? newsPhoto : null);
+    if (text) setResult(parseBilingual(text));
+  }
+
+  return (
+    <div className="max-w-2xl mx-auto space-y-5">
+      {/* Type grid */}
+      <div className="card">
+        <div className="card-title">⚡ Genera Messaggio</div>
+        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-5">
+          {TYPES.map(t => (
+            <button
+              key={t.id}
+              onClick={() => { setSelectedType(t.id); setResult({ it: '', en: '' }); }}
+              className={`type-card ${selectedType === t.id ? 'selected' : ''}`}
+            >
+              <span className="text-lg mb-1 block">{t.icon}</span>
+              <span className="text-[10px] leading-tight text-center whitespace-pre-line">{t.name}</span>
+              <span className="text-[9px] text-[var(--text3)] mt-0.5">{t.time}</span>
+              {t.shot && <span className="badge-photo text-[9px] mt-1">📸</span>}
+            </button>
+          ))}
+        </div>
+
+        {/* Tone */}
+        <ToneSelector value={tone} onChange={setTone} />
+
+        {/* Dynamic fields */}
+        {!NO_FIELDS_MAIN.includes(selectedType) && (
+          <div className="mt-4">
+            <FieldsForType typeId={selectedType} fields={fields} setField={setField} />
+          </div>
+        )}
+
+        {/* Photo upload (for news type or types that need screenshot) */}
+        {showPhotoUpload && (
+          <div className="mt-4">
+            <PhotoUploader
+              label={selectedType === 'notizie_giorno' ? 'Foto Notizie / Calendario' : 'Screenshot Risultati'}
+              preview={newsPhotoPreview}
+              onPhoto={(b64) => {
+                setNewsPhoto(b64);
+                setNewsPhotoPreview(`data:image/jpeg;base64,${b64}`);
+              }}
+              onClear={() => { setNewsPhoto(null); setNewsPhotoPreview(null); }}
+            />
+          </div>
+        )}
+
+        <button
+          className="btn-generate w-full mt-5"
+          onClick={handleGenerate}
+          disabled={loading}
+        >
+          {loading ? (
+            <span className="flex items-center justify-center gap-2">
+              <span className="spinner" /> Generando... {elapsed}s
+            </span>
+          ) : `⚡ Genera ${activeType?.name ?? ''}`}
+        </button>
+      </div>
+
+      {(result.it || result.en) && (
+        <BilingualResult it={result.it} en={result.en} />
+      )}
+    </div>
+  );
+}

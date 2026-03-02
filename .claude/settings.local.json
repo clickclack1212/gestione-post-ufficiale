@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install)",
+      "Bash(npm run build)",
+      "Bash(cmd.exe /c \"cd \"\"C:\\\\Users\\\\gabri\\\\Desktop\\\\XAUUSD POST PANEL\"\" && npm run build 2>&1\")",
+      "Bash(cmd.exe /c \"cd \"\"C:\\\\Users\\\\gabri\\\\Desktop\\\\XAUUSD POST PANEL\"\" && npm run build\")",
+      "Bash(echo \"Exit code: $?\")",
+      "Bash(cmd.exe /c \"where node && where npm && node --version && npm --version\")",
+      "Bash(node --version)",
+      "Bash(npm --version)",
+      "Bash(cmd.exe /c \"where node 2>&1\")",
+      "Bash(cmd.exe /c \"where node\")",
+      "Bash(powershell.exe -NoProfile -Command \"Get-Command node -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source\")",
+      "Bash(powershell.exe -NoProfile -Command \"node --version\")",
+      "Bash(powershell.exe -NoProfile -Command \"Get-ChildItem ''C:\\\\Program Files\\\\nodejs\\\\'' -ErrorAction SilentlyContinue; Get-ChildItem ''C:\\\\Program Files \\(x86\\)\\\\nodejs\\\\'' -ErrorAction SilentlyContinue; Get-ChildItem ''C:\\\\Users\\\\gabri\\\\AppData\\\\Roaming\\\\nvm\\\\'' -ErrorAction SilentlyContinue; Get-ChildItem ''C:\\\\Users\\\\gabri\\\\AppData\\\\Local\\\\nvs\\\\'' -ErrorAction SilentlyContinue\")",
+      "Bash(powershell.exe -NoProfile -Command \":*)",
+      "Bash(powershell.exe -NoProfile -Command \"Get-ChildItem ''C:\\\\Users\\\\gabri\\\\AppData\\\\Local\\\\ms-playwright-go\\\\1.50.1'' | Select-Object Name\")",
+      "Bash(powershell.exe -NoProfile -Command \"Test-Path ''C:\\\\Users\\\\gabri\\\\Desktop\\\\XAUUSD POST PANEL\\\\node_modules''\")",
+      "Bash(powershell.exe -NoProfile -Command \"[System.Environment]::GetEnvironmentVariable\\(''PATH'', ''Machine''\\) + [System.Environment]::GetEnvironmentVariable\\(''PATH'', ''User''\\)\")",
+      "Bash(powershell.exe -NoProfile -Command \"Get-ChildItem ''C:\\\\Users\\\\gabri\\\\AppData\\\\Local\\\\ms-playwright-go\\\\1.50.1\\\\package'' -Recurse -Filter ''npm*'' | Select-Object FullName\")"
+    ]
+  }
+}
