@@ -19,8 +19,10 @@ export interface Config {
 export interface Counter {
   date: string;
   total: number;
-  pro3: number;
-  pro25: number;
+  pro3: number;   // model index 0
+  pro25: number;  // model index 1
+  m2: number;     // model index 2
+  m3: number;     // model index 3
 }
 
 export interface MessageType {

@@ -6,9 +6,104 @@ import { PhotoUploader } from '../components/PhotoUploader';
 import { PlanCard } from '../components/PlanCard';
 import { buildNSPrompt, parseBilingual, todayItalian } from '../services/prompts';
 import { DAILY_SLOTS_NS } from '../constants/data';
-import { ClipboardList, Clipboard, Copy, Globe, Zap, Camera } from '../components/Icon';
+import { ClipboardList, Copy, Globe, Zap, Camera } from '../components/Icon';
 import type { PlanCardData } from '../components/PlanCard';
 import type { Tone } from '../types';
+
+function Field({
+  label, name, value, onChange, placeholder = '',
+}: {
+  label: string; name: string; value: string;
+  onChange: (k: string, v: string) => void;
+  placeholder?: string;
+}) {
+  return (
+    <div className="space-y-1">
+      <label className="block text-xs text-[var(--text3)] uppercase tracking-widest">{label}</label>
+      <input value={value} placeholder={placeholder} onChange={e => onChange(name, e.target.value)} />
+    </div>
+  );
+}
+
+function NSSlotFields({
+  slotId, fields, setField,
+}: {
+  slotId: string;
+  fields: Record<string, string>;
+  setField: (k: string, v: string) => void;
+}) {
+  const f = (k: string) => fields[k] ?? '';
+
+  switch (slotId) {
+    case 'ns_risultati_ieri':
+      return (
+        <div className="space-y-3">
+          <div>
+            <p className="text-[10px] text-[var(--text3)] uppercase tracking-widest mb-2">VIP Room</p>
+            <div className="grid grid-cols-3 gap-3">
+              <Field label="Pips VIP"     name="vip_pips"    value={f('vip_pips')}    onChange={setField} placeholder="85" />
+              <Field label="Ops VIP"      name="vip_trades"  value={f('vip_trades')}  onChange={setField} placeholder="5" />
+              <Field label="Win Rate VIP" name="vip_winrate" value={f('vip_winrate')} onChange={setField} placeholder="80%" />
+            </div>
+          </div>
+          <div>
+            <p className="text-[10px] text-[var(--text3)] uppercase tracking-widest mb-2">CopyTrading</p>
+            <div className="grid grid-cols-3 gap-3">
+              <Field label="Pips Copy"   name="copy_pips"   value={f('copy_pips')}   onChange={setField} placeholder="72" />
+              <Field label="Ops Copy"    name="copy_trades" value={f('copy_trades')} onChange={setField} placeholder="4" />
+              <Field label="Performance" name="copy_perf"   value={f('copy_perf')}   onChange={setField} placeholder="+3.2%" />
+            </div>
+          </div>
+        </div>
+      );
+
+    case 'ns_copy_mattina':
+      return (
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Pips Copy"  name="copy_pips"   value={f('copy_pips')}   onChange={setField} placeholder="+35" />
+          <Field label="Ops Chiuse" name="copy_trades" value={f('copy_trades')} onChange={setField} placeholder="2" />
+        </div>
+      );
+
+    case 'ns_vip_mattina':
+      return (
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Pips VIP"  name="vip_pips"   value={f('vip_pips')}   onChange={setField} placeholder="+50" />
+          <Field label="Ops Chiuse" name="vip_trades" value={f('vip_trades')} onChange={setField} placeholder="3" />
+        </div>
+      );
+
+    case 'ns_calendario':
+      return (
+        <div className="space-y-1">
+          <label className="block text-xs text-[var(--text3)] uppercase tracking-widest">Note Calendario</label>
+          <textarea className="w-full" rows={2} placeholder="CPI USA 14:30, Fed 20:00..."
+            value={f('note')} onChange={e => setField('note', e.target.value)} />
+        </div>
+      );
+
+    case 'ns_post_news':
+      return (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <Field label="Notizia di Riferimento" name="news_ref"      value={f('news_ref')}      onChange={setField} placeholder="NFP uscito a 200k" />
+          <Field label="Pips Post-News"         name="pips_postnews" value={f('pips_postnews')} onChange={setField} placeholder="+55" />
+        </div>
+      );
+
+    case 'ns_recensioni':
+      return (
+        <Field label="Nota (opz.)" name="nota" value={f('nota')} onChange={setField} placeholder="Note aggiuntive..." />
+      );
+
+    case 'ns_recap':
+      return (
+        <Field label="Note Finali (opz.)" name="nota_finale" value={f('nota_finale')} onChange={setField} placeholder="Riepilogo giornata..." />
+      );
+
+    default:
+      return null;
+  }
+}
 
 export function DailyNoSignalPanel() {
   const { config } = useApp();
@@ -17,20 +112,24 @@ export function DailyNoSignalPanel() {
   const [tone, setTone] = useState<Tone>('assertivo');
   const [mode, setMode] = useState<'single' | 'day'>('single');
   const [selectedSlot, setSelectedSlot] = useState(DAILY_SLOTS_NS[0].id);
-  const [news, setNews] = useState('');
-  const [extra, setExtra] = useState('');
+  const [fields, setFieldsState] = useState<Record<string, string>>({});
   const [photo, setPhoto] = useState<string | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [singleResult, setSingleResult] = useState({ it: '', en: '' });
   const [dayResults, setDayResults] = useState<PlanCardData[]>([]);
 
+  function setField(k: string, v: string) {
+    setFieldsState(prev => ({ ...prev, [k]: v }));
+  }
+
   const ctx = () => ({
     cfg: config,
     date: todayItalian(),
     tone,
-    news,
-    extra,
+    news: fields.note || '',
+    extra: '',
     hasPhoto: !!photo,
+    fields,
   });
 
   async function handleSingle() {
@@ -59,6 +158,7 @@ export function DailyNoSignalPanel() {
   }
 
   const activeSlot = DAILY_SLOTS_NS.find(s => s.id === selectedSlot)!;
+  const slotNeedsPhoto = activeSlot?.shot || activeSlot?.id === 'ns_calendario';
 
   return (
     <div className="space-y-5">
@@ -88,7 +188,7 @@ export function DailyNoSignalPanel() {
               {DAILY_SLOTS_NS.map(s => (
                 <button
                   key={s.id}
-                  onClick={() => setSelectedSlot(s.id)}
+                  onClick={() => { setSelectedSlot(s.id); setSingleResult({ it: '', en: '' }); setFieldsState({}); }}
                   className={`alt-plan-btn text-left ${selectedSlot === s.id ? 'active' : ''}`}
                 >
                   <span className="text-[var(--gold)] font-mono text-[11px]">{s.time}</span>
@@ -104,35 +204,17 @@ export function DailyNoSignalPanel() {
           </div>
         )}
 
-        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div className="space-y-1">
-            <div className="flex items-center justify-between">
-              <label className="mb-0 text-xs text-[var(--text3)] uppercase tracking-widest">Notizie del Giorno</label>
-              <button className="btn-paste text-[10px] py-1 px-2 flex items-center gap-1"
-                onClick={async () => { try { const t = await navigator.clipboard.readText(); if (t) setNews(t); } catch {} }}>
-                <Clipboard size={10} /> Incolla
-              </button>
-            </div>
-            <textarea className="w-full" rows={2} placeholder="CPI, NFP, Fed..."
-              value={news} onChange={e => setNews(e.target.value)} />
+        {/* Slot-specific fields (single mode) */}
+        {mode === 'single' && (
+          <div className="mt-4">
+            <NSSlotFields slotId={selectedSlot} fields={fields} setField={setField} />
           </div>
-          <div className="space-y-1">
-            <div className="flex items-center justify-between">
-              <label className="mb-0 text-xs text-[var(--text3)] uppercase tracking-widest">Contesto Mercato</label>
-              <button className="btn-paste text-[10px] py-1 px-2 flex items-center gap-1"
-                onClick={async () => { try { const t = await navigator.clipboard.readText(); if (t) setExtra(t); } catch {} }}>
-                <Clipboard size={10} /> Incolla
-              </button>
-            </div>
-            <textarea className="w-full" rows={2} placeholder="Gold trend, livelli..."
-              value={extra} onChange={e => setExtra(e.target.value)} />
-          </div>
-        </div>
+        )}
 
-        {(mode === 'day' || activeSlot?.id === 'ns_calendario') && (
+        {(mode === 'day' || slotNeedsPhoto) && (
           <div className="mt-4">
             <PhotoUploader
-              label="Screenshot Calendario Economico"
+              label={activeSlot?.id === 'ns_calendario' ? 'Screenshot Calendario Economico' : 'Screenshot Risultati'}
               preview={photoPreview}
               onPhoto={(b64) => { setPhoto(b64); setPhotoPreview(`data:image/jpeg;base64,${b64}`); }}
               onClear={() => { setPhoto(null); setPhotoPreview(null); }}

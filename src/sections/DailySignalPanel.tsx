@@ -6,11 +6,143 @@ import { PhotoUploader } from '../components/PhotoUploader';
 import { PlanCard } from '../components/PlanCard';
 import { buildDailyPrompt, parseBilingual, todayItalian } from '../services/prompts';
 import { DAILY_SLOTS } from '../constants/data';
-import { ClipboardList, Clipboard, Copy, Globe, Zap, Camera } from '../components/Icon';
+import { ClipboardList, Copy, Globe, Zap, Camera } from '../components/Icon';
 import type { PlanCardData } from '../components/PlanCard';
 import type { Tone } from '../types';
 
 type GenMode = 'single' | 'day';
+
+function Field({
+  label, name, value, onChange, placeholder = '',
+}: {
+  label: string; name: string; value: string;
+  onChange: (k: string, v: string) => void;
+  placeholder?: string;
+}) {
+  return (
+    <div className="space-y-1">
+      <label className="block text-xs text-[var(--text3)] uppercase tracking-widest">{label}</label>
+      <input value={value} placeholder={placeholder} onChange={e => onChange(name, e.target.value)} />
+    </div>
+  );
+}
+
+function DailySlotFields({
+  slotId, fields, setField,
+}: {
+  slotId: string;
+  fields: Record<string, string>;
+  setField: (k: string, v: string) => void;
+}) {
+  const f = (k: string) => fields[k] ?? '';
+
+  switch (slotId) {
+    case 'd_risultati_ieri':
+      return (
+        <div className="space-y-3">
+          <div>
+            <p className="text-[10px] text-[var(--text3)] uppercase tracking-widest mb-2">VIP Room</p>
+            <div className="grid grid-cols-3 gap-3">
+              <Field label="Pips VIP"     name="vip_pips"    value={f('vip_pips')}    onChange={setField} placeholder="85" />
+              <Field label="Ops VIP"      name="vip_trades"  value={f('vip_trades')}  onChange={setField} placeholder="5" />
+              <Field label="Win Rate VIP" name="vip_winrate" value={f('vip_winrate')} onChange={setField} placeholder="80%" />
+            </div>
+          </div>
+          <div>
+            <p className="text-[10px] text-[var(--text3)] uppercase tracking-widest mb-2">CopyTrading</p>
+            <div className="grid grid-cols-3 gap-3">
+              <Field label="Pips Copy"   name="copy_pips"   value={f('copy_pips')}   onChange={setField} placeholder="72" />
+              <Field label="Ops Copy"    name="copy_trades" value={f('copy_trades')} onChange={setField} placeholder="4" />
+              <Field label="Performance" name="copy_perf"   value={f('copy_perf')}   onChange={setField} placeholder="+3.2%" />
+            </div>
+          </div>
+        </div>
+      );
+
+    case 'd_primi_risultati':
+      return (
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Pips"       name="pips"   value={f('pips')}   onChange={setField} placeholder="+40" />
+          <Field label="Operazioni" name="trades" value={f('trades')} onChange={setField} placeholder="3" />
+        </div>
+      );
+
+    case 'd_segnale':
+      return (
+        <div className="space-y-3">
+          <div className="grid grid-cols-3 gap-3">
+            <div className="space-y-1">
+              <label className="block text-xs text-[var(--text3)] uppercase tracking-widest">Direzione</label>
+              <select value={f('dir') || 'BUY'} onChange={e => setField('dir', e.target.value)}>
+                <option value="BUY">BUY 🟢</option>
+                <option value="SELL">SELL 🔴</option>
+              </select>
+            </div>
+            <Field label="Entry"     name="entry" value={f('entry')} onChange={setField} placeholder="2345.00" />
+            <Field label="Stop Loss" name="sl"    value={f('sl')}    onChange={setField} placeholder="2335.00" />
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            <Field label="TP1" name="tp1" value={f('tp1')} onChange={setField} placeholder="2355" />
+            <Field label="TP2" name="tp2" value={f('tp2')} onChange={setField} placeholder="2365" />
+            <Field label="TP3" name="tp3" value={f('tp3')} onChange={setField} placeholder="2375" />
+          </div>
+        </div>
+      );
+
+    case 'd_risultato_segn':
+      return (
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1">
+            <label className="block text-xs text-[var(--text3)] uppercase tracking-widest">Esito</label>
+            <select value={f('esito') || 'WIN'} onChange={e => setField('esito', e.target.value)}>
+              <option value="WIN">WIN ✅</option>
+              <option value="LOSS">LOSS ❌</option>
+              <option value="BE">BREAK EVEN ⚖</option>
+            </select>
+          </div>
+          <Field label="Pips" name="pips" value={f('pips')} onChange={setField} placeholder="+45" />
+        </div>
+      );
+
+    case 'd_copy_live':
+      return (
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Pips Copy Live" name="copy_pips"   value={f('copy_pips')}   onChange={setField} placeholder="+60" />
+          <Field label="Ops Chiuse"     name="copy_trades" value={f('copy_trades')} onChange={setField} placeholder="4" />
+        </div>
+      );
+
+    case 'd_notizie':
+      return (
+        <div className="space-y-1">
+          <label className="block text-xs text-[var(--text3)] uppercase tracking-widest">Note Calendario</label>
+          <textarea className="w-full" rows={2} placeholder="CPI USA 14:30, Fed 20:00..."
+            value={f('note')} onChange={e => setField('note', e.target.value)} />
+        </div>
+      );
+
+    case 'd_copy_postnews':
+      return (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <Field label="Notizia di Riferimento" name="news_ref"      value={f('news_ref')}      onChange={setField} placeholder="NFP uscito a 200k" />
+          <Field label="Pips Post-News"         name="pips_postnews" value={f('pips_postnews')} onChange={setField} placeholder="+55" />
+        </div>
+      );
+
+    case 'd_educativo':
+      return (
+        <Field label="Topic (opz.)" name="topic" value={f('topic')} onChange={setField} placeholder="Zone di liquidità, gestione SL..." />
+      );
+
+    case 'd_recensioni':
+      return (
+        <Field label="Nota (opz.)" name="nota" value={f('nota')} onChange={setField} placeholder="Note aggiuntive..." />
+      );
+
+    default:
+      return null;
+  }
+}
 
 export function DailySignalPanel() {
   const { config, calendarEvents } = useApp();
@@ -19,12 +151,15 @@ export function DailySignalPanel() {
   const [tone, setTone] = useState<Tone>('assertivo');
   const [mode, setMode] = useState<GenMode>('single');
   const [selectedSlot, setSelectedSlot] = useState(DAILY_SLOTS[0].id);
-  const [news, setNews] = useState('');
-  const [extra, setExtra] = useState('');
+  const [fields, setFieldsState] = useState<Record<string, string>>({});
   const [photo, setPhoto] = useState<string | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [singleResult, setSingleResult] = useState({ it: '', en: '' });
   const [dayResults, setDayResults] = useState<PlanCardData[]>([]);
+
+  function setField(k: string, v: string) {
+    setFieldsState(prev => ({ ...prev, [k]: v }));
+  }
 
   const calEventsStr = calendarEvents.length > 0
     ? calendarEvents.map(e => `${e.time} ${e.currency}: ${e.title} (${e.impact})`).join('\n')
@@ -34,10 +169,11 @@ export function DailySignalPanel() {
     cfg: config,
     date: todayItalian(),
     tone,
-    news,
-    extra,
+    news: fields.note || '',
+    extra: '',
     hasPhoto: !!photo,
     calEvents: calEventsStr,
+    fields,
   });
 
   async function handleSingle() {
@@ -75,10 +211,10 @@ export function DailySignalPanel() {
   }
 
   const activeSlot = DAILY_SLOTS.find(s => s.id === selectedSlot)!;
+  const slotNeedsPhoto = activeSlot?.shot || activeSlot?.id === 'd_notizie';
 
   return (
     <div className="space-y-5">
-      {/* Controls */}
       <div className="card">
         <div className="card-title flex items-center gap-1.5">
           <ClipboardList size={14} /> Giornaliera con Segnale · {DAILY_SLOTS.length} Slot
@@ -96,7 +232,7 @@ export function DailySignalPanel() {
 
         <ToneSelector value={tone} onChange={setTone} />
 
-        {/* Slot selector (single mode only) */}
+        {/* Slot selector (single mode) */}
         {mode === 'single' && (
           <div className="mt-4 space-y-2">
             <label className="block text-xs text-[var(--text3)] uppercase tracking-widest">Slot</label>
@@ -104,7 +240,7 @@ export function DailySignalPanel() {
               {DAILY_SLOTS.map(s => (
                 <button
                   key={s.id}
-                  onClick={() => setSelectedSlot(s.id)}
+                  onClick={() => { setSelectedSlot(s.id); setSingleResult({ it: '', en: '' }); setFieldsState({}); }}
                   className={`alt-plan-btn text-left ${selectedSlot === s.id ? 'active' : ''}`}
                 >
                   <span className="text-[var(--gold)] font-mono text-[11px]">{s.time}</span>
@@ -120,37 +256,18 @@ export function DailySignalPanel() {
           </div>
         )}
 
-        {/* Context fields */}
-        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div className="space-y-1">
-            <div className="flex items-center justify-between">
-              <label className="mb-0 text-xs text-[var(--text3)] uppercase tracking-widest">Notizie del Giorno</label>
-              <button className="btn-paste text-[10px] py-1 px-2 flex items-center gap-1"
-                onClick={async () => { try { const t = await navigator.clipboard.readText(); if (t) setNews(t); } catch {} }}>
-                <Clipboard size={10} /> Incolla
-              </button>
-            </div>
-            <textarea className="w-full" rows={2} placeholder="CPI USA 14:30, NFP..."
-              value={news} onChange={e => setNews(e.target.value)} />
+        {/* Slot-specific fields (single mode) */}
+        {mode === 'single' && (
+          <div className="mt-4">
+            <DailySlotFields slotId={selectedSlot} fields={fields} setField={setField} />
           </div>
-          <div className="space-y-1">
-            <div className="flex items-center justify-between">
-              <label className="mb-0 text-xs text-[var(--text3)] uppercase tracking-widest">Contesto Mercato</label>
-              <button className="btn-paste text-[10px] py-1 px-2 flex items-center gap-1"
-                onClick={async () => { try { const t = await navigator.clipboard.readText(); if (t) setExtra(t); } catch {} }}>
-                <Clipboard size={10} /> Incolla
-              </button>
-            </div>
-            <textarea className="w-full" rows={2} placeholder="Gold in area 2350, trend rialzista..."
-              value={extra} onChange={e => setExtra(e.target.value)} />
-          </div>
-        </div>
+        )}
 
-        {/* Photo (for notizie slot) */}
-        {(mode === 'day' || activeSlot?.id === 'd_notizie') && (
+        {/* Photo uploader */}
+        {(mode === 'day' || slotNeedsPhoto) && (
           <div className="mt-4">
             <PhotoUploader
-              label="Screenshot Calendario (slot Notizie)"
+              label={activeSlot?.id === 'd_notizie' ? 'Screenshot Calendario' : 'Screenshot Risultati'}
               preview={photoPreview}
               onPhoto={(b64) => { setPhoto(b64); setPhotoPreview(`data:image/jpeg;base64,${b64}`); }}
               onClear={() => { setPhoto(null); setPhotoPreview(null); }}

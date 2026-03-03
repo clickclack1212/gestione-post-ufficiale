@@ -4,8 +4,10 @@ export const STORE = 'xauusd_v3';
 export const COUNTER_KEY = 'xauusd_counter';
 
 export const GEMINI_MODELS: GeminiModel[] = [
-  { id: 'gemini-3.1-pro-preview', label: 'Gemini 3.1 Pro' },
-  { id: 'gemini-2.5-pro',         label: 'Gemini 2.5 Pro' },
+  { id: 'gemini-3.1-pro-preview',   label: 'Gemini 3.1 Pro'   },
+  { id: 'gemini-3.0-flash-preview', label: 'Gemini 3 Flash'   },
+  { id: 'gemini-2.5-pro',           label: 'Gemini 2.5 Pro'   },
+  { id: 'gemini-2.5-flash',         label: 'Gemini 2.5 Flash' },
 ];
 
 export const DEFAULT_LINK_IT = 'https://t.me/m/jYmEudCONzYy';

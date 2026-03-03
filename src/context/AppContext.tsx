@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import type { Tab, Config, Counter, CalendarEvent } from '../types';
 import { getConfig, getCounter } from '../services/storage';
-import { getActiveModelIdx } from '../services/gemini';
+import { getActiveModelIdx, setPreferredModelIdx as setGeminiPreferred } from '../services/gemini';
 
 export interface ToastMsg {
   text: string;
@@ -21,6 +21,9 @@ interface AppContextValue {
   activeModelIdx: number;
   setActiveModelIdx: (i: number) => void;
 
+  preferredModelIdx: number;
+  setPreferredModelIdx: (i: number) => void;
+
   calendarEvents: CalendarEvent[];
   setCalendarEvents: (ev: CalendarEvent[]) => void;
 
@@ -36,8 +39,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [config, setConfig] = useState<Config>(getConfig);
   const [counter, setCounter] = useState<Counter>(getCounter);
   const [activeModelIdx, setActiveModelIdx] = useState<number>(getActiveModelIdx);
+  const [preferredModelIdx, setPreferredModelIdxState] = useState<number>(0);
   const [calendarEvents, setCalendarEvents] = useState<CalendarEvent[]>([]);
   const [toast, setToast] = useState<ToastMsg | null>(null);
+
+  const setPreferredModelIdx = useCallback((i: number) => {
+    setPreferredModelIdxState(i);
+    setGeminiPreferred(i);
+    setActiveModelIdx(i);
+  }, []);
 
   const showToast = useCallback((text: string, type: ToastMsg['type'] = 'info') => {
     setToast({ text, type });
@@ -45,7 +55,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const hideToast = useCallback(() => setToast(null), []);
 
-  // Auto-hide toast after 3.5 seconds
   useEffect(() => {
     if (!toast) return;
     const t = setTimeout(hideToast, 3500);
@@ -59,6 +68,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         config, setConfig,
         counter, setCounter,
         activeModelIdx, setActiveModelIdx,
+        preferredModelIdx, setPreferredModelIdx,
         calendarEvents, setCalendarEvents,
         toast, showToast, hideToast,
       }}

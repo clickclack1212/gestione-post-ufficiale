@@ -34,18 +34,24 @@ export function getCounter(): Counter {
     const d: Counter = raw ? JSON.parse(raw) : {};
     const today = new Date().toDateString();
     if ((d as { date?: string }).date !== today) {
-      return { date: today, total: 0, pro3: 0, pro25: 0 };
+      return { date: today, total: 0, pro3: 0, pro25: 0, m2: 0, m3: 0 };
     }
+    // Migrate old format (missing m2/m3)
+    if (d.m2 === undefined) d.m2 = 0;
+    if (d.m3 === undefined) d.m3 = 0;
     return d;
   } catch {
-    return { date: new Date().toDateString(), total: 0, pro3: 0, pro25: 0 };
+    return { date: new Date().toDateString(), total: 0, pro3: 0, pro25: 0, m2: 0, m3: 0 };
   }
 }
 
 export function incCounter(modelIdx: number): Counter {
   const d = getCounter();
   d.total++;
-  if (modelIdx === 0) d.pro3++; else d.pro25++;
+  if (modelIdx === 0) d.pro3++;
+  else if (modelIdx === 1) d.pro25++;
+  else if (modelIdx === 2) d.m2++;
+  else d.m3++;
   localStorage.setItem(COUNTER_KEY, JSON.stringify(d));
   return d;
 }

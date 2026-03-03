@@ -5,6 +5,9 @@ let activeModelIdx = 0;
 
 export function getActiveModelIdx() { return activeModelIdx; }
 export function getActiveModelLabel() { return GEMINI_MODELS[activeModelIdx].label; }
+export function setPreferredModelIdx(i: number) {
+  activeModelIdx = Math.max(0, Math.min(i, GEMINI_MODELS.length - 1));
+}
 
 export type ModelChangeCallback = (modelIdx: number) => void;
 export type ToastCallback = (msg: string) => void;

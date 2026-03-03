@@ -1,10 +1,10 @@
 import { useState, useRef, useCallback } from 'react';
-import { gemini } from '../services/gemini';
+import { gemini, setPreferredModelIdx } from '../services/gemini';
 import { useApp } from '../context/AppContext';
 import { getCounter } from '../services/storage';
 
 export function useGemini() {
-  const { config, showToast, setActiveModelIdx, setCounter } = useApp();
+  const { config, showToast, setActiveModelIdx, setCounter, preferredModelIdx } = useApp();
   const [loading, setLoading] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -34,6 +34,8 @@ export function useGemini() {
         showToast('Inserisci prima la tua API Key nelle impostazioni.', 'error');
         return '';
       }
+      // Set the preferred starting model before each call
+      setPreferredModelIdx(preferredModelIdx);
       setLoading(true);
       startTimer();
       try {
@@ -59,7 +61,7 @@ export function useGemini() {
         stopTimer();
       }
     },
-    [config.apiKey, showToast, setActiveModelIdx, setCounter, startTimer, stopTimer],
+    [config.apiKey, preferredModelIdx, showToast, setActiveModelIdx, setCounter, startTimer, stopTimer],
   );
 
   return { loading, elapsed, run };

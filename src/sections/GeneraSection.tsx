@@ -40,14 +40,32 @@ function FieldsForType({
 
   switch (typeId) {
     case 'risultati_ieri':
+      return (
+        <div className="space-y-3">
+          <div>
+            <p className="text-[10px] text-[var(--text3)] uppercase tracking-widest mb-2">VIP Room</p>
+            <div className="grid grid-cols-3 gap-3">
+              <Field label="Pips VIP"    name="vip_pips"    value={fields.vip_pips    ?? ''} onChange={setField} placeholder="85" />
+              <Field label="Ops VIP"     name="vip_trades"  value={fields.vip_trades  ?? ''} onChange={setField} placeholder="5" />
+              <Field label="Win Rate VIP" name="vip_winrate" value={fields.vip_winrate ?? ''} onChange={setField} placeholder="80%" />
+            </div>
+          </div>
+          <div>
+            <p className="text-[10px] text-[var(--text3)] uppercase tracking-widest mb-2">CopyTrading</p>
+            <div className="grid grid-cols-3 gap-3">
+              <Field label="Pips Copy"   name="copy_pips"   value={fields.copy_pips  ?? ''} onChange={setField} placeholder="72" />
+              <Field label="Ops Copy"    name="copy_trades" value={fields.copy_trades ?? ''} onChange={setField} placeholder="4" />
+              <Field label="Performance" name="copy_perf"   value={fields.copy_perf  ?? ''} onChange={setField} placeholder="+3.2%" />
+            </div>
+          </div>
+        </div>
+      );
+
     case 'primi_risultati':
       return (
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          <Field label="Pips Totali" name="pips"    value={fields.pips    ?? ''} onChange={setField} placeholder="85" />
-          <Field label="Operazioni" name="trades"   value={fields.trades  ?? ''} onChange={setField} placeholder="5" />
-          {typeId === 'risultati_ieri' && (
-            <Field label="Win Rate" name="winrate"  value={fields.winrate ?? ''} onChange={setField} placeholder="80%" />
-          )}
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Pips" name="pips"   value={fields.pips   ?? ''} onChange={setField} placeholder="40" />
+          <Field label="Operazioni" name="trades" value={fields.trades ?? ''} onChange={setField} placeholder="3" />
         </div>
       );
 
