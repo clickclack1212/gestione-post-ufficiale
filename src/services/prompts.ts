@@ -815,6 +815,53 @@ ${text}
 Rispondi SOLO con la traduzione, nient'altro.`;
 }
 
+// ── ANALISI XAUUSD PROMPT ──────────────────────────────────────────────────
+export function buildAnalisiPrompt(
+  rawAnalysis: string,
+  cfg: Config,
+  tone: Tone,
+  timeframe: string,
+  note: string,
+): string {
+  const lIT = getLinkIT(cfg);
+  const lEN = getLinkEN(cfg);
+  const trader = cfg.traderName || 'Il Trader';
+  const date = todayItalian();
+
+  return `Sei il gestore del canale Telegram XAUUSD di ${trader}. Data: ${date}.
+
+Hai trovato questa analisi su XAUUSD:
+
+"""
+${rawAnalysis}
+"""
+
+${timeframe ? 'Timeframe di riferimento: ' + timeframe : ''}
+${note ? 'Tue note / contesto aggiuntivo: ' + note : ''}
+
+COMPITO: Riscrivi questa analisi come post Telegram professionale per il tuo canale XAUUSD, con il tuo stile e il tuo brand.
+
+REGOLE FONDAMENTALI:
+- Mantieni TUTTI i livelli tecnici, le direzioni e i target presenti nell'analisi originale — non inventare dati nuovi
+- Aggiungi il tuo angolo personale: commento sul setup, cosa rende questo livello interessante, come gestirlo
+- Chiudi con: "Chi è nella Sala VIP riceve il setup operativo preciso nel momento in cui il prezzo si attiva."
+- Output = SOLO il testo del messaggio — zero prefissi, zero metadati, zero etichette
+- Prima versione italiana COMPLETA con CTA, poi ESATTAMENTE questa riga: ──────────────, poi versione inglese COMPLETA con CTA
+- NON usare asterischi (*)
+
+${toneInstructions(tone)}
+
+CTA ITALIANA (alla fine della versione IT, link su riga nuova):
+👉 CLICCA QUI PER [TESTO VARIABILE]:
+${lIT}
+
+CTA INGLESE (alla fine della versione EN, link su riga nuova):
+👉 CLICK HERE TO [VARIABLE TEXT]:
+${lEN}
+
+Varia il testo CTA ogni volta: "ACCEDERE AL VIP", "RICEVERE IL SEGNALE OPERATIVO", "COPIARE LA GESTIONE IN AUTOMATICO", "ENTRARE NELLA SALA VIP", "REPLICARE L'ANALISI IN TEMPO REALE" ecc.`;
+}
+
 // ── CALENDAR PARSE PROMPT ──────────────────────────────────────────────────
 export function buildCalendarParsePrompt(rawText: string, dateLabel: string): string {
   return `Sei un esperto di mercati finanziari. Ti fornisco del testo grezzo estratto dalla pagina del calendario economico di ForexFactory (o simile).
