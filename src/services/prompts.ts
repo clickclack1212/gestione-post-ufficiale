@@ -1129,3 +1129,142 @@ CTA inglese:
 👉 CLICK HERE TO [VARIABLE TEXT]:
 ${lEN}`;
 }
+
+// ── CALENDARIO RISULTATI V1 — Autorità e Trasparenza ─────────────────────────
+export function buildCalRisultatiV1Prompt(cfg: Config, tone: Tone, notes: string): string {
+  const lIT = getLinkIT(cfg);
+  const lEN = getLinkEN(cfg);
+  const trader = cfg.traderName || 'Il Trader';
+  const date = todayItalian();
+  return `Sei il braccio destro del trader ${trader} sul canale Telegram XAUUSD. Data: ${date}.
+
+HAI UNO SCREENSHOT DI UN CALENDARIO DI TRADING RISULTATI ALLEGATO. Analizzalo con cura prima di scrivere — estrai tutti i dati numerici visibili (pips, %, operazioni, win rate, equity curve se presente).
+
+${notes ? 'Istruzioni aggiuntive: ' + notes : ''}
+
+COMPITO — Versione "AUTORITÀ E TRASPARENZA":
+Costruisci un post che racconta i risultati in modo onesto, professionale e autorevole. L'obiettivo è la fiducia a lungo termine — non il clickbait.
+
+STRUTTURA OBBLIGATORIA:
+🏛️ Titolo autorevole (es. "Report Risultati — [periodo visibile nello screenshot]")
+
+Apri con il dato principale — Total PnL o il rendimento complessivo del periodo visibile:
+→ Formula: "Periodo: [X settimane/mesi]. Risultato netto: +[X] pips / +[X]%. Win rate: [X]%."
+
+Breakdown dettagliato (usa i dati reali dallo screenshot):
+→ Operazioni totali: X
+→ Operazioni positive: X (Win Rate: X%)
+→ Giornata migliore: [data se visibile] — +X pips / +X%
+→ Giornata peggiore: [data se visibile] — -X pips (gestita entro lo stop loss predefinito)
+
+Paragrafo sulla GESTIONE DEL RISCHIO (obbligatorio — è il differenziatore):
+"Le giornate negative esistono nel trading professionale — non le nascondiamo. Quello che conta è come le gestiamo: ogni operazione ha uno Stop Loss predefinito, nessuna posizione viene tenuta a rischio incontrollato."
+
+Chiudi con il VALORE del CopyTrading:
+"Questi sono i numeri che i nostri copier hanno replicato automaticamente — senza studiare grafici, senza stare davanti allo schermo."
+
+CTA alla Sala VIP / CopyTrading
+
+TONO: professionale, diretto, da report istituzionale — ZERO superlativi vuoti, ZERO "incredibile" o "mai visto". I dati parlano da soli.
+ZERO asterischi. Prima versione IT completa, poi ──────────────, poi versione EN.
+
+CTA italiana:
+👉 CLICCA QUI PER [TESTO VARIABILE]:
+${lIT}
+
+CTA inglese:
+👉 CLICK HERE TO [VARIABLE TEXT]:
+${lEN}`;
+}
+
+// ── CALENDARIO RISULTATI V2 — Hype / FOMO ────────────────────────────────────
+export function buildCalRisultatiV2Prompt(cfg: Config, tone: Tone, notes: string): string {
+  const lIT = getLinkIT(cfg);
+  const lEN = getLinkEN(cfg);
+  const trader = cfg.traderName || 'Il Trader';
+  const date = todayItalian();
+  return `Sei il braccio destro del trader ${trader} sul canale Telegram XAUUSD. Data: ${date}.
+
+HAI UNO SCREENSHOT DI UN CALENDARIO DI TRADING RISULTATI ALLEGATO. Analizzalo prima di scrivere — estrai il dato più forte visibile: la settimana migliore, il giorno con il massimo profitto, il win rate più alto.
+
+${notes ? 'Istruzioni aggiuntive: ' + notes : ''}
+
+COMPITO — Versione "HYPE / FOMO":
+Costruisci un post che crea desiderio di partecipare — ottimistico, energico, orientato all'azione immediata. Punta sulla migliore prestazione del periodo visibile.
+
+STRUTTURA OBBLIGATORIA:
+🚀 Titolo ad alto impatto — usa il dato migliore come aggancio (es. "Questa settimana: +[X]% su XAUUSD")
+
+Apri con il dato record visibile — niente premesse, vai dritto al numero:
+→ "Settimana record: +[X] pips / +[X]% — tutto su XAUUSD."
+→ oppure: "Ieri: [X] operazioni, [X] chiuse in profitto. Giornata da manuale."
+
+Crea il contrasto FOMO:
+"Mentre molti guardavano i grafici senza sapere cosa fare, i nostri copier hanno incassato [dato] in automatico — senza muovere un dito."
+
+Racconta 1-2 operazioni specifiche se visibili nello screenshot (con risultato concreto):
+→ "Operazione BUY aperta a [X] — chiusa a +[Y] pips. Piano perfetto, eseguito."
+
+Urgenza psicologica:
+"I posti in CopyTrading sono limitati — il sistema di allocazione del broker prevede un cap sui copier attivi."
+
+CTA forte, diretta, con senso di scarsità
+
+TONO: energico, emozionale, da venditore di alto livello — usa emoji strategiche 🔥💰🚀📈. Frasi brevi, ritmo veloce. Usa i dati reali dallo screenshot.
+ZERO asterischi. Prima versione IT, poi ──────────────, poi versione EN.
+
+CTA italiana:
+👉 CLICCA QUI PER [TESTO VARIABILE]:
+${lIT}
+
+CTA inglese:
+👉 CLICK HERE TO [VARIABLE TEXT]:
+${lEN}`;
+}
+
+// ── CALENDARIO RISULTATI V3 — Report Internazionale ──────────────────────────
+export function buildCalRisultatiV3Prompt(cfg: Config, tone: Tone, notes: string): string {
+  const lIT = getLinkIT(cfg);
+  const lEN = getLinkEN(cfg);
+  const trader = cfg.traderName || 'Il Trader';
+  const date = todayItalian();
+  return `Sei il braccio destro del trader ${trader} sul canale Telegram XAUUSD. Data: ${date}.
+
+HAI UNO SCREENSHOT DI UN CALENDARIO DI TRADING RISULTATI ALLEGATO. Analizzalo prima di scrivere — estrai tutti i dati numerici: Total PnL, Best Week, Win Rate, numero operazioni.
+
+${notes ? 'Istruzioni aggiuntive: ' + notes : ''}
+
+COMPITO — Versione "REPORT INTERNAZIONALE":
+Scrivi un post in stile report istituzionale — pulito, schematico, leggibile su mobile. La versione EN sarà la più importante — scritta come un vero performance report.
+
+STRUTTURA OBBLIGATORIA:
+📊 Titolo report (es. "XAUUSD Performance Report — [periodo]")
+
+SEZIONE DATI — formato leggibile su Telegram:
+→ Period: [X weeks / X months]
+→ Net Result: +X pips / +X%
+→ Total Trades: X
+→ Win Rate: X%
+→ Best Week: +X pips / +X%
+→ Worst Week: -X pips (max drawdown controlled)
+→ Avg. Daily: +X pips
+
+SEZIONE METODOLOGIA (2-3 righe max):
+"Strategy: XAUUSD intraday & swing | Risk per trade: max 1-2% | All positions managed with predefined SL/TP."
+
+SEZIONE COPYTRADING:
+"All results above have been replicated automatically by our active copiers — zero screen time, zero manual execution required."
+
+CTA professionale
+
+TONO: istituzionale, da report di asset management. Minimal emoji (solo 📊 e 📈). NIENTE esclamazioni, NIENTE hype. I numeri parlano da soli.
+ZERO asterischi. Prima versione IT completa, poi ──────────────, poi versione EN (EN è la versione principale per questo stile).
+
+CTA italiana:
+👉 CLICCA QUI PER [TESTO VARIABILE]:
+${lIT}
+
+CTA inglese:
+👉 CLICK HERE TO [VARIABLE TEXT]:
+${lEN}`;
+}

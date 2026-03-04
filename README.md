@@ -89,8 +89,10 @@ Generazione di singoli messaggi in 12 tipologie:
 | Aggiornamento Trade | Live | Situazione, Pips, Note |
 | Chiusura Giornata | 17:00 | — |
 | Engagement | Varie | — |
-| Primi Risultati | Mattina | Pips, Operazioni |
-| Primi Risultati CopyTrading | Mattina | Pips/Profitto, Ops, Orario, Contesto |
+| **Risultati Sala VIP** | Live | 3 sub-stati: *Primi Risultati* / *Durante* / *Conclusi* — pips, ops, win rate |
+| **Risultati CopyTrading** | Live | 3 sub-stati: *Primi Risultati* / *Durante* / *Conclusi* — pips, ops, performance % |
+
+I tipi **Risultati Sala VIP** e **Risultati CopyTrading** hanno un selettore a 3 stadi (Primi Risultati / Durante / Conclusi) con prompt e campi specifici per ogni momento della sessione live.
 
 Ogni tipo genera un post bilingue IT+EN, visualizzato in `BilingualResult` con tab e pulsanti copia singola o bilingue.
 
@@ -168,34 +170,61 @@ Full funnel senza segnali free. Risultati, storytelling, social proof, Q&A obiez
 
 ---
 
-### Tab 3 — Calendario Economico
+### Tab 3 — Calendario
+
+Due modalità accessibili tramite toggle nella sezione:
+
+#### 3a — Calendario Economico
 
 Analisi AI da screenshot del calendario economico (ForexFactory, Investing.com, ecc.).
 
-**Flusso:**
-1. Carica uno screenshot del calendario
-2. Aggiungi note aggiuntive opzionali (geopolitica, eventi speciali)
-3. Seleziona il tono
-4. Clicca "Genera 3 Versioni"
+**Flusso:** carica screenshot → note opzionali → tono → "Genera 3 Versioni"
 
 Le 3 versioni vengono generate in sequenza e appaiono progressivamente:
 
 | Versione | Focus | Formato |
 |----------|-------|---------|
 | 🚨 **Market Mover** | Evento/cartella rossa principale, perché muove il prezzo, allerta urgente | Tono allerta, CTA Sala VIP |
-| 📊 **Analisi Macro & Tecnica** | Timeline fasi giornata, correlazioni dati, gestione rischio | Strutturato per fasi (mattina/pomeriggio/notte) |
-| ⚡ **Flash Report** | Riepilogo compatto con icone impatto 🔴🟠🟡, sentimento giornata | Massima leggibilità mobile Telegram |
+| 📊 **Analisi Macro & Tecnica** | Timeline fasi giornata (🌅🌇🌙), correlazioni dati, gestione rischio | Strutturato per fasi orarie |
+| ⚡ **Flash Report** | Riepilogo compatto con icone impatto 🔴🟠🟡, mood Gold finale | Massima leggibilità mobile Telegram |
 
 Ogni versione è bilingue IT+EN.
+
+#### 3b — Calendario Risultati
+
+Analisi AI da screenshot del calendario dei tuoi risultati trading (equity curve, pips giornalieri, win rate).
+
+**Flusso:** carica screenshot risultati → note/istruzioni opzionali → tono → "Genera 3 Strategie"
+
+Le 3 strategie vengono generate in sequenza e appaiono progressivamente:
+
+| Strategia | Focus | Tono |
+|-----------|-------|------|
+| 🏛️ **Autorità & Trasparenza** | Total PnL + win rate, spiega le giornate negative come risk management controllato, breakdown dettagliato | Istituzionale, fiducia a lungo termine |
+| 🚀 **Hype / FOMO** | Cherrypick del dato migliore (settimana/giorno record), contrasto FOMO, urgenza CopyTrading | Energico, 🔥💰🚀, frasi brevi |
+| 🌍 **Report Internazionale** | Formato tabellare pulito, metodologia, Total PnL + Best Week | Istituzionale, EN come versione principale |
+
+Ogni strategia è bilingue IT+EN.
 
 ---
 
 ### Tab 4 — Ottimizza Post
 
-Incolla un post esistente e ottienilo riscritto con:
-- Lingua migliorata e più coinvolgente
-- Mantenimento del messaggio originale
-- Adattamento al tono selezionato
+Due pannelli selezionabili tramite toggle:
+
+#### 4a — Ottimizza Messaggio
+
+Incolla un post esistente scritto di getto e ottienilo riscritto con:
+- 9 tipologie (Auto, Risultati, Segnale, Mindset, Social Proof, Notizie, CopyTrading, Chiusura, Engagement)
+- Tono selezionabile
+- Output bilingue IT+EN
+
+#### 4b — Ottimizza Analisi XAUUSD
+
+Incolla un'analisi XAUUSD trovata online o scritta in bozza — l'AI la riscrive come post Telegram branded:
+- Selezione timeframe (M5, M15, M30, H1, H4, D1, Multi-TF)
+- Mantiene tutti i livelli tecnici originali (entry, SL, TP, supporti, resistenze)
+- Note aggiuntive opzionali (contesto geopolitico, news, commento personale)
 - Output bilingue IT+EN
 
 ---
@@ -208,6 +237,8 @@ Traduzione di testi in 5 lingue:
 - 🇪🇸 Spagnolo
 - 🇫🇷 Francese
 - 🇩🇪 Tedesco
+
+La traduzione utilizza sempre **Gemini 2.5 Flash** (modello index 3) indipendentemente dal modello selezionato nell'header, garantendo velocità e qualità ottimali per le traduzioni.
 
 ---
 
@@ -264,6 +295,37 @@ Tutti i post vengono generati in italiano e inglese nella stessa chiamata API. I
 - **Copia IT** — copia solo la versione italiana
 - **Copia EN** — copia solo la versione inglese
 - **Copia Bilingue** — copia entrambe separate dal divisore
+
+---
+
+## Sistema Prompt AI
+
+Tutti i prompt sono costruiti in `src/services/prompts.ts` e seguono questi principi:
+
+### Diversità Obbligatoria
+Ogni prompt include il blocco **DIVERSITÀ OBBLIGATORIA** che impone:
+- 6 tecniche concrete di apertura (domanda provocatoria, dato numerico secco, contrasto emotivo, scena cinematografica, affermazione controcorrente, tempo reale)
+- Lista di frasi vietate ("Ancora una volta", "Come sempre", "Non perderti", "Sei pronto?", ecc.)
+- Istruzione esplicita: scrivere come un trader umano, non come un bot
+
+### Funzioni Prompt Disponibili
+
+| Funzione | Descrizione |
+|----------|-------------|
+| `buildPrompt(type, cfg, tone, fields, photo)` | Genera section — 12 tipi base + 6 sub-stati risultati |
+| `buildDailyPrompt(slot, ctx)` | Programmazione con segnale — 12 slot con `fields` specifici |
+| `buildNSPrompt(slot, ctx)` | Programmazione senza segnale — 10 slot con `fields` specifici |
+| `buildCalV1Prompt(cfg, tone, notes)` | Calendario Economico — Market Mover |
+| `buildCalV2Prompt(cfg, tone, notes)` | Calendario Economico — Analisi Macro & Tecnica |
+| `buildCalV3Prompt(cfg, tone, notes)` | Calendario Economico — Flash Report |
+| `buildCalRisultatiV1Prompt(cfg, tone, notes)` | Calendario Risultati — Autorità & Trasparenza |
+| `buildCalRisultatiV2Prompt(cfg, tone, notes)` | Calendario Risultati — Hype / FOMO |
+| `buildCalRisultatiV3Prompt(cfg, tone, notes)` | Calendario Risultati — Report Internazionale |
+| `buildAltPromptA/B(slot, ctx)` | Piani alternativi A e B |
+| `buildWkPrompt(slot, ctx)` | Piani weekend |
+| `buildOptPrompt(text, type, cfg, tone)` | Ottimizza Messaggio |
+| `buildAnalisiPrompt(rawAnalysis, cfg, tone, tf, note)` | Ottimizza Analisi XAUUSD |
+| `buildTrPrompt(text, from, to, cfg)` | Traduzione |
 
 ---
 
