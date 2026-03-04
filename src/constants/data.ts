@@ -23,9 +23,9 @@ export const TYPES: MessageType[] = [
   { id: 'risultati_clienti',    icon: 'Trophy',        name: 'Risultati Clienti',           time: 'Live',  shot: true  },
   { id: 'aggiornamento',        icon: 'RefreshCw',     name: 'Aggiornamento Trade',         time: 'Live',  shot: true  },
   { id: 'chiusura_giornata',    icon: 'Moon',          name: 'Chiusura Giornata',           time: '17:00', shot: true  },
-  { id: 'engagement',           icon: 'Lightbulb',     name: 'Engagement',                  time: 'Varie', shot: false },
-  { id: 'primi_risultati',      icon: 'Zap',           name: 'Primi Risultati',             time: 'Mat.',  shot: true  },
-  { id: 'primi_risultati_copy', icon: 'Rocket',        name: 'Primi Risultati\nCopyTrading',time: 'Mat.',  shot: true  },
+  { id: 'engagement',     icon: 'Lightbulb', name: 'Engagement',                 time: 'Varie', shot: false },
+  { id: 'vip_risultati',  icon: 'Diamond',   name: 'Risultati\nSala VIP',        time: 'Live',  shot: true  },
+  { id: 'copy_risultati', icon: 'Rocket',    name: 'Risultati\nCopyTrading',     time: 'Live',  shot: true  },
 ];
 
 export const DAILY_SLOTS: DailySlot[] = [

@@ -222,6 +222,40 @@ CTA forte — senso di finestra che si chiude, non paura ma logistica reale.`,
 4. SCARSITÀ CONCRETA: “Sto valutando di aprire qualche posto nel programma questa settimana.” Urgenza reale, non costruita. 2-3 vantaggi pratici di chi è già dentro.
 
 Tono autentico e umano in tutti i casi. CTA adeguata al tipo scelto.`,
+
+    // ── Risultati Sala VIP — Primi ───────────────────────────────────────────
+    vip_risultati_primi: base + `PRIME OPERAZIONI SALA VIP (mattina). Il VIP ha già operato: ${v('pips_vip') || '+65'} pips, ${v('trades_vip') || '3'} operazioni chiuse.
+Apri direttamente con il risultato — nessun preambolo. Racconta cosa significa: chi è nella Sala VIP aveva il piano dalla sera precedente, ha eseguito con metodo, e ha già il primo profitto della giornata. Screenshot allegato.
+Contrasto vivido: mentre altri cercavano ancora un'idea su dove il Gold stesse andando, i nostri erano già usciti con il target colpito.
+CTA con angolo "il secondo setup della giornata è già in analisi — se vuoi essere nel prossimo, sai dove trovarci."`,
+
+    vip_risultati_durante: base + `AGGIORNAMENTO LIVE SALA VIP. Il trade è ancora aperto — aggiornamento in tempo reale.
+Situazione: ${v('status_vip') || 'in profitto'} | Pips attuali: ${v('pips_vip') || '+40'} | Ops aperte: ${v('ops_vip') || '2'}${v('note_vip') ? ' | Note: ' + v('note_vip') : ''}
+Tono da aggiornamento diretto, come un messaggio inviato in quel preciso momento. Chi è nella Sala VIP vede tutto in tempo reale, segue ogni decisione del trader. Chi è fuori legge i numeri ma non sa il perché di ogni mossa.
+Una riga che fa capire cosa sta succedendo + cosa potrebbe succedere. CTA con urgenza soft.`,
+
+    vip_risultati_conclusi: base + `RECAP FINALE SALA VIP. Sessione chiusa — ecco com'è andata.
+Risultati: ${v('pips_vip') || '+120'} pips totali | ${v('trades_vip') || '5'} operazioni | Win rate ${v('winrate_vip') || '80%'}${v('note_vip') ? ' | ' + v('note_vip') : ''}
+Racconta la sessione come un debriefing con la tua squadra — cosa ha funzionato, com'è stata la gestione, qual è il bilancio del giorno. Non solo numeri: dai un senso a ciò che è successo. Screenshot allegato.
+Chiudi con prospettiva: questo non è un caso isolato, è il metodo che si ripete. CTA per chi non era dentro e vuole esserci alla prossima sessione.`,
+
+    // ── Risultati CopyTrading — Primi ────────────────────────────────────────
+    copy_risultati_primi: base + `PRIME OPERAZIONI COPYTRADING (mattina). Il copy ha già lavorato: ${v('pips_copy') || '+55'} pips, ${v('trades_copy') || '2'} operazioni chiuse ${v('ora_copy') || 'stamattina'}.${v('ctx_copy') ? ' ' + v('ctx_copy') + '.' : ''}
+Enfatizza il concetto di automatico puro: i copy-trader hanno questo profitto sul conto senza aver fatto assolutamente nulla. Erano al lavoro, nel traffico, a fare colazione, a dormire — il sistema ha operato per loro.
+Crea la scena vivida: immagina cosa stava facendo il copy-trader medio mentre il suo conto guadagnava. Screenshot allegato.
+Contrasto con il trading manuale: stesso mercato, stesso movimento, ma chi fa da solo ha gestito l'emotività — chi era nel copy ha solo ricevuto la notifica di profitto. CTA forte e diretta.`,
+
+    copy_risultati_durante: base + `AGGIORNAMENTO LIVE COPYTRADING. Il sistema è ancora in posizione — aggiornamento in tempo reale.
+Dati: ${v('pips_copy') || '+35'} pips attuali | ${v('ops_copy') || '1'} operazione in corso | Performance: ${v('perf_copy') || '+1.8%'}${v('note_copy') ? ' | Note: ' + v('note_copy') : ''}
+Tono live: il copy sta lavorando ora, automaticamente, mentre chi legge questo messaggio probabilmente sta facendo altro. Questo è il punto — i copy-trader non devono guardare il grafico, non devono prendere decisioni, non devono stressarsi. Il sistema gestisce tutto.
+Chi non è ancora nel copy sa cosa si sta perdendo in questo momento preciso. CTA con urgenza reale.`,
+
+    copy_risultati_conclusi: base + `RECAP SESSIONE COPYTRADING. Sessione chiusa — ecco i numeri finali.
+Risultati: ${v('pips_copy') || '+98'} pips totali | ${v('trades_copy') || '4'} operazioni | Performance: ${v('perf_copy') || '+3.5%'}${v('note_copy') ? ' | ' + v('note_copy') : ''}
+Racconta la sessione mettendo in prospettiva il concetto di rendita passiva: oggi il copy-trader medio ha guadagnato questo mentre svolgeva la sua normale giornata. Zero tempo dedicato, zero stress, zero grafici.
+Aggiungi la domanda che brucia: "Tu cosa stavi facendo mentre il tuo conto avrebbe potuto fare questo?" Non accusatorio — solo concreto. Screenshot allegato.
+CTA con angolo configurazione: "non ti chiedo di fare trading — ti chiedo di connettere il copy una volta e lasciarlo lavorare."`,
+
   };
 
     return map[type] || null;
