@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import { translateWithDeepL } from '../services/deepl';
-import { Globe, ArrowLeftRight, Clipboard, Copy, RotateCw, Zap } from '../components/Icon';
+import { useGemini } from '../hooks/useGemini';
+import { buildTrPrompt } from '../services/prompts';
+import { LANG_NAMES } from '../constants/data';
+import { Globe, ArrowLeftRight, Clipboard, Copy, RotateCw } from '../components/Icon';
 
 interface LangDef {
   code: string;
@@ -41,39 +43,30 @@ function LangPicker({
 }
 
 export function TraduciSection() {
+  const { loading, elapsed, run } = useGemini();
   const [fromLang, setFromLang] = useState('it');
   const [toLang, setToLang]     = useState('en');
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
 
   const from = getLang(fromLang);
   const to   = getLang(toLang);
 
   async function handleTranslate() {
     if (!inputText.trim()) return;
-    setLoading(true);
-    setError('');
-    setOutputText('');
-    try {
-      const result = await translateWithDeepL(inputText, fromLang, toLang);
-      setOutputText(result);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Errore sconosciuto');
-    } finally {
-      setLoading(false);
-    }
+    const prompt = buildTrPrompt(inputText, LANG_NAMES[fromLang], LANG_NAMES[toLang]);
+    // Force Gemini 2.5 Flash (index 3) per le traduzioni — stabile e veloce
+    const text = await run(prompt, 0.3, null, 3);
+    if (text) setOutputText(text);
   }
 
   function swapLangs() {
     const prevFrom = fromLang;
-    const prevTo   = toLang;
+    const prevTo = toLang;
     setFromLang(prevTo);
     setToLang(prevFrom);
     setInputText(outputText);
     setOutputText(inputText);
-    setError('');
   }
 
   async function pasteFromClipboard() {
@@ -81,7 +74,7 @@ export function TraduciSection() {
       const text = await navigator.clipboard.readText();
       if (text) setInputText(text);
     } catch {
-      // ignore
+      // fallback: focus textarea
     }
   }
 
@@ -90,11 +83,6 @@ export function TraduciSection() {
       <div className="card">
         <div className="card-title flex items-center gap-1.5">
           <Globe size={14} /> Traduzione Messaggio
-          {/* Badge DeepL */}
-          <span className="ml-auto flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold
-            bg-[rgba(0,169,224,0.12)] border border-[rgba(0,169,224,0.3)] text-[#00a9e0]">
-            <Zap size={10} /> DeepL
-          </span>
         </div>
 
         {/* Language selectors */}
@@ -156,13 +144,6 @@ export function TraduciSection() {
           />
         </div>
 
-        {/* Error */}
-        {error && (
-          <p className="text-red-400 text-sm mt-2 p-2 rounded bg-red-950/30 border border-red-800/40">
-            ⚠️ {error}
-          </p>
-        )}
-
         <button
           className="btn-generate w-full mt-3"
           onClick={handleTranslate}
@@ -170,7 +151,7 @@ export function TraduciSection() {
         >
           {loading ? (
             <span className="flex items-center justify-center gap-2">
-              <span className="spinner" /> Traduzione in corso...
+              <span className="spinner" /> Traducendo... {elapsed}s
             </span>
           ) : (
             <span className="flex items-center gap-2 justify-center">
@@ -190,7 +171,6 @@ export function TraduciSection() {
               <span className="text-xs font-semibold text-[var(--gold)] uppercase tracking-widest">
                 Traduzione in {to.label}
               </span>
-              <span className="text-[10px] text-[#00a9e0] font-semibold ml-1">· DeepL</span>
             </div>
             <div className="flex gap-2">
               <button

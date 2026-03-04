@@ -101,14 +101,29 @@ CTA INGLESE (alla fine della versione EN, link su riga nuova):
 👉 CLICK HERE TO [VARIABLE TEXT]:
 ${lEN}
 
-Varia il testo della CTA ogni volta: "UNIRTI AL COPYTRADING", "ACCEDERE ALLA SALA VIP", "COPIARE I SEGNALI IN AUTOMATICO", "REPLICARE I NOSTRI RISULTATI", "ENTRARE NEL PROGRAMMA" ecc.
+Varia il testo della CTA ogni volta — parole diverse, struttura diversa ogni messaggio. Esempi: "UNIRTI AL COPYTRADING", "ACCEDERE ALLA SALA VIP", "COPIARE I SEGNALI IN AUTOMATICO", "REPLICARE I NOSTRI RISULTATI", "CONFIGURARE IL TUO COPY OGGI", "UNIRTI A CHI INCASSA GIÀ", "SMETTERE DI GUARDARE E INIZIARE", "scrivimi VIP / GOLD / COPY / START in DM" ecc. Non usare mai la stessa CTA due volte di fila.
 
-DIVERSITÀ OBBLIGATORIA: non usare mai le stesse parole di apertura due volte di fila. Varia l'incipit — puoi partire da: un dato numerico secco, una domanda diretta, un'esclamazione corta, un contrasto Inside/Outside, un fatto tecnico sul Gold, una frase provocatoria. MAI iniziare con "Oggi", "Ieri", "Buongiorno" come prima parola (eccetto il messaggio buongiorno dedicato). Ogni messaggio deve sentirsi UNICO — stop al pollice, non la routine.
+DIVERSITÀ OBBLIGATORIA — REGOLA INVIOLABILE:
+Ogni messaggio deve sembrare scritto da una persona reale in un momento specifico, non generato da un bot. Varia apertura, struttura interna e ritmo.
+
+Tecniche di apertura — scegli una diversa ogni volta:
+→ Numero secco senza preamboli: "+127 pips. Stamattina. Prima delle 10."
+→ Contrasto immediato dentro/fuori: "Chi era dentro: +85 pips. Chi era fuori: 0 pips."
+→ Domanda che brucia: "Ti sei mai chiesto quanto perdi ogni giorno restando a guardare?"
+→ Scena vivida: "Questa mattina, mentre eri al lavoro, il copier ha già chiuso 3 trade."
+→ Fatto tecnico diretto: "Il Gold ha toccato 2347 e rimbalzato esattamente dove l'analisi indicava."
+→ Battuta secca da trader: "Setup confermato." / "Segnale attivo." / "I numeri parlano da soli."
+
+FRASI ASSOLUTAMENTE VIETATE (non usarle mai):
+"Ancora una volta", "Come sempre", "Non perderti questa occasione", "Opportunità imperdibile", "Sei pronto?", "Che giornata!", "Continuiamo così", "Non aspettare", "Agisci ora" come frase a sé.
+MAI iniziare il messaggio con le parole "Oggi", "Ieri", "Buongiorno" (eccetto il messaggio dedicato al Buongiorno). Zero aperture robotiche, zero frasi di riempimento.
+
+Stile: scrivi come un trader esperto che parla alla sua community — diretto, concreto, autentico. Il messaggio deve sembrare scritto da una persona reale in quel momento preciso.
 
 ESEMPIO DI OUTPUT ATTESO ✅:
-Ieri +127 pips su XAUUSD. 📈
++127 pips su XAUUSD. 📈
 
-3 operazioni, 3 chiuse in profitto.
+3 operazioni, 3 chiuse in profitto. La mattinata è andata esattamente come previsto.
 
 Chi era nel CopyTrading lo ha incassato senza aprire un grafico. 🥇
 
@@ -119,9 +134,9 @@ ${lIT}
 
 ──────────────
 
-Yesterday +127 pips on XAUUSD. 📈
++127 pips on XAUUSD. 📈
 
-3 trades, all closed in profit.
+3 trades, all closed in profit. The morning played out exactly as forecast.
 
 CopyTrading members collected it automatically. 🥇
 
@@ -145,68 +160,71 @@ export function buildPrompt(
   const v = (k: string) => fields[k] || '';
 
   const map: Record<string, string> = {
-    buongiorno: base + `Scrivi il messaggio di buongiorno per aprire la giornata sul canale (intorno alle 7:00).
-Inizia con "Buongiorno Traders! 👋" — è l'unico messaggio della giornata che usa questo saluto.
-Tono caldo e motivante, come chi apre la giornata con energia genuina. Fai un accenno a cosa succederà oggi sul canale (segnale gratuito, analisi XAUUSD, aggiornamenti dalla Sala VIP). Chiudi con la CTA al CopyTrading.`,
+    buongiorno: base + `BUONGIORNO (07:00) — l’unico messaggio della giornata che inizia con “Buongiorno Traders! 👋”.
+Tono caldo e carico di energia genuina, come chi apre la giornata con chiarezza sul cosa fare. Anticipa brevemente cosa succederà oggi sul canale (segnale gratuito, analisi XAUUSD, aggiornamenti dalla Sala VIP). Fai sentire chi legge che fa parte di qualcosa, non che sta guardando da fuori.
+Chiudi con CTA al CopyTrading — angolo: “chi è già configurato non deve fare nulla, parte tutto in automatico stamattina.”`,
 
-    risultati_ieri: base + `Scrivi il messaggio per condividere i risultati di ieri su XAUUSD.
+    risultati_ieri: base + `RISULTATI DI IERI (08:00). Apri con il numero più forte — non elencare, racconta.
 VIP Room (operazioni manuali gestite dal trader): ${v('vip_pips') || '85'} pips, ${v('vip_trades') || '5'} operazioni, win rate ${v('vip_winrate') || '80%'}.
-CopyTrading (automatico, senza intervento): ${v('copy_pips') || '72'} pips, ${v('copy_trades') || '4'} operazioni, performance ${v('copy_perf') || '+3.2%'}.
-Presenta i due servizi in modo distinto ma complementare — VIP Room per chi segue in prima persona, CopyTrading per chi incassa senza fare nulla. Menziona che lo screenshot è allegato. Chiudi con CTA urgente per chi non è ancora dentro.`,
+CopyTrading (automatico, zero intervento): ${v('copy_pips') || '72'} pips, ${v('copy_trades') || '4'} operazioni, performance ${v('copy_perf') || '+3.2%'}.
+Presenta i due servizi come percorsi complementari, non alternativi — VIP Room per chi vuole imparare e seguire ogni analisi, CopyTrading per chi incassa mentre fa altro. Menziona che lo screenshot è allegato.
+Chiudi con una riga tagliente per chi non è ancora dentro — non aggressiva, ma concreta: ogni giorno senza entrare è un giorno di profitti regalati.`,
 
-    primi_risultati: base + `Scrivi un aggiornamento live sui primi risultati di oggi su XAUUSD.
+    primi_risultati: base + `PRIMI RISULTATI MATTUTINI (09:00). La giornata è appena iniziata e i numeri sono già chiari.
 Dati: ${v('pips') || '40'} pips, ${v('trades') || '3'} operazioni già chiuse.
-Tono entusiasta ma concreto — la giornata è appena iniziata. Chi è nel CopyTrading lo ha già sul conto. CTA per chi vuole entrare.`,
+Apri direttamente con il dato — nessun preambolo. Poi aggiungi una riga che fa capire cosa significa per chi è nel CopyTrading (ha già quel profitto sul conto, senza aver fatto nulla). Contrasto netto con chi è ancora fuori. CTA con senso di urgenza reale, non artificiale.`,
 
-    primi_risultati_copy: base + `Scrivi un messaggio che annuncia i primi profitti del CopyTrading di oggi su XAUUSD.
-Dati: ${v('pips_copy') || '+55'} pips / profitto, ${v('trades_copy') || '2'} operazioni chiuse ${v('ora_copy') ? v('ora_copy') : 'stamattina'}.${v('ctx_copy') ? ' Contesto: ' + v('ctx_copy') + '.' : ''}
-Il focus TOTALE è sul CopyTrading automatico: i nostri copy-trader hanno già incassato questo mentre erano a lavoro / dormivano / facevano colazione — senza aprire un grafico, senza prendere decisioni, senza stress.
-Crea forte contrasto con chi trading ancora da solo (stress, errori, emotività). Fai sentire che chi non è nel copy sta regalando soldi al mercato ogni mattina.
-Screenshot allegato con i risultati. CTA urgente e diretta al CopyTrading.`,
+    primi_risultati_copy: base + `PRIMI RISULTATI COPYTRADING (09:00). Il CopyTrading ha già operato stamattina.
+Dati: ${v('pips_copy') || '+55'} pips / profitto, ${v('trades_copy') || '2'} operazioni chiuse ${v('ora_copy') || 'in mattinata'}.${v('ctx_copy') ? ' Contesto: ' + v('ctx_copy') + '.' : ''}
+Il focus è TOTALMENTE sul concetto di automatico: mentre i nostri copy-trader erano al lavoro, a fare colazione, nel traffico — il sistema lavorava per loro. Zero grafici, zero decisioni, zero stress.
+Crea contrasto concreto con chi fa trading manuale da solo (emotività, errori, ore davanti allo schermo). Fai sentire che ogni mattina senza copy è una mattina persa.
+Screenshot allegato. CTA urgente e diretta.`,
 
-    ready_segnale: base + `Scrivi il messaggio "ready" per avvisare che il segnale gratuito su XAUUSD sta per arrivare (intorno alle 9:30).
-Tono calmo e determinato, come chi ha già fatto l'analisi e sa cosa fare. Accenna che l'operazione è gratuita per tutti, ma chi vuole segnali ogni giorno e il CopyTrading automatico trova tutto nella Sala VIP. CTA.`,
+    ready_segnale: base + `READY SEGNALE (09:30). L’analisi è già fatta, il livello è identificato — il segnale gratuito su XAUUSD arriva a breve.
+Tono calmo e sicuro, da chi sa già cosa fare e aspetta solo il momento giusto. Breve accenno al contesto di mercato (senza rivelare il segnale). Aggiungi che nel VIP ci sono già altri setup avanzati rispetto a quello gratuito. CTA.`,
 
-    segnale_xauusd: base + `Scrivi il messaggio per pubblicare il segnale operativo su XAUUSD.
-Direzione: ${v('dir') || 'BUY'}
-Entry: ${v('entry') || '2345.00'} | Stop Loss: ${v('sl') || '2335.00'}
-TP1: ${v('tp1') || '2355'} | TP2: ${v('tp2') || '2365'} | TP3: ${v('tp3') || '2375'}
-Presenta i dati in modo chiaro e leggibile con le emoji giuste. Aggiungi 1-2 righe di contesto semplice sul Gold. Breve disclaimer sul rischio. CTA al CopyTrading automatico.`,
+    segnale_xauusd: base + `SEGNALE XAUUSD (10:00). Struttura con emoji, senza asterischi:
+📡 ${v('dir') || 'BUY'} XAUUSD
+📍 Entry: ${v('entry') || '2345.00'}
+🛑 Stop Loss: ${v('sl') || '2335.00'}
+🎯 TP1: ${v('tp1') || '2355'}${v('tp2') ? ' | TP2: ' + v('tp2') : ''}${v('tp3') ? ' | TP3: ' + v('tp3') : ''}
+Aggiungi 1-2 righe di contesto tecnico semplice (perché questa zona, cosa segnala il grafico). Breve disclaimer sul rischio (il trading comporta rischi, non è un servizio di investimento). Chiudi ricordando che chi è nel CopyTrading lo riceve in automatico senza fare nulla.`,
 
-    risultato_segnale: base + `Scrivi il messaggio per comunicare il risultato dell'operazione su XAUUSD.
-Esito: ${v('result') || 'WIN'} | Entry: ${v('entry') || '2345'} | Chiusura: ${v('exit') || '2360'} | Pips: ${v('pips') || '+45'}
-Se WIN: tono soddisfatto ma misurato, ricorda che chi è nel CopyTrading lo ha incassato in automatico.
-Se LOSS: onesto e professionale, il trading ha sempre i suoi rischi e il metodo si valuta nel lungo periodo.
-Se BREAK EVEN: chiusura in pareggio come scelta intelligente di gestione del rischio. CTA.`,
+    risultato_segnale: base + `RISULTATO SEGNALE. Esito: ${v('result') || 'WIN'} | Entry: ${v('entry') || '2345'} | Chiusura: ${v('exit') || '2360'} | Pips: ${v('pips') || '+45'}
+Se WIN → tono soddisfatto ma misurato, mai esaltato. “Il target è stato colpito esattamente come previsto.” Chi era nel CopyTrading lo ha incassato in automatico. Chi ha seguito il segnale manuale sa già com’è andata. CTA per chi non era ancora dentro.
+Se LOSS → trasparenza totale, professionalità. Il trading non è una scienza esatta, il metodo si valuta sul lungo periodo. Gestione del rischio, stop rispettato, nessun dramma. CTA: il prossimo setup è già in analisi.
+Se BREAK EVEN → chiusura in pareggio come decisione intelligente di gestione, non una resa. “Capitale protetto, si riparte.” CTA.`,
 
-    notizie_giorno: base + `Scrivi il messaggio di analisi notizie focalizzato esclusivamente su XAUUSD (Oro).
-${newsPhoto ? 'Ho allegato una foto con le notizie/il calendario economico di oggi — analizzala e usa solo le notizie che impattano direttamente il Gold.' : ''}
+    notizie_giorno: base + `ANALISI NOTIZIE XAUUSD (13:00). Focus esclusivo su cosa muove il Gold oggi.
+${newsPhoto ? 'SCREENSHOT CALENDARIO ALLEGATO — analizza ogni evento: identifica quelli con Cartella Rossa (High Impact), spiega la logica del prezzo (es. \"Se il CPI esce sopra le attese → Dollaro sale → Gold sotto pressione\"), indica gli orari esatti. Tratta i dati già usciti nelle ore precedenti come appena rilasciati e quelli futuri come prossimo obiettivo.' : ''}
 ${v('news') ? 'Note aggiuntive: ' + v('news') : ''}
-Spiega in modo semplice e chiaro cosa muove il Gold oggi (CPI, Fed, NFP, dollaro, geopolitica), dai una direzione probabile con emoji 🟢 🔴 🟡, e indica gli orari chiave da monitorare. Accenna che le analisi approfondite sono nella Sala VIP. CTA.`,
+Dai una direzione probabile con emoji 🟢 🔴 🟡 e spiega brevemente il ragionamento. Ricorda che l’analisi operativa approfondita e la gestione durante le news sono riservate alla Sala VIP. CTA.`,
 
-    risultati_clienti: base + `Scrivi il messaggio per mostrare i risultati dei nostri clienti/membri — c'è uno screenshot o una chat allegata.
-${v('clienti') ? 'Descrizione: ' + v('clienti') : 'Risultati positivi dai membri del CopyTrading e della Sala VIP'}
+    risultati_clienti: base + `RISULTATI CLIENTI (social proof con screenshot allegato).
+${v('clienti') ? 'Descrizione: ' + v('clienti') : 'Screenshot o chat di membri del CopyTrading e della Sala VIP con risultati reali'}
 ${v('periodo') ? 'Periodo: ' + v('periodo') : ''}
-Tono: fatti reali, niente esagerazioni. Mostra la differenza tra chi ha scelto il CopyTrading e chi invece è ancora a fare tutto da solo con lo stress quotidiano. CTA forte.`,
+Tono: fatti reali, zero esagerazioni. Questi non sono testimonial artefatti — sono persone normali che hanno scelto un metodo. Mostra la differenza concreta tra chi ha deciso di agire e chi aspetta ancora. Non elencare risultati — racconta cosa significa per chi li ha ottenuti. CTA forte ma credibile.`,
 
-    aggiornamento: base + `Scrivi un aggiornamento live sull'operazione XAUUSD in corso.
-Situazione attuale: ${v('status') || 'in profitto'} | Pips attuali: ${v('pips') || '+30'} ${v('comment') ? '| Note: ' + v('comment') : ''}
-Breve e diretto, come un aggiornamento in tempo reale. Chi è nel CopyTrading lo vede già sul proprio conto. CTA.`,
+    aggiornamento: base + `AGGIORNAMENTO LIVE TRADE (messaggio in tempo reale).
+Situazione: ${v('status') || 'in profitto'} | Pips attuali: ${v('pips') || '+30'}${v('comment') ? ' | Note: ' + v('comment') : ''}
+Breve, diretto, come un messaggio inviato in quel preciso momento. Chi è nel CopyTrading lo vede già sul proprio conto — aggiornamento sul loro profitto in tempo reale. Chi segue il canale vede i numeri crescere. Chi è fuori vede cosa si sta perdendo. Una sola riga CTA, non invadente.`,
 
-    chiusura_giornata: base + `Scrivi il messaggio di chiusura della giornata operativa su XAUUSD.
-Le operazioni del giorno si stanno chiudendo. Menziona che gli screenshot dei risultati dei clienti sono allegati. Parla dei vantaggi del CopyTrading (automatico, nessuna esperienza richiesta, budget accessibile, zero stress). CTA forte per chi vuole iniziare domani.`,
+    chiusura_giornata: base + `CHIUSURA GIORNATA (17:00 / fine sessione). Le operazioni del giorno si stanno chiudendo.
+Screenshot risultati clienti allegati. Racconta la giornata con 2-3 righe: com’è andata, cosa ha funzionato, qual è lo stato d’animo generale — non un elenco secco.
+Poi metti in prospettiva il CopyTrading: automatico, zero esperienza richiesta, accessibile con qualsiasi budget, zero stress. Chi entra stasera domani mattina parte già configurato.
+CTA forte — senso di finestra che si chiude, non paura ma logistica reale.`,
 
-    engagement: base + `Scrivi un messaggio di engagement per il canale. Scegli casualmente uno di questi 4 approcci e non usare mai lo stesso due volte di fila:
+    engagement: base + `MESSAGGIO DI ENGAGEMENT. Scegli uno di questi 4 angoli — mai lo stesso due volte di fila, mai robotico:
 
-1. TEASER ANALISI: crea curiosità sul prossimo segnale XAUUSD con domande retoriche e suspense genuina
-2. ANNUNCIO IN ARRIVO: comunica che un setup interessante sull'Oro è stato identificato, segnale in preparazione
-3. OCCHI SUL MERCATO: il team sta monitorando livelli chiave su XAUUSD, analisi riservata alla Sala VIP
-4. ULTIMI POSTI COPYTRADING: crea urgenza concreta per entrare nel programma, con 2-3 vantaggi pratici
+1. TEASER SETUP: “Sto guardando qualcosa su XAUUSD da qualche ora. Se il livello regge, ci sarà un’operazione.” Crea curiosità senza spoilerare. Fai sentire chi legge privilegiato ad essere sul canale.
+2. DOMANDA ALLA COMMUNITY: una domanda semplice e diretta sulla loro esperienza con il trading o con il Gold — coinvolge, genera risposte, costruisce relazione.
+3. OSSERVAZIONE DI MERCATO: un’osservazione tecnica interessante su XAUUSD in quel momento — prezzo, livello chiave, pattern. Tono da analista che condivide un pensiero, non da venditore.
+4. SCARSITÀ CONCRETA: “Sto valutando di aprire qualche posto nel programma questa settimana.” Urgenza reale, non costruita. 2-3 vantaggi pratici di chi è già dentro.
 
-Tono caldo e genuino, non meccanico. CTA.`,
+Tono autentico e umano in tutti i casi. CTA adeguata al tipo scelto.`,
   };
 
-  return map[type] || null;
+    return map[type] || null;
 }
 
 // ── DAILY PLAN PROMPT ──────────────────────────────────────────────────────
@@ -270,32 +288,35 @@ ${lEN}
 `;
 
   const prompts: Record<string, string> = {
-    d_buongiorno:      base + `BUONGIORNO (07:00). Inizia con "Buongiorno Traders 👋" — unico messaggio con questo saluto. Motivazione concreta legata al Gold di oggi, hype sul fatto che la giornata è piena di opportunità per chi è già dentro. Frasi corte, ritmo alto. CTA.`,
-    d_risultati_ieri:  base + `RISULTATI DI IERI (08:00). Presenta i risultati separati per i due servizi:
+    d_buongiorno:      base + `BUONGIORNO (07:00). Inizia con “Buongiorno Traders 👋” — unico messaggio della giornata con questo saluto. Energia genuina, non robotica. Anticipa la giornata: cosa succederà oggi sul canale, cosa ha già in mente il trader. Fai sentire chi legge parte di un gruppo, non spettatore. CTA al CopyTrading con angolo “già configurato = già pronto.”`,
+    d_risultati_ieri:  base + `RISULTATI DI IERI (08:00). Presenta i risultati separati per i due servizi — apri con il numero più impattante, non con un’introduzione.
 VIP Room (operazioni manuali): ${f('vip_pips') || '85'} pips, ${f('vip_trades') || '5'} operazioni, win rate ${f('vip_winrate') || '80%'}.
 CopyTrading (automatico): ${f('copy_pips') || '72'} pips, ${f('copy_trades') || '4'} operazioni, performance ${f('copy_perf') || '+3.2%'}.
-Screenshot allegato. Chi era nel CopyTrading ha incassato tutto in automatico mentre dormiva. CTA urgente per chi non è ancora dentro.`,
-    d_primi_risultati: base + `PRIMI RISULTATI DELLA MATTINA (09:00). Il copytrading è già attivo: ${f('pips') || '+40'} pips, ${f('trades') || '3'} operazioni chiuse. Screenshot risultati allegato. Contrasto netto: chi è dentro incassa, chi è fuori guarda. CTA con urgenza reale.`,
-    d_ready:           base + `READY SEGNALE (09:30). Segnale gratuito XAUUSD in arrivo a breve sul canale. Breve, determinato, crea attesa. Chi vuole continuità e segnali ogni giorno entra nel VIP. CTA.`,
-    d_segnale:         base + `SEGNALE XAUUSD (10:00). Senza asterischi, usa emoji per strutturare:
-📡 ${f('dir') || 'BUY'} | 📍 Entry: ${f('entry') || '2345.00'} | 🛑 SL: ${f('sl') || '2335.00'} | 🎯 TP1: ${f('tp1') || '2355'}${f('tp2') ? ' | TP2: ' + f('tp2') : ''}${f('tp3') ? ' | TP3: ' + f('tp3') : ''}
-1-2 righe contesto tecnico essenziale. Disclaimer rischio. CTA copytrading automatico per chi non vuole operare manualmente.`,
-    d_risultato_segn:  base + `RISULTATO SEGNALE (11:30). Esito: ${f('esito') || 'WIN'} | Pips: ${f('pips') || '+45'}. Il segnale gratuito pubblicato stamattina ha raggiunto il target. Screenshot allegato. Breve, diretto, fatti e numeri. Chi era nel VIP aveva già i target avanzati. CTA.`,
-    d_copy_live:       base + `RISULTATI ATTUALI COPYTRADING (12:00). Il copytrading continua a lavorare: ${f('copy_pips') || '+60'} pips live, ${f('copy_trades') || '4'} operazioni già chiuse oggi. Screenshot allegato. Automatico, senza fare nulla. CTA.`,
+Screenshot allegato. Racconta cosa significa per chi è dentro — non solo i numeri ma il fatto che mentre tutti dormivano il sistema lavorava. CTA tagliente: ogni giorno fuori è un giorno di profitti regalati.`,
+    d_primi_risultati: base + `PRIMI RISULTATI DELLA MATTINA (09:00). Apri direttamente con il dato: ${f('pips') || '+40'} pips, ${f('trades') || '3'} operazioni chiuse. Screenshot allegato. Una riga sul fatto che il CopyTrading ha già lavorato mentre i follower facevano altra cosa. Contrasto netto: chi è dentro incassa, chi è fuori guarda. CTA breve e diretta.`,
+    d_ready:           base + `READY SEGNALE (09:30). Il segnale gratuito su XAUUSD sta per arrivare. Tono calmo e sicuro — l’analisi è fatta, il livello è chiaro. Breve accenno al contesto di mercato senza spoilerare. Ricorda che nel VIP ci sono già altri setup, non solo quello gratuito. CTA.`,
+    d_segnale:         base + `SEGNALE XAUUSD (10:00). Struttura con emoji, zero asterischi:
+📡 ${f('dir') || 'BUY'} XAUUSD
+📍 Entry: ${f('entry') || '2345.00'}
+🛑 SL: ${f('sl') || '2335.00'}
+🎯 TP1: ${f('tp1') || '2355'}${f('tp2') ? ' | TP2: ' + f('tp2') : ''}${f('tp3') ? ' | TP3: ' + f('tp3') : ''}
+1-2 righe contesto tecnico essenziale (perché questa zona, cosa segnala). Breve disclaimer. CTA copytrading automatico per chi non vuole operare manualmente.`,
+    d_risultato_segn:  base + `RISULTATO SEGNALE (11:30). Esito: ${f('esito') || 'WIN'} | Pips: ${f('pips') || '+45'}. Screenshot allegato. Se WIN: diretto e soddisfatto, target colpito come previsto, chi era nel VIP aveva i target avanzati. Se LOSS: onesto e professionale, stop rispettato, il metodo si valuta nel lungo periodo. CTA con angolo diverso in base all’esito.`,
+    d_copy_live:       base + `RISULTATI ATTUALI COPYTRADING (12:00). Aggiornamento live: ${f('copy_pips') || '+60'} pips, ${f('copy_trades') || '4'} operazioni chiuse oggi. Screenshot allegato. Automatico, senza che i copy-trader abbiano fatto nulla. Racconta la scena: mentre qualcuno guardava i grafici con stress, il loro conto cresceva da solo. CTA.`,
     d_notizie:         base + `CALENDARIO ECONOMICO (13:00). Focus ESCLUSIVO su cosa muove XAUUSD oggi.
-${hasPhoto ? 'FOTO ALLEGATA — analizza il calendario economico nello screenshot ed estrai tutti gli eventi rilevanti per il Gold (Fed, CPI, NFP, PMI, dati lavoro USA, geopolitica).' : ''}
+${hasPhoto ? 'FOTO CALENDARIO ALLEGATA — analizza ogni evento: identifica le Cartelle Rosse (High Impact), spiega la logica causa→effetto (es. NFP sopra attese → USD forte → Gold giù), indica orari esatti. Tratta i dati già passati come \"appena usciti\" e quelli futuri come \"prossimo obiettivo da monitorare\".' : ''}
 ${f('note') ? 'NOTE: ' + f('note') : news ? 'NOTIZIE / NOTE: ' + news : ''}
 ${calEvents ? 'EVENTI MACRO OGGI (ForexFactory):\n' + calEvents : ''}
-Direzione probabile Gold (🟢 rialzista / 🔴 ribassista / 🟡 neutro), orari chiave, livelli da monitorare. Analisi dettagliata disponibile nel VIP. CTA.`,
+Direzione probabile Gold (🟢 rialzista / 🔴 ribassista / 🟡 neutro), orari chiave, cosa monitorare. L’analisi operativa è esclusiva VIP. CTA.`,
     d_copy_postnews:   base + `RISULTATI COPYTRADING POST NEWS (15:00). Le notizie macro sono uscite.
-${f('news_ref') ? 'Notizia di riferimento: ' + f('news_ref') : news ? 'Notizie: ' + news : ''}
+${f('news_ref') ? 'Notizia: ' + f('news_ref') : news ? 'Notizie: ' + news : ''}
 ${f('pips_postnews') ? 'Pips generati: ' + f('pips_postnews') : ''}
-Mostra come ha reagito XAUUSD e i profitti generati in automatico dal copytrading durante la volatilità. Screenshot allegato. Chi non era posizionato si è perso tutto. CTA forte.`,
-    d_educativo:       base + `POST EDUCATIVO (17:00).${f('topic') ? ' Tema: ' + f('topic') + '.' : ''} Breve lezione pratica su XAUUSD — un concetto tecnico, una strategia, un errore comune da evitare. Tono da mentore, non da professore. Conclude con CTA: chi vuole applicarlo subito entra nel VIP o nel CopyTrading.`,
-    d_recensioni:      base + `RECENSIONI DEL GIORNO + RECAP (19:00).${f('nota') ? ' Nota: ' + f('nota') + '.' : ''} Mostra le testimonianze / messaggi positivi ricevuti oggi dai clienti. Screenshot allegato. Social proof forte — persone reali, risultati reali. Breve recap numerico della giornata. CTA.`,
-    d_chiusura:        base + `CHIUSURA (21:00). Messaggio di chiusura giornata — bilancio sintetico, tono motivante per domani. Chi è già dentro sa cosa ha guadagnato oggi. Chi è fuori sa cosa si è perso. CTA finale.`,
+Racconta come ha reagito XAUUSD e i profitti generati in automatico durante la volatilità. Chi non era posizionato si è perso la finestra. Screenshot allegato. CTA forte.`,
+    d_educativo:       base + `POST EDUCATIVO (17:00).${f('topic') ? ' Tema: ' + f('topic') + '.' : ''} Breve lezione pratica su XAUUSD — un concetto tecnico concreto, un errore comune da evitare, una strategia semplice. Tono da mentore che condivide una cosa utile, non da professore che tiene lezione. Chiudi con CTA: chi vuole applicarlo in tempo reale lo fa dentro il VIP o il CopyTrading.`,
+    d_recensioni:      base + `RECENSIONI DEL GIORNO + RECAP (19:00).${f('nota') ? ' Nota: ' + f('nota') + '.' : ''} Mostra le testimonianze / messaggi positivi ricevuti oggi. Screenshot allegato. Non elencare le recensioni — presentale come storie di persone reali. Poi aggiungi un breve recap numerico della giornata. Social proof autentico, non gonfiato. CTA.`,
+    d_chiusura:        base + `CHIUSURA (21:00). Bilancio sintetico della giornata — cosa è successo, com’è andata, come ci si sente. Poi contrasto netto: chi è già dentro sa cosa ha guadagnato, chi è fuori sa cosa si è perso. Non accusatorio, solo concreto. CTA finale — domani si riparte, ma chi entra oggi è già pronto per domani mattina.`,
   };
-  return prompts[slot.id] || null;
+    return prompts[slot.id] || null;
 }
 
 // ── NS (no signal) DAILY PROMPTS ───────────────────────────────────────────
@@ -333,27 +354,27 @@ ${lEN}
 `;
 
   const prompts: Record<string, string> = {
-    ns_buongiorno:     base + `BUONGIORNO (07:00). Inizia con "Buongiorno Traders 👋". Motivazione concreta legata ai mercati di oggi, hype sul fatto che la giornata è piena di opportunità per chi è già dentro VIP o CopyTrading. CTA.`,
-    ns_risultati_ieri: base + `RISULTATI DI IERI (08:00). Presenta i risultati separati per i due servizi:
+    ns_buongiorno:     base + `BUONGIORNO (07:00). Inizia con “Buongiorno Traders 👋”. Tono da insider: oggi la giornata parte in modo diverso per chi è già nel VIP o nel Copy. Accenna alle opportunità del mercato senza rivelare nulla — tutto è riservato ai clienti. CTA.`,
+    ns_risultati_ieri: base + `RISULTATI DI IERI (08:00). Apri con il numero più forte.
 VIP Room (operazioni manuali): ${f('vip_pips') || '85'} pips, ${f('vip_trades') || '5'} operazioni, win rate ${f('vip_winrate') || '80%'}.
 CopyTrading (automatico): ${f('copy_pips') || '72'} pips, ${f('copy_trades') || '4'} operazioni, performance ${f('copy_perf') || '+3.2%'}.
-Screenshot allegato. CTA urgente: chi non è dentro sta perdendo ogni giorno.`,
-    ns_copy_mattina:   base + `RISULTATI MATTUTINI COPYTRADING (09:00). Il copytrading ha già aperto: ${f('copy_pips') || '+35'} pips, ${f('copy_trades') || '2'} operazioni chiuse stamattina — automaticamente, mentre i follower dormivano o lavoravano. Screenshot risultati allegato. CTA forte.`,
-    ns_vip_mattina:    base + `RISULTATI MATTUTINI VIP (09:30). La sala VIP ha già operato stamattina: ${f('vip_pips') || '+50'} pips, ${f('vip_trades') || '3'} operazioni. Chi è dentro VIP ha già posizioni aperte in profitto. Screenshot allegato. Contrasto netto: chi è fuori non ha nulla. CTA.`,
-    ns_hype_vip:       base + `HYPE SEGNALE CANALE VIP (10:30). Annuncia che un nuovo segnale sta per essere rilasciato ESCLUSIVAMENTE sul canale VIP — non qui, non gratis. Crea urgenza e curiosità senza rivelare dettagli. Chi vuole il segnale deve entrare nel VIP. CTA.`,
-    ns_hype_copy:      base + `HYPE SEGNALE COPYTRADING (11:30). Il CopyTrading sta per ricevere un nuovo segnale automaticamente — i copier lo avranno sul conto in automatico senza fare nulla. Chi non è ancora connesso si perderà questa operazione. CTA urgente.`,
-    ns_calendario:     base + `CALENDARIO ECONOMICO (13:00). Analisi delle notizie macro con focus ESCLUSIVO su impatto XAUUSD.
-${hasPhoto ? 'FOTO ALLEGATA — analizza il calendario economico nello screenshot ed estrai tutti gli eventi rilevanti per il Gold.' : ''}
+Screenshot allegato. Enfatizza che non ci sono segnali gratuiti qui — i risultati sono esclusivamente di chi ha scelto di investire in se stesso. CTA tagliente.`,
+    ns_copy_mattina:   base + `RISULTATI MATTUTINI COPYTRADING (09:00). Il copy ha già operato stamattina: ${f('copy_pips') || '+35'} pips, ${f('copy_trades') || '2'} operazioni chiuse — automaticamente, mentre i follower dormivano o erano al lavoro. Screenshot allegato. Zero segnali gratuiti qui: questo è ciò che ottieni quando decidi di smettere di guardare e iniziare ad agire. CTA forte.`,
+    ns_vip_mattina:    base + `RISULTATI MATTUTINI VIP (09:30). La sala VIP ha già lavorato: ${f('vip_pips') || '+50'} pips, ${f('vip_trades') || '3'} operazioni. Screenshot allegato. Chi è dentro aveva il piano da ieri sera, ha eseguito stamattina, ha già il risultato. Chi è fuori non sa nemmeno cosa sta succedendo sul Gold oggi. Contrasto netto ma rispettoso. CTA.`,
+    ns_hype_vip:       base + `HYPE SEGNALE VIP (10:30). Un nuovo segnale sta per essere rilasciato esclusivamente sul canale VIP — non qui, non gratis. Crea tensione e curiosità senza rivelare nulla: direzione, livello, orario — tutto riservato. Chi vuole il segnale conosce già la strada. CTA urgente.`,
+    ns_hype_copy:      base + `HYPE SEGNALE COPYTRADING (11:30). Il CopyTrading sta per ricevere un nuovo segnale in automatico — i copy-trader lo avranno sul conto senza muovere un dito. Chi non è ancora connesso si perderà questa operazione come ha perso quelle di stamattina. Crea urgenza concreta, non artificiale. CTA.`,
+    ns_calendario:     base + `CALENDARIO ECONOMICO (13:00). Analisi macro con focus ESCLUSIVO sull’impatto XAUUSD.
+${hasPhoto ? 'FOTO CALENDARIO ALLEGATA — identifica gli High Impact, spiega la logica prezzo (es. \"ADP sopra attese → USD forte → Gold pressione ribassista\"), indica orari esatti. Tratta i dati già usciti come recenti, quelli futuri come prossimo obiettivo.' : ''}
 ${f('note') ? 'NOTE: ' + f('note') : news ? 'NOTIZIE / NOTE: ' + news : ''}
-Direzione probabile (🟢/🔴/🟡), orari chiave. La gestione durante le news è esclusiva VIP + CopyTrading. CTA.`,
+Direzione probabile (🟢/🔴/🟡), orari chiave. Ricorda: la gestione operativa durante le news è esclusiva VIP + CopyTrading — qui condividiamo solo il contesto macro. CTA.`,
     ns_post_news:      base + `RISULTATI POST NEWS (15:00). Le notizie macro sono uscite.
 ${f('news_ref') ? 'Notizia: ' + f('news_ref') : news ? 'Notizie: ' + news : ''}
 ${f('pips_postnews') ? 'Pips generati: ' + f('pips_postnews') : ''}
-Ecco come ha reagito XAUUSD e i risultati in tempo reale dei clienti VIP e CopyTrading. Screenshot allegato. Chi non era posizionato ha perso l'opportunità. CTA.`,
-    ns_recensioni:     base + `RECENSIONI CLIENTI DEL GIORNO (18:00).${f('nota') ? ' Nota: ' + f('nota') + '.' : ''} Mostra le testimonianze / recensioni / messaggi positivi ricevuti oggi dai clienti. Screenshot allegato. Social proof forte — persone reali con risultati reali. CTA.`,
-    ns_recap:          base + `RECAP FINALE + CHIUSURA GIORNO (21:00).${f('nota_finale') ? ' Note finali: ' + f('nota_finale') + '.' : ''} Riepiloga la giornata: risultati totali VIP e CopyTrading, operazioni chiuse, bilancio del giorno. Messaggio di chiusura motivante per domani. CTA finale.`,
+Racconta come ha reagito XAUUSD e cosa hanno ottenuto VIP + CopyTrading durante la volatilità — screenshot allegato. Chi era fuori ha assistito alla finestra senza un piano. CTA.`,
+    ns_recensioni:     base + `RECENSIONI CLIENTI DEL GIORNO (18:00).${f('nota') ? ' Nota: ' + f('nota') + '.' : ''} Mostra le testimonianze / messaggi positivi ricevuti oggi. Screenshot allegato. Presentale come storie reali di persone che hanno smesso di aspettare — non come materiale pubblicitario. Social proof che convince, non che vende. CTA.`,
+    ns_recap:          base + `RECAP FINALE + CHIUSURA GIORNO (21:00).${f('nota_finale') ? ' Note finali: ' + f('nota_finale') + '.' : ''} Riepilogo della giornata: risultati totali VIP e CopyTrading, operazioni chiuse, bilancio complessivo. Tono trasparente — buona o media che sia, il metodo si valuta nel lungo periodo. Chiudi con un messaggio motivante per domani e CTA finale per chi vuole iniziare prima del prossimo segnale.`,
   };
-  return prompts[slot.id] || null;
+    return prompts[slot.id] || null;
 }
 
 // ── ALT PLAN A PROMPTS ─────────────────────────────────────────────────────
@@ -936,24 +957,33 @@ export function buildCalV1Prompt(cfg: Config, tone: Tone, notes: string): string
   const lEN = getLinkEN(cfg);
   const trader = cfg.traderName || 'Il Trader';
   const date = todayItalian();
-  return `Sei il gestore del canale Telegram XAUUSD di ${trader}. Data: ${date}.
+  return `Sei il braccio destro del trader ${trader} sul canale Telegram XAUUSD. Data: ${date}.
 
-HAI UNO SCREENSHOT DEL CALENDARIO ECONOMICO ALLEGATO. Analizzalo attentamente.
+HAI UNO SCREENSHOT DEL CALENDARIO ECONOMICO ALLEGATO. Analizzalo con cura prima di scrivere.
 
 ${notes ? 'Note aggiuntive: ' + notes : ''}
 
-COMPITO: Scrivi la versione "MARKET MOVER" — il post che identifica IL SINGOLO evento macro più esplosivo per XAUUSD di oggi.
+COMPITO — Versione “MARKET MOVER”:
+Identifica immediatamente l’evento con la Cartella Rossa (High Impact) più vicino o più significativo per XAUUSD.
 
 STRUTTURA OBBLIGATORIA:
-🚨 Titolo d'allerta (evento + orario)
-1-2 righe: perché questo dato MUOVE l'Oro (causa → effetto su USD → effetto su XAUUSD)
-Scenario rialzista vs ribassista (🟢 se dato debole / 🔴 se dato forte per USD)
-Orario esatto da segnare sul calendario
-Chiudi con: "Chi è nel VIP ha già il piano operativo pronto per questo momento."
+🚨 Titolo d’allerta — nome evento + orario esatto (usa il timing reale dallo screenshot)
+1-2 righe: spiega la logica del prezzo in modo semplice e diretto
+  → Es: “Se l’occupazione ADP esce sopra le attese, il Dollaro sale e il Gold scende”
+  → Es: “Un CPI più alto del previsto = pressione ribassista sull’Oro”
+Scenario con emoji:
+  🟢 Se il dato è debole per il Dollaro → Gold sale
+  🔴 Se il dato è forte per il Dollaro → Gold scende
+Timing esatto da segnare sul calendario
+Chiudi con: “Noi nel VIP abbiamo già il piano operativo pronto per questo momento — entry, SL e TP definiti.”
 CTA alla Sala VIP
 
-Tono: urgente, da allerta operativa — emoji 🚨⚡️🎯, frasi corte, massima leggibilità.
-ZERO asterischi. Prima versione IT completa, poi ──────────────, poi versione EN.
+REGOLE:
+- Usa il “Noi” per rafforzare il brand del team, non l’“Io”
+- Tono: allerta operativa, da analista di fiducia — emoji 🚨⚡️🎯🔴🟢
+- Se lo screenshot mostra dati già usciti nelle ore precedenti, trattali come “appena rilasciati” con il loro actual value
+- Frasi corte, massima leggibilità su mobile
+- ZERO asterischi. Prima versione IT completa, poi ──────────────, poi versione EN.
 
 CTA italiana:
 👉 CLICCA QUI PER [TESTO VARIABILE]:
@@ -964,33 +994,49 @@ CTA inglese:
 ${lEN}`;
 }
 
-// ── CALENDARIO V2 — Analisi Macro & Tecnica ─────────────────────────────────
+// ── CALENDARIO V2 — Analisi Macro & Tecnica ─────────────────────────────
 export function buildCalV2Prompt(cfg: Config, tone: Tone, notes: string): string {
   const lIT = getLinkIT(cfg);
   const lEN = getLinkEN(cfg);
   const trader = cfg.traderName || 'Il Trader';
   const date = todayItalian();
-  return `Sei il gestore del canale Telegram XAUUSD di ${trader}. Data: ${date}.
+  return `Sei il braccio destro del trader ${trader} sul canale Telegram XAUUSD. Data: ${date}.
 
-HAI UNO SCREENSHOT DEL CALENDARIO ECONOMICO ALLEGATO. Analizzalo attentamente.
+HAI UNO SCREENSHOT DEL CALENDARIO ECONOMICO ALLEGATO. Analizzalo con attenzione prima di scrivere.
 
-${notes ? 'Note aggiuntive: ' + notes : ''}
+${notes ? 'Note aggiuntive (includi geopolitica, eventi speciali, cigni neri se rilevanti per il Gold): ' + notes : ''}
 
-COMPITO: Scrivi la versione "ANALISI MACRO & TECNICA" — post articolato che racconta l'intera giornata.
+COMPITO — Versione “ANALISI MACRO & TECNICA”:
+Scrivi un post articolato che racconta l’intera sessione di oggi — posizionamento e autorità.
 
 STRUTTURA OBBLIGATORIA:
-📊 Titolo (es. "Giornata macro intensa — ecco il piano")
-Timeline della giornata divisa in fasi:
-  🌅 Mattina (7:00–12:00): eventi + impatto atteso
-  🌇 Pomeriggio (12:00–17:00): eventi principali
-  🌙 Sera/Notte (17:00+): eventuali dati notturni
-Correlazioni tra dati (es. CPI forte → USD sale → Gold sotto pressione)
-Consiglio gestione rischio per la giornata (size ridotte? no overnight? attenzione a orario X?)
-Chiudi con: "Nel VIP gestiremo ogni evento in tempo reale con il piano già definito."
+📊 Titolo professionale (es. “Giornata macro intensa su XAUUSD — ecco il piano”)
+
+Timeline della sessione divisa in 3 blocchi logici:
+🌅 MATTINATA (7:00–12:00): eventi Euro/GBP + impatto atteso sull’umore prima di Wall Street
+🌇 POMERIGGIO (12:00–17:00): dati USA/CAD + eventi principali che muovono il Gold
+🌙 SERA/NOTTE (17:00+): dati Asia/AUD/NZD se presenti, volatilità notturna prevista
+
+Correlazioni tra dati: collega i dati tra loro
+→ Es: “PMI europei deboli → umore risk-off → Gold come bene rifugio prima dell’apertura USA”
+→ Es: “CPI forte → Fed hawkish → USD sale → pressione ribassista sul Gold”
+
+Se nelle note è presente una notizia geopolitica (conflitti, tensioni, decisioni macro straordinarie):
+→ Spiega come questo “cigno nero” distorce i pattern standard: “I grafici tecnici oggi vanno letti con cautela perché la geopolitica sta alterando le correlazioni normali”
+
+Risk Management — sempre presente, 1 riga concreta:
+→ Es: “Giornata ad alta volatilità: ridurre le size rispetto alla norma”
+→ Es: “Evitare posizioni overnight in vista dei dati notturni”
+→ Es: “Aspettare la reazione post-news prima di entrare”
+
+Chiudi con: “Noi nel VIP gestiamo ogni evento in tempo reale con un piano già definito — entry, SL e livelli TP pronti prima che il dato esca.”
 CTA
 
-Tono: professionale ma diretto, da analista che parla alla sua squadra.
-ZERO asterischi. Prima versione IT completa, poi ──────────────, poi versione EN.
+REGOLE:
+- Usa il “Noi” per rafforzare il brand del team
+- Tono professionale e diretto, da analista che parla alla sua squadra
+- Usa gli orari reali dallo screenshot
+- ZERO asterischi. Prima versione IT completa, poi ──────────────, poi versione EN.
 
 CTA italiana:
 👉 CLICCA QUI PER [TESTO VARIABILE]:
@@ -1007,26 +1053,39 @@ export function buildCalV3Prompt(cfg: Config, tone: Tone, notes: string): string
   const lEN = getLinkEN(cfg);
   const trader = cfg.traderName || 'Il Trader';
   const date = todayItalian();
-  return `Sei il gestore del canale Telegram XAUUSD di ${trader}. Data: ${date}.
+  return `Sei il braccio destro del trader ${trader} sul canale Telegram XAUUSD. Data: ${date}.
 
-HAI UNO SCREENSHOT DEL CALENDARIO ECONOMICO ALLEGATO. Analizzalo attentamente.
+HAI UNO SCREENSHOT DEL CALENDARIO ECONOMICO ALLEGATO. Analizzalo prima di scrivere.
 
 ${notes ? 'Note aggiuntive: ' + notes : ''}
 
-COMPITO: Scrivi la versione "FLASH REPORT" — il calendario in formato ultra-compatto, perfetto per essere letto in 10 secondi su mobile.
+COMPITO — Versione “FLASH REPORT” (Sintetica):
+Il post perfetto per chi legge da mobile in 10 secondi mentre lavora. Massima scansionabilità.
 
 STRUTTURA OBBLIGATORIA:
-⚡ Titolo brevissimo (es. "Flash Calendar XAUUSD — ${date}")
-Lista eventi rilevanti per il Gold, formato:
-  🔴 HH:MM [VALUTA] EVENTO — impatto in 3 parole
-  🟠 HH:MM [VALUTA] EVENTO — impatto in 3 parole
-  🟡 HH:MM [VALUTA] EVENTO — impatto in 3 parole
-Usa SOLO 🔴 (Alto) 🟠 (Medio) 🟡 (Basso) per ogni evento
-Riga finale: "Sentiment giornata: 🟢 RIALZISTA / 🔴 RIBASSISTA / 🟡 NEUTRO per il Gold"
-CTA cortissima
+⚡ Titolo brevissimo — es: “Flash Calendar XAUUSD — ${date}”
 
-Regole formato: massimo leggibilità su mobile Telegram. Niente paragrafi. Solo icone + dati. Zero asterischi.
-Prima versione IT, poi ──────────────, poi versione EN.
+Lista degli eventi rilevanti per il Gold, formato ESATTO per ogni riga:
+[EMOJI IMPATTO] [ORARIO] [VALUTA] [NOME EVENTO] — [impatto in max 4 parole]
+
+Codifica colori impatto — usa SOLO questi:
+🔴 = Alto (High Impact / Cartella Rossa)
+🟠 = Medio (Medium Impact)
+🟡 = Basso (Low Impact)
+
+Estrai solo l’essenziale: Orario | Valuta | Nome Evento. Niente spiegazioni lunghe.
+Usa gli orari reali dallo screenshot.
+
+Riga finale obbligatoria (1 riga sola):
+“Mood Gold oggi: 🟢 RIALZISTA / 🔴 RIBASSISTA / 🟡 NEUTRO — [motivazione in 5 parole]”
+
+CTA cortissima (max 1 riga)
+
+REGOLE FORMATO:
+- Niente paragrafi, niente blocchi di testo
+- Solo icone + dati + parole chiave
+- Massima leggibilità su Telegram mobile
+- ZERO asterischi. Prima versione IT, poi ──────────────, poi versione EN.
 
 CTA italiana:
 👉 CLICCA QUI PER [TESTO VARIABILE]:

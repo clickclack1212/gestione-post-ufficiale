@@ -29,13 +29,14 @@ export function useGemini() {
       prompt: string,
       temp = 0.88,
       img: string | string[] | null = null,
+      forceModelIdx?: number,
     ): Promise<string> => {
       if (!config.apiKey) {
         showToast('Inserisci prima la tua API Key nelle impostazioni.', 'error');
         return '';
       }
-      // Set the preferred starting model before each call
-      setPreferredModelIdx(preferredModelIdx);
+      // Use forceModelIdx if provided, otherwise use user-selected model
+      setPreferredModelIdx(forceModelIdx ?? preferredModelIdx);
       setLoading(true);
       startTimer();
       try {
