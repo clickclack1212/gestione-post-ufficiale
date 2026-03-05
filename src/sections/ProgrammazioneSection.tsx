@@ -3,9 +3,10 @@ import { DailySignalPanel } from './DailySignalPanel';
 import { DailyNoSignalPanel } from './DailyNoSignalPanel';
 import { AltPlanPanel } from './AltPlanPanel';
 import { WeekendPanel } from './WeekendPanel';
+import { HypePlanPanel } from './HypePlanPanel';
 import { Icon, CalendarDays } from '../components/Icon';
 
-type ProgMode = 'daily_signal' | 'daily_nosignal' | 'alt' | 'weekend';
+type ProgMode = 'daily_signal' | 'daily_nosignal' | 'alt' | 'weekend' | 'hype';
 
 const PROG_MODES: { id: ProgMode; icon: string; name: string; desc: string; color: string }[] = [
   {
@@ -35,6 +36,13 @@ const PROG_MODES: { id: ProgMode; icon: string; name: string; desc: string; colo
     name: 'Weekend\nSab/Dom',
     desc: '4+6 slot · analisi settimanale',
     color: '#22c55e',
+  },
+  {
+    id: 'hype',
+    icon: 'Flame',
+    name: 'Hype &\nVendita',
+    desc: '10 slot · hook+CTA lead generation',
+    color: '#ef4444',
   },
 ];
 
@@ -80,6 +88,7 @@ export function ProgrammazioneSection() {
       {activeMode === 'daily_nosignal' && <DailyNoSignalPanel />}
       {activeMode === 'alt'            && <AltPlanPanel />}
       {activeMode === 'weekend'        && <WeekendPanel />}
+      {activeMode === 'hype'           && <HypePlanPanel />}
     </div>
   );
 }

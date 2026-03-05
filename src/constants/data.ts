@@ -141,6 +141,21 @@ export const ALT_PLAN_INFO = {
   },
 };
 
+export const HYPE_SLOTS: DailySlot[] = [
+  { id: 'hv_buongiorno',     time: '07:30', label: 'Buongiorno Urgenza & Hype',        shot: false, tag: 'urgenza' },
+  { id: 'hv_vip_mattina',    time: '08:00', label: 'Risultati VIP Mattutini',           shot: true,  tag: 'proof'  },
+  { id: 'hv_recap_ieri',     time: '09:00', label: 'Recap Ieri Copy & VIP',             shot: true,  tag: 'proof'  },
+  { id: 'hv_segnale_free',   time: '10:00', label: "Segnale Gratis — L'Esca",           shot: false, tag: 'segnale'},
+  { id: 'hv_fine_segnale',   time: '11:00', label: 'Fine Segnale — La Prova',           shot: true,  tag: 'segnale'},
+  { id: 'hv_screen_clienti', time: '12:00', label: 'Screen Clienti Social Proof',       shot: true,  tag: 'proof'  },
+  { id: 'hv_calendario',     time: '13:00', label: 'Calendario Economico — Allerta',    shot: false, tag: 'urgenza'},
+  { id: 'hv_passaggio_vip',  time: '14:00', label: 'Passaggio al VIP e Copy',           shot: false, tag: 'urgenza'},
+  { id: 'hv_risultati_live', time: '15:30', label: 'Risultati Live Post-News',          shot: true,  tag: 'proof'  },
+  { id: 'hv_recap_finale',   time: '18:00', label: 'Screen del Giorno — Recap Finale',  shot: true,  tag: 'proof'  },
+];
+
+export const HV_NO_FIELDS = ['hv_buongiorno', 'hv_passaggio_vip', 'hv_screen_clienti'];
+
 export const ALL_CURRENCIES = ['USD','EUR','GBP','JPY','CAD','AUD','CHF','NZD','XAU','CNY'];
 
 export const LANG_LABELS: Record<string,string> = {
