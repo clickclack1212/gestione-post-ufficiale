@@ -156,6 +156,21 @@ export const HYPE_SLOTS: DailySlot[] = [
 
 export const HV_NO_FIELDS = ['hv_buongiorno', 'hv_passaggio_vip', 'hv_screen_clienti'];
 
+export const COSTANZA_SLOTS: DailySlot[] = [
+  { id: 'cv_buongiorno',     time: '07:30', label: 'Buongiorno Fluido — Il Metodo Inizia',    shot: false, tag: 'metodo'  },
+  { id: 'cv_vip_mattina',    time: '08:00', label: 'Risultati VIP Mattutini — Prova Tangibile',shot: true,  tag: 'proof'  },
+  { id: 'cv_recap_ieri',     time: '09:00', label: 'Recap Ieri — La Costanza Paga',            shot: true,  tag: 'proof'  },
+  { id: 'cv_segnale_free',   time: '10:00', label: "Segnale Gratis — La Guida Concreta",       shot: false, tag: 'segnale'},
+  { id: 'cv_fine_segnale',   time: '11:00', label: 'Fine Segnale — Il Metodo Dimostrato',      shot: true,  tag: 'segnale'},
+  { id: 'cv_screen_clienti', time: '12:00', label: 'Screen Clienti — La Prova Silenziosa',     shot: true,  tag: 'proof'  },
+  { id: 'cv_calendario',     time: '13:00', label: 'Calendario Economico — Il Contesto',       shot: false, tag: 'metodo' },
+  { id: 'cv_passaggio_vip',  time: '14:00', label: 'Passaggio al VIP — La Scelta Consapevole', shot: false, tag: 'metodo' },
+  { id: 'cv_risultati_live', time: '15:30', label: 'Risultati Live — La Consistenza in Azione',shot: true,  tag: 'proof'  },
+  { id: 'cv_recap_finale',   time: '18:00', label: 'Recap Finale — Costruire Ogni Giorno',     shot: true,  tag: 'proof'  },
+];
+
+export const CV_NO_FIELDS = ['cv_buongiorno', 'cv_passaggio_vip', 'cv_screen_clienti'];
+
 export const ALL_CURRENCIES = ['USD','EUR','GBP','JPY','CAD','AUD','CHF','NZD','XAU','CNY'];
 
 export const LANG_LABELS: Record<string,string> = {

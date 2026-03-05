@@ -4,9 +4,9 @@ import { useGemini } from '../hooks/useGemini';
 import { ToneSelector } from '../components/ToneSelector';
 import { PhotoUploader } from '../components/PhotoUploader';
 import { PlanCard } from '../components/PlanCard';
-import { buildHypePrompt, parseBilingual, todayItalian } from '../services/prompts';
-import { HYPE_SLOTS } from '../constants/data';
-import { Flame, Copy, Globe, Zap, Camera } from '../components/Icon';
+import { buildCostanzaPrompt, parseBilingual, todayItalian } from '../services/prompts';
+import { COSTANZA_SLOTS } from '../constants/data';
+import { TrendingUp, Copy, Globe, Zap, Camera } from '../components/Icon';
 import type { PlanCardData } from '../components/PlanCard';
 import type { Tone } from '../types';
 
@@ -27,7 +27,7 @@ function Field({
   );
 }
 
-function HypeSlotFields({
+function CostanzaSlotFields({
   slotId, fields, setField,
 }: {
   slotId: string;
@@ -37,7 +37,7 @@ function HypeSlotFields({
   const f = (k: string) => fields[k] ?? '';
 
   switch (slotId) {
-    case 'hv_vip_mattina':
+    case 'cv_vip_mattina':
       return (
         <div className="grid grid-cols-2 gap-3">
           <Field label="Pips VIP"      name="pips_vip"   value={f('pips_vip')}   onChange={setField} placeholder="+65" />
@@ -45,12 +45,12 @@ function HypeSlotFields({
         </div>
       );
 
-    case 'hv_recap_ieri':
+    case 'cv_recap_ieri':
       return (
-        <Field label="Note (opz.)" name="nota" value={f('nota')} onChange={setField} placeholder="Es. NFP ieri ha dato volatilità esplosiva..." />
+        <Field label="Note (opz.)" name="nota" value={f('nota')} onChange={setField} placeholder="Es. ieri due operazioni in VIP, copy +42 pips..." />
       );
 
-    case 'hv_segnale_free':
+    case 'cv_segnale_free':
       return (
         <div className="space-y-3">
           <div className="grid grid-cols-3 gap-3">
@@ -68,15 +68,15 @@ function HypeSlotFields({
         </div>
       );
 
-    case 'hv_fine_segnale':
+    case 'cv_fine_segnale':
       return (
         <div className="grid grid-cols-2 gap-3">
           <Field label="Pips Risultato" name="pips" value={f('pips')} onChange={setField} placeholder="+45" />
-          <Field label="Nota (opz.)"    name="nota"  value={f('nota')} onChange={setField} placeholder="Colpito esatto..." />
+          <Field label="Nota (opz.)"    name="nota"  value={f('nota')} onChange={setField} placeholder="Target colpito esatto..." />
         </div>
       );
 
-    case 'hv_calendario':
+    case 'cv_calendario':
       return (
         <div className="space-y-1">
           <label className="block text-xs text-[var(--text3)] uppercase tracking-widest">Dati Attesi (opz.)</label>
@@ -86,7 +86,7 @@ function HypeSlotFields({
         </div>
       );
 
-    case 'hv_risultati_live':
+    case 'cv_risultati_live':
       return (
         <div className="grid grid-cols-2 gap-3">
           <Field label="Pips"        name="pips"   value={f('pips')}   onChange={setField} placeholder="+85" />
@@ -94,9 +94,9 @@ function HypeSlotFields({
         </div>
       );
 
-    case 'hv_recap_finale':
+    case 'cv_recap_finale':
       return (
-        <Field label="Nota (opz.)" name="nota" value={f('nota')} onChange={setField} placeholder="Es. settimana record, preparare lunedì..." />
+        <Field label="Nota (opz.)" name="nota" value={f('nota')} onChange={setField} placeholder="Es. giornata solida, tre target consecutivi..." />
       );
 
     default:
@@ -104,13 +104,13 @@ function HypeSlotFields({
   }
 }
 
-export function HypePlanPanel() {
+export function CostanzaPlanPanel() {
   const { config } = useApp();
   const { loading, elapsed, run } = useGemini();
 
-  const [tone, setTone] = useState<Tone>('hype');
+  const [tone, setTone] = useState<Tone>('assertivo');
   const [mode, setMode] = useState<GenMode>('single');
-  const [selectedSlot, setSelectedSlot] = useState(HYPE_SLOTS[0].id);
+  const [selectedSlot, setSelectedSlot] = useState(COSTANZA_SLOTS[0].id);
   const [fields, setFieldsState] = useState<Record<string, string>>({});
   const [photo, setPhoto] = useState<string | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
@@ -129,22 +129,22 @@ export function HypePlanPanel() {
   });
 
   async function handleSingle() {
-    const slot = HYPE_SLOTS.find(s => s.id === selectedSlot)!;
-    const prompt = buildHypePrompt(slot, ctx());
+    const slot = COSTANZA_SLOTS.find(s => s.id === selectedSlot)!;
+    const prompt = buildCostanzaPrompt(slot, ctx());
     if (!prompt) return;
     const usePhoto = slot.shot && photo ? photo : null;
-    const text = await run(prompt, 0.92, usePhoto);
+    const text = await run(prompt, 0.88, usePhoto);
     if (text) setSingleResult(parseBilingual(text));
   }
 
   async function handleDay() {
     setDayResults([]);
     const results: PlanCardData[] = [];
-    for (const slot of HYPE_SLOTS) {
-      const prompt = buildHypePrompt(slot, ctx());
+    for (const slot of COSTANZA_SLOTS) {
+      const prompt = buildCostanzaPrompt(slot, ctx());
       if (!prompt) continue;
       const usePhoto = slot.shot && photo ? photo : null;
-      const text = await run(prompt, 0.92, usePhoto);
+      const text = await run(prompt, 0.88, usePhoto);
       if (!text) continue;
       const { it, en } = parseBilingual(text);
       results.push({ id: slot.id, time: slot.time, label: slot.label, shot: slot.shot, tag: slot.tag, it, en });
@@ -152,9 +152,9 @@ export function HypePlanPanel() {
     }
   }
 
-  const activeSlot = HYPE_SLOTS.find(s => s.id === selectedSlot)!;
+  const activeSlot = COSTANZA_SLOTS.find(s => s.id === selectedSlot)!;
   const tagColors: Record<string, string> = {
-    urgenza: '#ef4444',
+    metodo:  '#22c55e',
     proof:   '#3b82f6',
     segnale: '#FE9920',
   };
@@ -162,11 +162,11 @@ export function HypePlanPanel() {
   return (
     <div className="space-y-5">
       <div className="card">
-        <div className="card-title flex items-center gap-1.5" style={{ color: '#ef4444' }}>
-          <Flame size={14} /> Piano Hype &amp; Vendita · {HYPE_SLOTS.length} Slot
+        <div className="card-title flex items-center gap-1.5" style={{ color: '#22c55e' }}>
+          <TrendingUp size={14} /> Piano Costanza &amp; Metodo · {COSTANZA_SLOTS.length} Slot
         </div>
         <p className="text-[var(--text3)] text-xs mb-4">
-          Ogni messaggio è ottimizzato per generare DM (lead) — hook esplosivi, corpo breve, CTA con parola d&apos;ordine.
+          Ogni messaggio costruisce fiducia duratura — tono calmo e autorevole, empatia reale, fatti concreti. CTA con link diretto.
         </p>
 
         {/* Mode toggle */}
@@ -186,14 +186,14 @@ export function HypePlanPanel() {
           <div className="mt-2 space-y-2">
             <label className="block text-xs text-[var(--text3)] uppercase tracking-widest">Slot</label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {HYPE_SLOTS.map(s => (
+              {COSTANZA_SLOTS.map(s => (
                 <button
                   key={s.id}
                   onClick={() => { setSelectedSlot(s.id); setSingleResult({ it: '', en: '' }); setFieldsState({}); }}
                   className={`alt-plan-btn text-left ${selectedSlot === s.id ? 'active' : ''}`}
-                  style={selectedSlot === s.id && s.tag ? { borderColor: (tagColors[s.tag] || '#FE9920') + '80', background: (tagColors[s.tag] || '#FE9920') + '14' } : {}}
+                  style={selectedSlot === s.id && s.tag ? { borderColor: (tagColors[s.tag] || '#22c55e') + '80', background: (tagColors[s.tag] || '#22c55e') + '14' } : {}}
                 >
-                  <span className="font-mono text-[11px]" style={{ color: (s.tag ? tagColors[s.tag] : undefined) || '#FE9920' }}>{s.time}</span>
+                  <span className="font-mono text-[11px]" style={{ color: (s.tag ? tagColors[s.tag] : undefined) || '#22c55e' }}>{s.time}</span>
                   <span className="block text-xs mt-0.5 leading-tight">{s.label}</span>
                   {s.shot && (
                     <span className="badge-photo text-[9px] mt-1 flex items-center gap-0.5">
@@ -209,7 +209,7 @@ export function HypePlanPanel() {
         {/* Slot-specific fields */}
         {mode === 'single' && (
           <div className="mt-4">
-            <HypeSlotFields slotId={selectedSlot} fields={fields} setField={setField} />
+            <CostanzaSlotFields slotId={selectedSlot} fields={fields} setField={setField} />
           </div>
         )}
 
@@ -229,7 +229,7 @@ export function HypePlanPanel() {
           className="btn-generate w-full mt-5"
           onClick={mode === 'single' ? handleSingle : handleDay}
           disabled={loading}
-          style={{ background: loading ? undefined : 'linear-gradient(135deg, #ef4444, #dc2626)' }}
+          style={{ background: loading ? undefined : 'linear-gradient(135deg, #22c55e, #16a34a)' }}
         >
           {loading ? (
             <span className="flex items-center justify-center gap-2">
@@ -237,11 +237,11 @@ export function HypePlanPanel() {
             </span>
           ) : mode === 'single' ? (
             <span className="flex items-center justify-center gap-2">
-              <Zap size={14} /> Genera 🔥 {activeSlot?.time}
+              <Zap size={14} /> Genera ✅ {activeSlot?.time}
             </span>
           ) : (
             <span className="flex items-center justify-center gap-2">
-              <Flame size={14} /> Genera Intera Giornata ({HYPE_SLOTS.length} slot)
+              <TrendingUp size={14} /> Genera Intera Giornata ({COSTANZA_SLOTS.length} slot)
             </span>
           )}
         </button>
@@ -251,7 +251,7 @@ export function HypePlanPanel() {
       {mode === 'single' && (singleResult.it || singleResult.en) && (
         <div className="card animate-[slideUp_0.3s_ease]">
           <div className="flex items-center gap-2 mb-3">
-            <span className="font-mono text-sm" style={{ color: tagColors[activeSlot?.tag || ''] || '#ef4444' }}>{activeSlot?.time}</span>
+            <span className="font-mono text-sm" style={{ color: tagColors[activeSlot?.tag || ''] || '#22c55e' }}>{activeSlot?.time}</span>
             <span className="text-[var(--text2)] text-sm">{activeSlot?.label}</span>
           </div>
           <div className="flex gap-2 flex-wrap">
@@ -275,9 +275,9 @@ export function HypePlanPanel() {
       {mode === 'day' && dayResults.length > 0 && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-[var(--text2)]">{dayResults.length} / {HYPE_SLOTS.length} slot generati</span>
+            <span className="text-sm text-[var(--text2)]">{dayResults.length} / {COSTANZA_SLOTS.length} slot generati</span>
             {loading && (
-              <span className="flex items-center gap-2 text-xs text-[#ef4444]">
+              <span className="flex items-center gap-2 text-xs text-[#22c55e]">
                 <span className="mini-spinner" /> {elapsed}s
               </span>
             )}

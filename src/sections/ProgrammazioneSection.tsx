@@ -4,9 +4,10 @@ import { DailyNoSignalPanel } from './DailyNoSignalPanel';
 import { AltPlanPanel } from './AltPlanPanel';
 import { WeekendPanel } from './WeekendPanel';
 import { HypePlanPanel } from './HypePlanPanel';
+import { CostanzaPlanPanel } from './CostanzaPlanPanel';
 import { Icon, CalendarDays } from '../components/Icon';
 
-type ProgMode = 'daily_signal' | 'daily_nosignal' | 'alt' | 'weekend' | 'hype';
+type ProgMode = 'daily_signal' | 'daily_nosignal' | 'alt' | 'weekend' | 'hype' | 'costanza';
 
 const PROG_MODES: { id: ProgMode; icon: string; name: string; desc: string; color: string }[] = [
   {
@@ -43,6 +44,13 @@ const PROG_MODES: { id: ProgMode; icon: string; name: string; desc: string; colo
     name: 'Hype &\nVendita',
     desc: '10 slot · hook+CTA lead generation',
     color: '#ef4444',
+  },
+  {
+    id: 'costanza',
+    icon: 'TrendingUp',
+    name: 'Costanza &\nMetodo',
+    desc: '10 slot · fiducia · tono fluido',
+    color: '#22c55e',
   },
 ];
 
@@ -89,6 +97,7 @@ export function ProgrammazioneSection() {
       {activeMode === 'alt'            && <AltPlanPanel />}
       {activeMode === 'weekend'        && <WeekendPanel />}
       {activeMode === 'hype'           && <HypePlanPanel />}
+      {activeMode === 'costanza'       && <CostanzaPlanPanel />}
     </div>
   );
 }
