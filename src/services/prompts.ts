@@ -158,6 +158,7 @@ export function buildPrompt(
   const date = todayItalian();
   const base = basePrompt(cfg, tone, date);
   const v = (k: string) => fields[k] || '';
+  const trader = cfg.traderName || 'Il Trader';
 
   const map: Record<string, string> = {
     buongiorno: base + `BUONGIORNO (07:00) — l’unico messaggio della giornata che inizia con “Buongiorno Traders! 👋”.
@@ -214,26 +215,55 @@ Screenshot risultati clienti allegati. Racconta la giornata con 2-3 righe: com�
 Poi metti in prospettiva il CopyTrading: automatico, zero esperienza richiesta, accessibile con qualsiasi budget, zero stress. Chi entra stasera domani mattina parte già configurato.
 CTA forte — senso di finestra che si chiude, non paura ma logistica reale.`,
 
-    engagement: base + `MESSAGGIO DI ENGAGEMENT. Scegli UN angolo tra questi 8 — VARIA ogni volta, non usare mai la stessa apertura due post di fila, mai robotico:
+    engagement: base + `MESSAGGIO DI ENGAGEMENT — LEAD GENERATION. Scegli UN formato tra questi 10 — VARIA ogni volta, mai lo stesso tipo consecutivo, mai robotico.
 
-1. LEZIONE RAPIDA: insegna un concetto concreto di trading o psicologia — es. "Sai perché il 90% dei trader perde? Non è per mancanza di tecnica. È perché gestisce le emozioni peggio del mercato." Max 3 righe, poi CTA. Parla come chi ci è passato, non come un professore.
+I 10 FORMATI — scegli quello più adatto al momento della giornata:
 
-2. STORIA DI UN CLIENTE: racconta in 2-3 righe un risultato reale o anonimizzato. Com'era prima, cosa ha cambiato, cosa ottiene ora. Autentico, nessuna esagerazione.
+1. 📊 SONDAGGIO (mattina / pre-news)
+Hook: "DOVE VA L'ORO OGGI? VOGLIO LA VOSTRA OPINIONE. 🥇"
+Chiedi la previsione direzionale con emoji come voto (es. 🔥=BUY 📉=SELL). Poi rivela che nel VIP hai già l'analisi pronta. CTA parola d'ordine: LIVELLI, SEGNALE, ANALISI.
 
-3. INCORAGGIAMENTO PER CHI INIZIA: "Iniziare nel trading fa paura — i primi mesi sembrano impossibili quasi per tutti. La differenza tra chi ce la fa e chi brucia il conto è avere il sistema giusto e le persone giuste intorno." Poi CTA verso VIP/copy come scorciatoia concreta.
+2. 🪞 LO SPECCHIO (fine giornata)
+Hook: "DOMANDA SCOMODA: QUANTO HAI GUADAGNATO OGGI? 💸"
+Confronta la giornata lavorativa standard con i profitti automatici del CopyTrading nello stesso lasso di tempo. "Preferisci continuare a scambiare il tuo tempo per soldi, o vuoi che i tuoi soldi inizino a lavorare per te?" CTA: AUTOMATICO, LIBERTA, COPIA.
 
-4. TEASER SETUP: "Sto guardando un livello su XAUUSD da qualche ora. Se regge, potrebbe essere un'operazione interessante — chi è nel VIP lo saprà prima degli altri." Crea curiosità senza spoilerare, senza promesse vuote.
+3. ⚡ CHECK ENERGIA (15 min prima del segnale gratuito)
+Hook: "CI SIETE O STATE DORMENDO?! ⚡️"
+Annuncia che sganci il segnale gratis solo se arrivi a X reazioni 🔥. Crea urgenza e attivazione istantanea. CTA: VIP, DENTRO, SEGNALE.
 
-5. DOMANDA ALLA COMMUNITY: domanda aperta sulla loro esperienza — difficoltà, paure, obiettivi, rapporto con il Gold. Non fare domande retoriche: fai domande a cui si risponde davvero.
+4. 🧠 PAIN POINT (pomeriggi lenti / weekend)
+Hook: "QUAL È IL TUO NEMICO N.1 NEL TRADING? 🛑"
+Proponi 3 scelte di problemi (1️⃣ ansia e chiudi troppo presto 2️⃣ no SL e bruci il conto 3️⃣ no tempo per guardare i grafici). Poi rivela che il CopyTrading risolve tutti e 3. CTA: AIUTO, SOLUZIONE, COPIA.
 
-6. OSSERVAZIONE DI MERCATO: un pensiero tecnico su XAUUSD condiviso come analista — livello chiave osservato, pattern interessante, anomalia di prezzo. Condividi il pensiero genuinamente, poi una CTA leggera.
+5. 🏆 APPELLO VINCITORI (subito dopo il segnale gratis è andato a target)
+Hook: "FUORI I NOMI! CHI HA INCASSATO? 💰"
+Chiedi a chi ha preso il segnale di mostrare il profitto nei commenti o con una reazione 💸. Social proof generato dagli utenti stessi. CTA: ANCORA, PROSSIMO, VIP.
 
-7. MINDSET: un concetto sulla psicologia del trading — disciplina, emozioni, differenza tra pazienza e paura, perché le strategie falliscono. Tono diretto da chi ci è passato. Chiudi con un'applicazione pratica concreta.
+6. 🤫 TEASER CURIOSO (dopo un profitto grosso nel VIP)
+Hook: "OPS... L'ABBIAMO FATTO DI NUOVO. 🤫"
+Accenna a risultati grandi senza rivelare i numeri ("Non vi dico i numeri esatti perché non ci credereste"). Crea curiosità irresistibile sul cosa si sono persi. CTA: CURIOSO, NUMERI, DENTRO.
 
-8. SCARSITÀ CONCRETA: "Sto valutando di aprire qualche posto in VIP questa settimana — non lo faccio spesso." Urgenza reale, non costruita. 2-3 vantaggi pratici di chi è già dentro, senza esagerare.
+7. 💼 OBIEZIONE CAPITALE (per convertire i "tiepidi" che seguono ma non comprano)
+Hook: "'NON HO ABBASTANZA SOLDI PER INIZIARE.' 🛑 — Falso."
+Smonta l'obiezione. Confronta il capitale minimo reale con quello che spendono in un weekend fuori. "L'aperitivo ti lascia il mal di testa. Il CopyTrading inizia a farti generare profitti passivi." CTA: CAPITALE, INIZIO, MINIMO.
 
-REGOLA ASSOLUTA: MAI aprire con "Come sempre", "Ancora una volta", "Ciao ragazzi", "Buone notizie", "Anche oggi". Parla come un trader esperto che condivide qualcosa di genuino, non come un bot di marketing.
-Tono autentico e umano. CTA adeguata al tipo scelto.`,
+8. 🎯 SFIDA SETTIMANALE (lunedì mattina)
+Hook: "SFIDA DELLA SETTIMANA: QUAL È IL TUO OBIETTIVO? 🎯"
+Chiedi l'obiettivo finanziario personale della settimana (pagare la rata, la spesa, un weekend fuori). Offri di valutare come il copy può aiutarlo a raggiungerlo. CTA: OBIETTIVO, META, LUNEDI.
+
+9. 🚨 ALLERTA VOLATILITÀ (1-2 ore prima di news forti: CPI, NFP, FED)
+Hook: "I MERCATI STANNO TRATTENENDO IL RESPIRO. 🌪"
+Descrivi la quiete pre-tempesta. Avvisa che esploderà tutto. Chiedi di reagire con 💣 se pronti alla battaglia. CTA: SCUDO, BUNKER, PRONTO.
+
+10. 🥂 FOMO WEEKEND (sabato o domenica mattina)
+Hook: "COME STAI PAGANDO IL TUO WEEKEND? 🍸"
+Confronta chi spende i soldi del lavoro vs chi spende i profitti del CopyTrading. "Pensa a questa cosa per tutto il weekend. E lunedì, decidi da che parte stare." CTA: LIFESTYLE, WEEKEND, LIBERTA.
+
+REGOLE ASSOLUTE:
+- Adatta il formato scelto alla situazione reale del giorno — non essere generico.
+- MAI aprire con "Come sempre", "Ancora una volta", "Ciao ragazzi", "Buone notizie".
+- Scrivi in modo autentico, come un trader che condivide qualcosa di reale — non come un bot di marketing.
+- ZERO asterischi. Prima versione IT completa, poi ──────────────, poi versione EN.`,
 
     // ── Risultati Sala VIP — Primi ───────────────────────────────────────────
     vip_risultati_primi: base + `PRIME OPERAZIONI SALA VIP (mattina). Il VIP ha già operato: ${v('pips_vip') || '+65'} pips, ${v('trades_vip') || '3'} operazioni chiuse.
