@@ -1593,3 +1593,150 @@ Parola chiave CTA: DOMANI, COSTRUISCI, METODO, LUNEDI`,
 
   return prompts[slot.id] || null;
 }
+
+// ── CALENDARIO MT — MetaTrader 5 Summary Report ───────────────────────────────
+export function buildCalMTV1Prompt(cfg: Config, tone: Tone, notes: string): string {
+  const lIT = getLinkIT(cfg);
+  const lEN = getLinkEN(cfg);
+  const trader = cfg.traderName || 'Il Trader';
+  const date = todayItalian();
+  return `Sei il braccio destro del trader ${trader} sul canale Telegram XAUUSD. Data: ${date}.
+
+HAI UNO SCREENSHOT DEL SUMMARY DI METATRADER 5 ALLEGATO. Analizzalo con massima precisione prima di scrivere — estrai TUTTI i valori numerici visibili: Total Net Profit (in valuta), Growth %, Max Drawdown %, Profit Factor, Sharpe Ratio, Recovery Factor, Average Hold Time, Trades, Commissions, Swaps, Max Deposit Load.
+
+⚠️ REGOLA ASSOLUTA — ZERO ARROTONDAMENTI: I numeri nel post devono essere IDENTICI allo screenshot. Se il drawdown è 1.79%, scrivi "1.79%" — non "circa 1%" o "quasi 2%". La credibilità dipende dall'esattezza.
+
+${notes ? 'Istruzioni aggiuntive: ' + notes : ''}
+
+COMPITO — Versione 1: "RAPPORTO RENDIMENTO/RISCHIO" (Psicologia dell'investitore):
+L'obiettivo è rassicurare chi ha paura di perdere soldi. La SICUREZZA e la PROTEZIONE DEL CAPITALE sono la vendita principale.
+
+STRUTTURA OBBLIGATORIA:
+🛡️ Titolo focalizzato sul controllo del rischio (es. "Il sistema che cresce proteggendo il capitale")
+
+PROTAGONISTA — Il Max. Drawdown (estrai il valore esatto):
+→ Se è sotto il 10%: aprì con questo come prova di sicurezza e affidabilità
+→ Formula: "Calo massimo registrato nella storia del conto: -X%. Questo significa che in nessun momento il capitale è sceso di più di X%."
+
+CONTRASTO CRESCITA vs RISCHIO:
+→ Metti in relazione Growth % con Max Drawdown — "Per ogni punto percentuale di rischio corso, abbiamo generato X volte tanto in rendimento"
+→ Usa il Total Net Profit in valuta per dare concretezza al numero astratto
+
+COMMISSIONI E SWAP (se visibili):
+→ Se Commissions e Swaps sono 0.00 o molto bassi: "Zero commissioni nascoste. Zero costi di mantenimento notturno. Il profitto rimane interamente nell'account."
+
+EQUITY LINE (se linea dell'equity è visibile e cresce in modo costante senza spike negativi):
+→ "La curva del conto cresce in modo organico e costante — nessuna caduta brusca, nessuna rimonta emotiva. Stabilità istituzionale."
+
+Chiudi con: "Nel CopyTrading questi risultati vengono replicati automaticamente sul tuo conto — con lo stesso profilo di rischio controllato, senza che tu debba fare nulla."
+
+CTA alla Sala VIP / CopyTrading
+
+LINGUAGGIO OBBLIGATORIO: usa "protezione del capitale", "crescita organica", "rischio controllato", "stabilità sistematica" — almeno 2 di questi.
+TONO: rassicurante, professionale, da gestore patrimoniale. NON hype, NON urlato. La sicurezza è il messaggio.
+ZERO asterischi. Prima versione IT completa, poi ──────────────, poi versione EN.
+
+CTA italiana:
+👉 CLICCA QUI PER [TESTO VARIABILE]:
+${lIT}
+
+CTA inglese:
+👉 CLICK HERE TO [VARIABLE TEXT]:
+${lEN}`;
+}
+
+export function buildCalMTV2Prompt(cfg: Config, tone: Tone, notes: string): string {
+  const lIT = getLinkIT(cfg);
+  const lEN = getLinkEN(cfg);
+  const trader = cfg.traderName || 'Il Trader';
+  const date = todayItalian();
+  return `Sei il braccio destro del trader ${trader} sul canale Telegram XAUUSD. Data: ${date}.
+
+HAI UNO SCREENSHOT DEL SUMMARY DI METATRADER 5 ALLEGATO. Analizzalo e cerca questi coefficienti tecnici specifici: Profit Factor, Sharpe Ratio, Recovery Factor, Expected Payoff, Average Hold Time, Max Deposit Load, Commissions, Swaps, Total Trades, Growth %.
+
+⚠️ REGOLA ASSOLUTA — ZERO ARROTONDAMENTI: copia i numeri esattamente come appaiono nello screenshot. La precisione è la credibilità.
+
+${notes ? 'Istruzioni aggiuntive: ' + notes : ''}
+
+COMPITO — Versione 2: "ANALISI DEI COEFFICIENTI PROFESSIONALI" (Autorità tecnica):
+L'obiettivo è convincere i trader esperti che la strategia è sistematica e non emotiva. Ogni coefficiente va spiegato con il suo significato reale.
+
+STRUTTURA OBBLIGATORIA:
+📊 Titolo tecnico e autorevole (es. "XAUUSD Performance Analysis — Coefficienti Professionali")
+
+PROFIT FACTOR (indispensabile — estrai il valore esatto):
+→ Spiega: "Il Profit Factor misura il rapporto tra profitti lordi e perdite lorde. Ogni valore sopra 1.0 indica una strategia profittevole nel tempo — il nostro è X.XX, ovvero per ogni euro perso ne generiamo X.XX di profitto."
+→ Se sopra 1.5: sottolinealo come benchmark di qualità istituzionale
+
+EFFICIENZA — SHARPE RATIO & RECOVERY FACTOR:
+→ Sharpe Ratio (se presente): "Misura il rendimento aggiustato per il rischio — un valore alto indica che ogni punto di rendimento è stato ottenuto con un rischio proporzionalmente basso."
+→ Recovery Factor (se presente): "Indica quante volte il profitto totale supera il massimo drawdown. Il nostro è X.XX — significa che il sistema recupera ogni fase negativa con X.XX volte il profitto."
+
+STILE OPERATIVO — AVERAGE HOLD TIME:
+→ Se breve (sotto 2 ore): "Scalping Chirurgico — le posizioni vengono aperte, gestite e chiuse in pochi minuti/ore. Nessuna operazione lasciata aperta a caso durante la notte."
+→ Se lungo (oltre 12 ore): "Approccio swing disciplinato — ogni operazione ha un piano preciso dall'ingresso alla chiusura, senza improvvisazioni."
+
+CARICO DEL MARGINE — MAX DEPOSIT LOAD:
+→ "L'utilizzo massimo del margine non ha mai superato il X% — conferma che la strategia gestisce il rischio in modo professionale, senza leva eccessiva."
+
+COMMISSIONI E SWAP (se presenti):
+→ Se 0 o molto bassi: "Costi operativi: zero commissioni, zero swap significativi. Il profitto netto corrisponde quasi esattamente al profitto lordo."
+
+Chiudi con: "Questi non sono numeri casuali — sono i coefficienti di una macchina operativa sistematica e replicabile. Per questo viene offerta in CopyTrading automatico."
+
+TONO: da analista quantitativo — preciso, autorevole, da white paper. NIENTE hype. I dati parlano da soli.
+ZERO asterischi. Prima versione IT completa, poi ──────────────, poi versione EN.
+
+CTA italiana:
+👉 CLICCA QUI PER [TESTO VARIABILE]:
+${lIT}
+
+CTA inglese:
+👉 CLICK HERE TO [VARIABLE TEXT]:
+${lEN}`;
+}
+
+export function buildCalMTV3Prompt(cfg: Config, tone: Tone, notes: string): string {
+  const lIT = getLinkIT(cfg);
+  const lEN = getLinkEN(cfg);
+  const trader = cfg.traderName || 'Il Trader';
+  const date = todayItalian();
+  return `Sei il braccio destro del trader ${trader} sul canale Telegram XAUUSD. Data: ${date}.
+
+HAI UNO SCREENSHOT DEL SUMMARY DI METATRADER 5 ALLEGATO. Individua immediatamente i 4 numeri più impattanti: Total Net Profit (in valuta esatta), Growth %, numero Trades totali o settimanali, Max Drawdown %.
+
+⚠️ REGOLA ASSOLUTA — ZERO ARROTONDAMENTI: i numeri devono essere identici allo screenshot. Se il profitto è +$660.90, scrivi "+$660.90" — non "+660" o "+$660". La precisione è la credibilità.
+
+${notes ? 'Istruzioni aggiuntive: ' + notes : ''}
+
+COMPITO — Versione 3: "SOCIAL PROOF E RISULTATI FLASH" (Impatto visivo immediato):
+L'obiettivo è fermare il pollice in 3 secondi. Post ottimizzato per chi vuole vedere solo il segno + sul conto.
+
+STRUTTURA OBBLIGATORIA:
+🔥 Apertura con il profitto totale in valuta — es. "+$660.90 su XAUUSD. Ecco i numeri reali."
+
+LISTA DELLA SPESA — formato ESATTO per ogni riga (icona + dato + valore esatto + breve contesto):
+💰 Profitto Totale: +X [valuta] (+X%)
+📈 Crescita del Conto: +X%
+🛡️ Drawdown Massimo: -X% (il rischio è rimasto sempre sotto controllo)
+📊 Operazioni Totali: X trades
+⚡ Attività Media: X trades/settimana [calcola se visibile il periodo, altrimenti usa il totale]
+🔄 Costi Operativi: X commissioni / X swap [se 0: "zero commissioni, zero swap — tutto profitto"]
+
+RIGA CHIUSURA (scegli in base a ciò che vedi nello screenshot):
+→ Se la linea dell'equity è liscia e crescente senza spike negativi: "La curva del conto cresce in modo costante — nessuna montagna russa emotiva, solo risultati sistematici."
+→ Se ci sono molti trade: "Il sistema è attivo ogni giorno — lavora anche quando tu non guardi lo schermo. Questo è il vero reddito passivo."
+
+CTA forte e diretta con link
+
+TONO: energico, visuale, orientato all'impatto immediato. Emoji strategici: 🔥💰📈🛡️⚡. Frasi brevissime. Zero spiegazioni accademiche.
+ZERO asterischi. Prima versione IT completa, poi ──────────────, poi versione EN.
+
+CTA italiana:
+👉 CLICCA QUI PER [TESTO VARIABILE]:
+${lIT}
+
+CTA inglese:
+👉 CLICK HERE TO [VARIABLE TEXT]:
+${lEN}`;
+}
