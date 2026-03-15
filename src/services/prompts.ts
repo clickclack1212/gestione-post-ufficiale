@@ -992,26 +992,57 @@ export function buildAnalisiPrompt(
   const trader = cfg.traderName || 'Il Trader';
   const date = todayItalian();
 
-  return `Sei il gestore del canale Telegram XAUUSD di ${trader}. Data: ${date}.
+  return `Sei il gestore del canale Telegram XAUUSD di ${trader} e il tuo compito è trasformare un'analisi grezza in un report professionale, pronto per essere pubblicato. Data: ${date}.
 
-Hai trovato questa analisi su XAUUSD:
-
+ANALISI GREZZA DA OTTIMIZZARE:
 """
 ${rawAnalysis}
 """
 
 ${timeframe ? 'Timeframe di riferimento: ' + timeframe : ''}
-${note ? 'Tue note / contesto aggiuntivo: ' + note : ''}
+${note ? 'Note / contesto aggiuntivo: ' + note : ''}
 
-COMPITO: Riscrivi questa analisi come post Telegram professionale per il tuo canale XAUUSD, con il tuo stile e il tuo brand.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PROTOCOLLO DI OTTIMIZZAZIONE (applica tutti e 6 i passi in sequenza):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-REGOLE FONDAMENTALI:
-- Mantieni TUTTI i livelli tecnici, le direzioni e i target presenti nell'analisi originale — non inventare dati nuovi
-- Aggiungi il tuo angolo personale: commento sul setup, cosa rende questo livello interessante, come gestirlo
-- Chiudi con: "Chi è nella Sala VIP riceve il setup operativo preciso nel momento in cui il prezzo si attiva."
-- Output = SOLO il testo del messaggio — zero prefissi, zero metadati, zero etichette
-- Prima versione italiana COMPLETA con CTA, poi ESATTAMENTE questa riga: ──────────────, poi versione inglese COMPLETA con CTA
-- NON usare asterischi (*)
+① PULIZIA E DE-BULKING
+Rimuovi ripetizioni e riempitivi. Trasforma i muri di testo in punti elenco compatti. Mantieni SOLO le informazioni operative (livelli, direzioni, target, contesto). Zero prolissità.
+
+② GERARCHIA VISIVA (SCANNABILITY)
+Applica queste regole di formattazione:
+- 🔴 davanti a ogni resistenza o livello di SELL/SHORT
+- 🔵 davanti a ogni supporto o livello di BUY/LONG
+- Scrivi i prezzi esatti in MAIUSCOLO o con emphasis (es. $2.345 → $2.345 — non arrotondare MAI)
+- Le direzioni (BUY, SELL, BULLISH, BEARISH, LONG, SHORT) vanno sempre in MAIUSCOLO
+- Usa una riga "---" come separatore tra la sezione "cosa è successo" e la sezione "cosa potrebbe succedere"
+
+③ LOGICA IF-THEN (SCENARI OPERATIVI)
+L'analisi deve sempre contenere DUE scenari distinti:
+📈 SCENARIO BULLISH: cosa deve succedere per confermare il rialzo (livello da superare, candelastick di conferma, target)
+📉 SCENARIO BEARISH: quale livello invalida l'idea e dove porta il prezzo al ribasso
+Se l'analisi originale presenta già scenari, li ristrutturi in questo formato. Se mancano, li costruisci partendo dai livelli presenti.
+
+④ IL "PERCHÉ" FONDAMENTALE
+Se nell'analisi originale mancano riferimenti al contesto macro/fondamentale, integra brevemente il driver principale attuale (es. prossime dichiarazioni Fed/Powell, dati NFP in arrivo, tensioni geopolitiche, risk-off/risk-on). Questo unisce grafico e notizia, dando autorevolezza all'analisi tecnica. Usa solo 1-2 frasi — non diluire il focus tecnico.
+
+⑤ MIRRORING DEL TONO E DELLA TERMINOLOGIA
+Adatta il linguaggio a quello dell'analisi originale:
+- Se usa ICT / Smart Money Concepts: mantieni i termini FVG, BOS, CHOCH, liquidity sweep, order block, imbalance, discount/premium zone
+- Se usa retail / tradizionale: mantieni supporti, resistenze, trend, medie mobili, RSI, livelli Fibonacci
+NON mescolare i due lessici nello stesso post.
+
+⑥ ANGOLO BRAND E CHIUSURA
+Aggiungi il commento personale di ${trader}: perché questo setup è interessante, cosa lo rende unico, come gestire il rischio.
+Chiudi SEMPRE con: "Chi è nella Sala VIP riceve il piano operativo preciso nel momento in cui il prezzo si attiva."
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+REGOLE OUTPUT:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Output = SOLO il testo del post — zero prefissi, zero metadati, zero commenti sul processo
+- NON usare asterischi (*) o markdown
+- Non inventare livelli di prezzo, percentuali o dati non presenti nell'originale
+- Prima versione italiana COMPLETA con CTA, poi ESATTAMENTE questa riga separatore: ──────────────, poi versione inglese COMPLETA con CTA
 
 ${toneInstructions(tone)}
 
@@ -1023,7 +1054,7 @@ CTA INGLESE (alla fine della versione EN, link su riga nuova):
 👉 CLICK HERE TO [VARIABLE TEXT]:
 ${lEN}
 
-Varia il testo CTA ogni volta: "ACCEDERE AL VIP", "RICEVERE IL SEGNALE OPERATIVO", "COPIARE LA GESTIONE IN AUTOMATICO", "ENTRARE NELLA SALA VIP", "REPLICARE L'ANALISI IN TEMPO REALE" ecc.`;
+Varia il testo CTA ogni volta tra: "ACCEDERE AL VIP", "RICEVERE IL SEGNALE OPERATIVO", "COPIARE LA GESTIONE IN AUTOMATICO", "ENTRARE NELLA SALA VIP", "REPLICARE L'ANALISI IN TEMPO REALE", "RICEVERE L'ALERT SUI LIVELLI CHIAVE" ecc.`;
 }
 
 // ── CALENDAR PARSE PROMPT ──────────────────────────────────────────────────
