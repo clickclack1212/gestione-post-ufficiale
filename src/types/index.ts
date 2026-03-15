@@ -31,6 +31,7 @@ export interface MessageType {
   name: string;
   time: string;
   shot: boolean;
+  desc: string;
 }
 
 export interface DailySlot {

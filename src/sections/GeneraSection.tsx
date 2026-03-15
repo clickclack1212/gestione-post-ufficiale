@@ -255,6 +255,8 @@ export function GeneraSection() {
   const [newsPhoto, setNewsPhoto] = useState<string | null>(null);
   const [newsPhotoPreview, setNewsPhotoPreview] = useState<string | null>(null);
   const [result, setResult] = useState({ it: '', en: '' });
+  const [extraOpen, setExtraOpen] = useState(false);
+  const [extraNote, setExtraNote] = useState('');
 
   const isResultsType = RESULT_PARENT_IDS.includes(selectedType);
   // Compose effective type ID: for result types, append sub-type
@@ -272,11 +274,16 @@ export function GeneraSection() {
     setSelectedType(id);
     setResult({ it: '', en: '' });
     setFields({});
+    setExtraOpen(false);
+    setExtraNote('');
     if (!RESULT_PARENT_IDS.includes(id)) setSubType('primi');
   }
 
   async function handleGenerate() {
-    const prompt = buildPrompt(effectiveTypeId, config, tone, fields, newsPhoto);
+    const fieldsWithExtra = selectedType === 'buongiorno' && extraNote.trim()
+      ? { ...fields, extra: extraNote.trim() }
+      : fields;
+    const prompt = buildPrompt(effectiveTypeId, config, tone, fieldsWithExtra, newsPhoto);
     if (!prompt) return;
     const text = await run(prompt, 0.88, newsPhoto ? newsPhoto : null);
     if (text) setResult(parseBilingual(text));
@@ -310,6 +317,13 @@ export function GeneraSection() {
             </button>
           ))}
         </div>
+
+        {/* Type description */}
+        {activeType?.desc && (
+          <p className="text-xs text-[var(--text3)] leading-relaxed mb-4 px-0.5">
+            {activeType.desc}
+          </p>
+        )}
 
         {/* Sub-type selector for result types */}
         {isResultsType && (
@@ -362,6 +376,31 @@ export function GeneraSection() {
               }}
               onClear={() => { setNewsPhoto(null); setNewsPhotoPreview(null); }}
             />
+          </div>
+        )}
+
+        {/* Optional extra note — only for buongiorno */}
+        {selectedType === 'buongiorno' && (
+          <div className="mt-4">
+            <button
+              type="button"
+              onClick={() => setExtraOpen(o => !o)}
+              className="flex items-center gap-1.5 text-xs text-[var(--text3)] hover:text-[var(--text2)] transition-colors"
+            >
+              <Icon name={extraOpen ? 'ChevronUp' : 'ChevronDown'} size={12} />
+              Vuoi aggiungere qualcosa in più per questa generazione?
+            </button>
+            {extraOpen && (
+              <div className="mt-2 space-y-1">
+                <textarea
+                  className="w-full text-sm"
+                  rows={2}
+                  value={extraNote}
+                  placeholder="Es: oggi abbiamo notizie alle 15:00 — costruisci hype attorno a quello..."
+                  onChange={e => setExtraNote(e.target.value)}
+                />
+              </div>
+            )}
           </div>
         )}
 

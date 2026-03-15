@@ -14,18 +14,18 @@ export const DEFAULT_LINK_IT = 'https://t.me/m/jYmEudCONzYy';
 export const DEFAULT_LINK_EN = 'https://t.me/m/b9dalhvdOWJh';
 
 export const TYPES: MessageType[] = [
-  { id: 'buongiorno',           icon: 'Sunrise',       name: 'Buongiorno',                  time: '07:00', shot: false },
-  { id: 'risultati_ieri',       icon: 'BarChart2',     name: 'Risultati Ieri',              time: '08:00', shot: true  },
-  { id: 'ready_segnale',        icon: 'Target',        name: 'Ready Segnale',               time: '09:30', shot: false },
-  { id: 'segnale_xauusd',       icon: 'Radio',         name: 'Segnale XAUUSD',              time: '10:00', shot: true  },
-  { id: 'risultato_segnale',    icon: 'CheckCircle',   name: 'Risultato Segnale',           time: 'Dopo',  shot: true  },
-  { id: 'notizie_giorno',       icon: 'Newspaper',     name: 'Notizie Gold',                time: '13:00', shot: false },
-  { id: 'risultati_clienti',    icon: 'Trophy',        name: 'Risultati Clienti',           time: 'Live',  shot: true  },
-  { id: 'aggiornamento',        icon: 'RefreshCw',     name: 'Aggiornamento Trade',         time: 'Live',  shot: true  },
-  { id: 'chiusura_giornata',    icon: 'Moon',          name: 'Chiusura Giornata',           time: '17:00', shot: true  },
-  { id: 'engagement',     icon: 'Lightbulb', name: 'Engagement',                 time: 'Varie', shot: false },
-  { id: 'vip_risultati',  icon: 'Diamond',   name: 'Risultati\nSala VIP',        time: 'Live',  shot: true  },
-  { id: 'copy_risultati', icon: 'Rocket',    name: 'Risultati\nCopyTrading',     time: 'Live',  shot: true  },
+  { id: 'buongiorno',        icon: 'Sunrise',     name: 'Buongiorno',             time: '07:00', shot: false, desc: 'Saluto motivazionale di apertura giornata. Anticipa il programma del canale e crea engagement iniziale.' },
+  { id: 'risultati_ieri',    icon: 'BarChart2',   name: 'Risultati Ieri',         time: '08:00', shot: true,  desc: 'Report dei risultati di VIP Room e CopyTrading del giorno precedente. Inserisci pips, operazioni e win rate.' },
+  { id: 'ready_segnale',     icon: 'Target',      name: 'Ready Segnale',          time: '09:30', shot: false, desc: 'Annuncio dell\'imminente segnale gratuito su XAUUSD. Crea attesa e rimanda al VIP per setup avanzati.' },
+  { id: 'segnale_xauusd',    icon: 'Radio',       name: 'Segnale XAUUSD',         time: '10:00', shot: true,  desc: 'Segnale operativo completo con direzione, entry, stop loss e target. Inserisci i livelli per generare il messaggio.' },
+  { id: 'risultato_segnale', icon: 'CheckCircle', name: 'Risultato Segnale',      time: 'Dopo',  shot: true,  desc: 'Esito del segnale pubblicato (WIN / LOSS / Break Even). Inserisci entry, uscita e pips per il resoconto.' },
+  { id: 'notizie_giorno',    icon: 'Newspaper',   name: 'Notizie Gold',           time: '13:00', shot: false, desc: 'Analisi del calendario economico e notizie che impattano l\'oro. Puoi allegare uno screenshot del calendario.' },
+  { id: 'risultati_clienti', icon: 'Trophy',      name: 'Risultati Clienti',      time: 'Live',  shot: true,  desc: 'Post di social proof con risultati reali dei membri. Allega screenshot e descrivi brevemente il contesto.' },
+  { id: 'aggiornamento',     icon: 'RefreshCw',   name: 'Aggiornamento Trade',    time: 'Live',  shot: true,  desc: 'Aggiornamento live su un trade ancora aperto. Indica la situazione attuale (profitto/perdita) e i pips correnti.' },
+  { id: 'chiusura_giornata', icon: 'Moon',        name: 'Chiusura Giornata',      time: '17:00', shot: true,  desc: 'Recap motivazionale di fine sessione con bilancio della giornata. Nessun campo richiesto.' },
+  { id: 'engagement',        icon: 'Lightbulb',   name: 'Engagement',             time: 'Varie', shot: false, desc: 'Post interattivo per generare engagement e lead generation. L\'AI sceglie il formato più adatto al momento (sondaggio, pain point, FOMO, ecc.).' },
+  { id: 'vip_risultati',     icon: 'Diamond',     name: 'Risultati\nSala VIP',    time: 'Live',  shot: true,  desc: 'Risultati della Sala VIP in 3 fasi: Primi (mattina), Durante (live), Conclusi (recap finale). Seleziona la fase e inserisci i dati.' },
+  { id: 'copy_risultati',    icon: 'Rocket',      name: 'Risultati\nCopyTrading', time: 'Live',  shot: true,  desc: 'Risultati del CopyTrading in 3 fasi: Primi (mattina), Durante (live), Conclusi (recap finale). Seleziona la fase e inserisci i dati.' },
 ];
 
 export const DAILY_SLOTS: DailySlot[] = [
