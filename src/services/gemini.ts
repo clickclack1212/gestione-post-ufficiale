@@ -36,7 +36,7 @@ async function callModel(
   parts.push({ text: prompt });
 
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 60000);
+  const timeout = setTimeout(() => controller.abort(), 90000);
   try {
     const res = await fetch(url, {
       method: 'POST',
@@ -73,7 +73,7 @@ export async function gemini(
     } catch (e) {
       if ((e as Error).message === 'TIMEOUT') {
         if (i + 1 < GEMINI_MODELS.length) {
-          onToast?.(`${model.label} timeout (60s) → ${GEMINI_MODELS[i+1].label}...`);
+          onToast?.(`${model.label} timeout (90s) → ${GEMINI_MODELS[i+1].label}...`);
           continue;
         }
         throw new Error('Timeout su tutti i modelli. Riprova tra poco.');
