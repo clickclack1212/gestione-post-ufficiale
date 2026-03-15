@@ -808,21 +808,64 @@ Stile originale: "Pronti a sapere cosa ci spetta da lunedì?" — breve, curioso
 Messaggio cortissimo: 1-2 righe + domanda retorica + senso di anticipazione.
 NON svelare ancora nulla del calendario. Solo creare attesa. Nessuna CTA con link — al massimo invita a restare sul canale.`,
 
-    dom_outlook: base + `WEEKLY OUTLOOK (Domenica ~13:00). Analisi prospettica settimana prossima su XAUUSD.
-${wkOutlookPhoto ? 'Hai lo screenshot del calendario economico allegato. ANALIZZALO: estrai tutti gli eventi rilevanti per XAUUSD (Fed, inflazione, lavoro USA, PMI, geopolitica) con data, ora CET, valore atteso e impatto probabile sul Gold.' : ''}
+    dom_outlook: base + `WEEKLY OUTLOOK (Domenica ~13:00). Analisi prospettica della settimana prossima su XAUUSD.
+${wkOutlookPhoto ? 'Hai lo screenshot del calendario economico allegato. ANALIZZALO CON CURA: estrai TUTTI gli eventi rilevanti per XAUUSD con data esatta, orario CET, nome evento e importanza per il Gold.' : ''}
 ${wv('wk_ctx_tech') ? 'Contesto tecnico: ' + wv('wk_ctx_tech') : ''}
 ${wv('wk_cal_next') ? 'Calendario testuale: ' + wv('wk_cal_next') : ''}
 ${wv('wk_target') ? 'Target / scenario: ' + wv('wk_target') : ''}
 
-Struttura narrativa dell'outlook originale:
-- Titolo impatto (es. "WEEKLY OUTLOOK XAUUSD: [target] vs [evento]")
-- Intro domenica + commento chiusura venerdì
-- ⚠️ Avvertimento: settimana carica di market mover
-- Lista numerata giorni/eventi macro con orari CET, valuta, atteso, impatto previsto su XAUUSD
-- Analisi: cosa significa ogni dato per Gold
-- Chiusura + CTA "Gestione esclusiva dei segnali durante le notizie"
+⚠️ IGNORA la CTA generica nel contesto precedente — usa SOLO le CTA specifiche indicate qui sotto.
 
-Usa formato calendare numerato — non blocchi brevi. Sii specifico e professionale.`,
+STRUTTURA OBBLIGATORIA — rispetta questo schema con ESATTA fedeltà al formato:
+
+TITOLO (1 riga):
+🚨 WEEKLY OUTLOOK XAUUSD: [TITOLO IN MAIUSCOLO CHE SINTETIZZA IL TEMA MACRO] [emoji pertinente tra 📈 ⚠️ 💥 🔥]
+
+INTRO (1 frase):
+"Buona domenica traders. La settimana dal [DD] al [DD] [mese] [anno] sarà decisiva, con [fattore principale] pronti a dettare la direzione del Gold."
+
+AVVISO (1 frase):
+"⚠️ Attenzione: il calendario è denso di market mover ad alto impatto[, soprattutto da [giorno] in poi]. La volatilità è garantita."
+
+SEZIONE CALENDARIO — titolo FISSO su riga propria:
+📆 CALENDARIO CHIAVE:
+
+[Ogni evento su riga propria — formato ESATTO:]
+[Giorno weekday DD] - [Nome Evento]. [1 frase: cosa misura, quale istituzione, impatto atteso sul Gold.]
+
+Esempi di formato riga ✅ (non copiare, adatta ai dati reali):
+"Mercoledì 11 - Inflazione USA (CPI). Il dato più atteso, cruciale per le prossime mosse della Fed."
+"Giovedì 12 - Richieste di disoccupazione USA. Un termometro chiave dello stato di salute del mercato del lavoro."
+"Venerdì 13 - Dati USA (PCE, PIL). Una valanga di dati che misurerà l'inflazione preferita dalla Fed e la crescita economica."
+
+REGOLE FORMATO CALENDARIO:
+- NON numerare (no 1. 2. 3.) — solo "Giorno DD - Evento. Spiegazione."
+- Ogni evento = riga propria, ZERO raggruppamenti sulla stessa riga
+- Ordine cronologico lunedì→venerdì
+
+ANALISI MACRO (2-3 frasi — scenari contrapposti obbligatori, collegati in un'unica argomentazione):
+→ Scenario bearish Gold: inflazione alta / dati forti → USD si rafforza → pressione sull'oro 📉
+→ Scenario bullish Gold: dati deboli / timori recessione → fuga verso bene rifugio → Gold su 📈
+Scrivi in modo accessibile e fluido come nell'esempio: "Un'inflazione alta potrebbe rafforzare il dollaro e pesare sull'oro 📉, ma dati deboli su lavoro e crescita potrebbero alimentare i timori di recessione, spingendo gli investitori verso l'oro come bene rifugio 📈"
+
+CHIUSURA + CTA ITALIANA (testo FISSO — copia esattamente):
+"La gestione del rischio durante queste notizie è tutto. Noi saremo pronti a intervenire con segnali dedicati solo ai membri. ✅"
+👉 PER AVERE LA GESTIONE ESCLUSIVA DEI SEGNALI DURANTE LE NOTIZIE CLICCA QUI
+${lIT}
+
+──────────────
+
+[Versione INGLESE con stessa struttura, stessa qualità e stessi dati del calendario]
+
+CHIUSURA + CTA INGLESE (testo FISSO — copia esattamente):
+"Risk management during these news events is everything. We will be ready with dedicated signals, available only to our members. ✅"
+👉 FOR EXCLUSIVE SIGNAL MANAGEMENT DURING NEWS EVENTS CLICK HERE
+${lEN}
+
+REGOLE FORMATO GENERALI:
+- NON usare asterischi (*)
+- Riga vuota tra ogni sezione principale
+- Messaggio lungo e strutturato — NON blocchi brevi da 2 righe`,
 
     dom_recap: base + `RECAP VIP vs COPYTRADING (Domenica ~17:00).
 VIP Room: ${wv('wk_vip_eur') || '+3.998€'} · ${wv('wk_vip_pct') || '+7.31%'} ${wv('wk_vip_note') ? '· ' + wv('wk_vip_note') : ''}

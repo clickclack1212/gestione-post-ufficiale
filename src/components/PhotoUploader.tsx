@@ -147,6 +147,7 @@ export function MultiPhotoUploader({ onPhotos, previews, onRemove, label = 'Alle
       {previews.length < max && (
         <div
           className={`drop-zone ${dragging ? 'over' : ''}`}
+          tabIndex={0}
           onDragOver={e => { e.preventDefault(); setDragging(true); }}
           onDragLeave={() => setDragging(false)}
           onDrop={e => {
@@ -154,11 +155,19 @@ export function MultiPhotoUploader({ onPhotos, previews, onRemove, label = 'Alle
             setDragging(false);
             handleFiles(e.dataTransfer.files);
           }}
+          onPaste={e => {
+            const items = Array.from(e.clipboardData.items);
+            const imageFiles = items
+              .filter(item => item.type.startsWith('image/'))
+              .map(item => item.getAsFile())
+              .filter(Boolean) as File[];
+            if (imageFiles.length > 0) handleFiles(imageFiles);
+          }}
           onClick={() => inputRef.current?.click()}
         >
           <span className="text-xl mb-1 block">📷</span>
           <span className="text-xs text-[var(--text3)]">
-            Clicca o trascina le immagini (max {max})
+            Clicca, trascina o incolla (Ctrl+V) le immagini (max {max})
           </span>
           <input
             ref={inputRef}
