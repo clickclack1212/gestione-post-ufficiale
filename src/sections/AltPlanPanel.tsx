@@ -176,6 +176,8 @@ export function AltPlanPanel() {
   const [mktCtx, setMktCtx] = useState('');
   const [singleResult, setSingleResult] = useState({ it: '', en: '' });
   const [dayResults, setDayResults] = useState<PlanCardData[]>([]);
+  const [extraOpen, setExtraOpen] = useState(false);
+  const [extraNote, setExtraNote] = useState('');
 
   const types: AltType[] = plan === 'A' ? ALT_TYPES : ALT_TYPES_B;
   const planInfo = ALT_PLAN_INFO[plan];
@@ -184,15 +186,15 @@ export function AltPlanPanel() {
     setFields(prev => ({ ...prev, [k]: v }));
   }
 
-  const ctx = () => ({ date: todayItalian(), news, mktCtx });
+  const ctx = (withExtra = false) => ({ date: todayItalian(), news, mktCtx, extra: withExtra ? extraNote.trim() : '' });
 
-  const buildPrompt = (typeId: string) =>
+  const buildPromptFn = (typeId: string, withExtra = false) =>
     plan === 'A'
-      ? buildAltPromptA(typeId, config, tone, fields, ctx())
-      : buildAltPromptB(typeId, config, tone, fields, ctx());
+      ? buildAltPromptA(typeId, config, tone, fields, ctx(withExtra))
+      : buildAltPromptB(typeId, config, tone, fields, ctx(withExtra));
 
   async function handleSingle() {
-    const prompt = buildPrompt(selectedTypeId);
+    const prompt = buildPromptFn(selectedTypeId, true);
     if (!prompt) return;
     const text = await run(prompt);
     if (text) setSingleResult(parseBilingual(text));
@@ -202,7 +204,7 @@ export function AltPlanPanel() {
     setDayResults([]);
     const results: PlanCardData[] = [];
     for (const t of types) {
-      const prompt = buildPrompt(t.id);
+      const prompt = buildPromptFn(t.id);
       if (!prompt) continue;
       const text = await run(prompt);
       if (!text) continue;
@@ -230,6 +232,7 @@ export function AltPlanPanel() {
                 setSelectedTypeId(p === 'A' ? ALT_TYPES[0].id : ALT_TYPES_B[0].id);
                 setDayResults([]);
                 setSingleResult({ it: '', en: '' });
+                setExtraOpen(false); setExtraNote('');
               }}
               className={`alt-plan-btn flex-1 ${plan === p ? 'active' : ''}`}
             >
@@ -268,7 +271,7 @@ export function AltPlanPanel() {
             {types.map(t => (
               <button
                 key={t.id}
-                onClick={() => { setSelectedTypeId(t.id); setSingleResult({ it: '', en: '' }); }}
+                onClick={() => { setSelectedTypeId(t.id); setSingleResult({ it: '', en: '' }); setExtraOpen(false); setExtraNote(''); }}
                 className={`type-card ${selectedTypeId === t.id ? 'selected' : ''}`}
                 style={selectedTypeId === t.id ? { borderColor: t.color + '60', background: t.color + '14' } : {}}
               >
@@ -306,6 +309,30 @@ export function AltPlanPanel() {
               ? <FieldsA typeId={selectedTypeId} fields={fields} setField={setField} />
               : <FieldsB typeId={selectedTypeId} fields={fields} setField={setField} />
             }
+          </div>
+        )}
+
+        {mode === 'single' && (
+          <div className="mt-4">
+            <button
+              type="button"
+              onClick={() => setExtraOpen(o => !o)}
+              className="flex items-center gap-1.5 text-xs text-[var(--text3)] hover:text-[var(--text2)] transition-colors"
+            >
+              <Icon name={extraOpen ? 'ChevronUp' : 'ChevronDown'} size={12} />
+              Vuoi aggiungere qualcosa in più per questa generazione?
+            </button>
+            {extraOpen && (
+              <div className="mt-2">
+                <textarea
+                  className="w-full text-sm"
+                  rows={2}
+                  value={extraNote}
+                  placeholder="Aggiungi contesto, dettagli o istruzioni extra..."
+                  onChange={e => setExtraNote(e.target.value)}
+                />
+              </div>
+            )}
           </div>
         )}
 

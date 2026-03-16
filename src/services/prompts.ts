@@ -164,7 +164,7 @@ export function buildPrompt(
   const trader = cfg.traderName || 'Il Trader';
 
   const map: Record<string, string> = {
-    buongiorno: base + `${v('extra') ? 'NOTA EXTRA DAL TRADER (includi nel messaggio): ' + v('extra') + '\n\n' : ''}BUONGIORNO (07:00) — l'unico messaggio della giornata che inizia con "Buongiorno Traders! 👋".
+    buongiorno: base + `BUONGIORNO (07:00) — l'unico messaggio della giornata che inizia con "Buongiorno Traders! 👋".
 Tono caldo e carico di energia genuina, come chi apre la giornata con chiarezza sul cosa fare. Anticipa brevemente cosa succederà oggi sul canale (segnale gratuito, analisi XAUUSD, aggiornamenti dalla Sala VIP). Fai sentire chi legge che fa parte di qualcosa, non che sta guardando da fuori.
 Chiudi con CTA al CopyTrading — angolo: "chi è già configurato non deve fare nulla, parte tutto in automatico stamattina."`,
 
@@ -315,7 +315,11 @@ CTA con angolo configurazione — varia ogni volta: "non ti chiedo di fare tradi
 
   };
 
-    return map[type] || null;
+  const result = map[type] || null;
+  if (result && v('extra')) {
+    return result + `\n\nNOTA AGGIUNTIVA DAL TRADER (integra in modo naturale nel messaggio): ${v('extra')}`;
+  }
+  return result;
 }
 
 // ── DAILY PLAN PROMPT ──────────────────────────────────────────────────────
@@ -419,7 +423,11 @@ CTA forte.`,
     d_recensioni:      base + `RECENSIONI DEL GIORNO + RECAP (19:00).${f('nota') ? ' Nota: ' + f('nota') + '.' : ''} Mostra le testimonianze / messaggi positivi ricevuti oggi. Screenshot allegato. Non elencare le recensioni — presentale come storie di persone reali. Poi aggiungi un breve recap numerico della giornata. Social proof autentico, non gonfiato. CTA.`,
     d_chiusura:        base + `CHIUSURA (21:00). Bilancio sintetico della giornata — cosa è successo, com'è andata, come ci si sente. Poi contrasto netto: chi è già dentro sa cosa ha guadagnato, chi è fuori sa cosa si è perso. Non accusatorio, solo concreto. CTA finale — domani si riparte, ma chi entra oggi è già pronto per domani mattina.`,
   };
-    return prompts[slot.id] || null;
+  const dailyResult = prompts[slot.id] || null;
+  if (dailyResult && extra) {
+    return dailyResult + `\n\nNOTA AGGIUNTIVA DAL TRADER (integra in modo naturale nel messaggio): ${extra}`;
+  }
+  return dailyResult;
 }
 
 // ── NS (no signal) DAILY PROMPTS ───────────────────────────────────────────
@@ -477,7 +485,11 @@ Racconta come ha reagito XAUUSD e cosa hanno ottenuto VIP + CopyTrading durante 
     ns_recensioni:     base + `RECENSIONI CLIENTI DEL GIORNO (18:00).${f('nota') ? ' Nota: ' + f('nota') + '.' : ''} Mostra le testimonianze / messaggi positivi ricevuti oggi. Screenshot allegato. Presentale come storie reali di persone che hanno smesso di aspettare — non come materiale pubblicitario. Social proof che convince, non che vende. CTA.`,
     ns_recap:          base + `RECAP FINALE + CHIUSURA GIORNO (21:00).${f('nota_finale') ? ' Note finali: ' + f('nota_finale') + '.' : ''} Riepilogo della giornata: risultati totali VIP e CopyTrading, operazioni chiuse, bilancio complessivo. Tono trasparente — buona o media che sia, il metodo si valuta nel lungo periodo. Chiudi con un messaggio motivante per domani e CTA finale per chi vuole iniziare prima del prossimo segnale.`,
   };
-    return prompts[slot.id] || null;
+  const nsResult = prompts[slot.id] || null;
+  if (nsResult && extra) {
+    return nsResult + `\n\nNOTA AGGIUNTIVA DAL TRADER (integra in modo naturale nel messaggio): ${extra}`;
+  }
+  return nsResult;
 }
 
 // ── ALT PLAN A PROMPTS ─────────────────────────────────────────────────────
@@ -486,7 +498,7 @@ export function buildAltPromptA(
   cfg: Config,
   tone: Tone,
   fields: Record<string, string>,
-  ctx?: { date?: string; news?: string; mktCtx?: string },
+  ctx?: { date?: string; news?: string; mktCtx?: string; extra?: string },
 ): string | null {
   const date = ctx?.date || todayItalian();
   const lIT = getLinkIT(cfg);
@@ -601,7 +613,11 @@ Crea urgenza legata a oggi: X posti / offerta che scade a mezzanotte / accesso c
 CTA forte finale con link.`,
   };
 
-  return map[type] || null;
+  const altAResult = map[type] || null;
+  if (altAResult && ctx?.extra) {
+    return altAResult + `\n\nNOTA AGGIUNTIVA DAL TRADER (integra in modo naturale nel messaggio): ${ctx.extra}`;
+  }
+  return altAResult;
 }
 
 // ── ALT PLAN B PROMPTS ─────────────────────────────────────────────────────
@@ -610,7 +626,7 @@ export function buildAltPromptB(
   cfg: Config,
   tone: Tone,
   fields: Record<string, string>,
-  ctx?: { date?: string; news?: string; mktCtx?: string },
+  ctx?: { date?: string; news?: string; mktCtx?: string; extra?: string },
 ): string | null {
   const date = ctx?.date || todayItalian();
   const lIT = getLinkIT(cfg);
@@ -692,7 +708,11 @@ CTA soft: "Se vuoi un recap personalizzato di cosa potresti aspettarti nei tuoi 
 CTA forte finale: "Se vuoi essere dentro dal prossimo ciclo, questo è l'ultimo slot di oggi. Manda PRONTO in DM e ti rispondo domani mattina con priorità."`,
   };
 
-  return map[type] || null;
+  const altBResult = map[type] || null;
+  if (altBResult && ctx?.extra) {
+    return altBResult + `\n\nNOTA AGGIUNTIVA DAL TRADER (integra in modo naturale nel messaggio): ${ctx.extra}`;
+  }
+  return altBResult;
 }
 
 // ── WEEKEND PROMPTS ────────────────────────────────────────────────────────
@@ -704,7 +724,7 @@ export function buildWkPrompt(
   wkRecapPhotos: string[],
   wkSPPhotos: string[],
   wkOutlookPhoto: string | null,
-  ctx?: { date?: string },
+  ctx?: { date?: string; extra?: string },
 ): string | null {
   const date = ctx?.date || todayItalian();
   const lIT = getLinkIT(cfg);
@@ -903,7 +923,11 @@ Mantieni: ✅ urgenza reale e credibile + ✅ lista conseguenze concrete per chi
 Tono diretto, quasi secco. Nessuna promessa di guadagno. Solo logistica operativa + FOMO pratica.`,
   };
 
-  return map[type] || null;
+  const wkResult = map[type] || null;
+  if (wkResult && ctx?.extra) {
+    return wkResult + `\n\nNOTA AGGIUNTIVA DAL TRADER (integra in modo naturale nel messaggio): ${ctx.extra}`;
+  }
+  return wkResult;
 }
 
 // ── OPTIMIZE PROMPT ────────────────────────────────────────────────────────
@@ -1415,9 +1439,9 @@ ${lEN}`;
 // ── HYPE & VENDITA DAILY PROMPTS ─────────────────────────────────────────────
 export function buildHypePrompt(
   slot: { id: string; time: string; label: string },
-  ctx: { cfg: Config; date: string; fields?: Record<string, string>; tone?: Tone },
+  ctx: { cfg: Config; date: string; fields?: Record<string, string>; tone?: Tone; extra?: string },
 ): string | null {
-  const { cfg, date, fields = {}, tone = 'hype' } = ctx;
+  const { cfg, date, fields = {}, tone = 'hype', extra } = ctx;
   const f = (k: string) => fields[k] || '';
   const trader = cfg.traderName || 'Il Trader';
   const toneNote = tone !== 'hype'
@@ -1531,15 +1555,19 @@ Media: **[ALLEGA CARRELLATA SCREENSHOT PROFITTI CLIENTI DEL GIORNO]**
 Parola d'ordine suggerita: WEEKEND, RECAP, LUNEDI, STASERA`,
   };
 
-  return prompts[slot.id] || null;
+  const hypeResult = prompts[slot.id] || null;
+  if (hypeResult && extra) {
+    return hypeResult + `\n\nNOTA AGGIUNTIVA DAL TRADER (integra in modo naturale nel messaggio): ${extra}`;
+  }
+  return hypeResult;
 }
 
 // ── COSTANZA & METODO DAILY PROMPTS ──────────────────────────────────────────
 export function buildCostanzaPrompt(
   slot: { id: string; time: string; label: string },
-  ctx: { cfg: Config; date: string; fields?: Record<string, string>; tone?: Tone },
+  ctx: { cfg: Config; date: string; fields?: Record<string, string>; tone?: Tone; extra?: string },
 ): string | null {
-  const { cfg, date, fields = {}, tone = 'assertivo' } = ctx;
+  const { cfg, date, fields = {}, tone = 'assertivo', extra } = ctx;
   const f = (k: string) => fields[k] || '';
   const trader = cfg.traderName || 'Il Trader';
   const lIT = getLinkIT(cfg);
@@ -1668,7 +1696,11 @@ Media: **[ALLEGA CARRELLATA SCREENSHOT RISULTATI DELLA GIORNATA]**
 Parola chiave CTA: DOMANI, COSTRUISCI, METODO, LUNEDI`,
   };
 
-  return prompts[slot.id] || null;
+  const costanzaResult = prompts[slot.id] || null;
+  if (costanzaResult && extra) {
+    return costanzaResult + `\n\nNOTA AGGIUNTIVA DAL TRADER (integra in modo naturale nel messaggio): ${extra}`;
+  }
+  return costanzaResult;
 }
 
 // ── CALENDARIO MT — MetaTrader 5 Summary Report ───────────────────────────────

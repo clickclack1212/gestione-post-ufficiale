@@ -6,7 +6,7 @@ import { PhotoUploader } from '../components/PhotoUploader';
 import { PlanCard } from '../components/PlanCard';
 import { buildDailyPrompt, parseBilingual, todayItalian } from '../services/prompts';
 import { DAILY_SLOTS } from '../constants/data';
-import { ClipboardList, Copy, Globe, Zap, Camera } from '../components/Icon';
+import { ClipboardList, Copy, Globe, Zap, Camera, Icon } from '../components/Icon';
 import type { PlanCardData } from '../components/PlanCard';
 import type { Tone } from '../types';
 
@@ -156,6 +156,8 @@ export function DailySignalPanel() {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [singleResult, setSingleResult] = useState({ it: '', en: '' });
   const [dayResults, setDayResults] = useState<PlanCardData[]>([]);
+  const [extraOpen, setExtraOpen] = useState(false);
+  const [extraNote, setExtraNote] = useState('');
 
   function setField(k: string, v: string) {
     setFieldsState(prev => ({ ...prev, [k]: v }));
@@ -165,12 +167,12 @@ export function DailySignalPanel() {
     ? calendarEvents.map(e => `${e.time} ${e.currency}: ${e.title} (${e.impact})`).join('\n')
     : '';
 
-  const ctx = () => ({
+  const ctx = (withExtra = false) => ({
     cfg: config,
     date: todayItalian(),
     tone,
     news: fields.note || '',
-    extra: '',
+    extra: withExtra ? extraNote.trim() : '',
     hasPhoto: !!photo,
     calEvents: calEventsStr,
     fields,
@@ -178,7 +180,7 @@ export function DailySignalPanel() {
 
   async function handleSingle() {
     const slot = DAILY_SLOTS.find(s => s.id === selectedSlot)!;
-    const prompt = buildDailyPrompt(slot, ctx());
+    const prompt = buildDailyPrompt(slot, ctx(true));
     if (!prompt) return;
     const text = await run(prompt, 0.88, slot.id === 'd_notizie' && photo ? photo : null);
     if (text) setSingleResult(parseBilingual(text));
@@ -240,7 +242,7 @@ export function DailySignalPanel() {
               {DAILY_SLOTS.map(s => (
                 <button
                   key={s.id}
-                  onClick={() => { setSelectedSlot(s.id); setSingleResult({ it: '', en: '' }); setFieldsState({}); }}
+                  onClick={() => { setSelectedSlot(s.id); setSingleResult({ it: '', en: '' }); setFieldsState({}); setExtraOpen(false); setExtraNote(''); }}
                   className={`alt-plan-btn text-left ${selectedSlot === s.id ? 'active' : ''}`}
                 >
                   <span className="text-[var(--gold)] font-mono text-[11px]">{s.time}</span>
@@ -272,6 +274,31 @@ export function DailySignalPanel() {
               onPhoto={(b64) => { setPhoto(b64); setPhotoPreview(`data:image/jpeg;base64,${b64}`); }}
               onClear={() => { setPhoto(null); setPhotoPreview(null); }}
             />
+          </div>
+        )}
+
+        {/* Optional extra note — single mode only */}
+        {mode === 'single' && (
+          <div className="mt-4">
+            <button
+              type="button"
+              onClick={() => setExtraOpen(o => !o)}
+              className="flex items-center gap-1.5 text-xs text-[var(--text3)] hover:text-[var(--text2)] transition-colors"
+            >
+              <Icon name={extraOpen ? 'ChevronUp' : 'ChevronDown'} size={12} />
+              Vuoi aggiungere qualcosa in più per questa generazione?
+            </button>
+            {extraOpen && (
+              <div className="mt-2">
+                <textarea
+                  className="w-full text-sm"
+                  rows={2}
+                  value={extraNote}
+                  placeholder="Aggiungi contesto, dettagli o istruzioni extra per questo slot..."
+                  onChange={e => setExtraNote(e.target.value)}
+                />
+              </div>
+            )}
           </div>
         )}
 

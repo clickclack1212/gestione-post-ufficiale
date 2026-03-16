@@ -280,7 +280,7 @@ export function GeneraSection() {
   }
 
   async function handleGenerate() {
-    const fieldsWithExtra = selectedType === 'buongiorno' && extraNote.trim()
+    const fieldsWithExtra = extraNote.trim()
       ? { ...fields, extra: extraNote.trim() }
       : fields;
     const prompt = buildPrompt(effectiveTypeId, config, tone, fieldsWithExtra, newsPhoto);
@@ -379,9 +379,8 @@ export function GeneraSection() {
           </div>
         )}
 
-        {/* Optional extra note — only for buongiorno */}
-        {selectedType === 'buongiorno' && (
-          <div className="mt-4">
+        {/* Optional extra note — all types */}
+        <div className="mt-4">
             <button
               type="button"
               onClick={() => setExtraOpen(o => !o)}
@@ -402,7 +401,6 @@ export function GeneraSection() {
               </div>
             )}
           </div>
-        )}
 
         <button
           className="btn-generate w-full mt-5"

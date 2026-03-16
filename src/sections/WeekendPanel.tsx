@@ -138,6 +138,8 @@ export function WeekendPanel() {
 
   const [singleResult, setSingleResult] = useState({ it: '', en: '' });
   const [dayResults, setDayResults] = useState<PlanCardData[]>([]);
+  const [extraOpen, setExtraOpen] = useState(false);
+  const [extraNote, setExtraNote] = useState('');
 
   const types: WkType[] = day === 'sabato' ? WK_TYPES_SAB : WK_TYPES_DOM;
 
@@ -145,8 +147,8 @@ export function WeekendPanel() {
     setFields(prev => ({ ...prev, [k]: v }));
   }
 
-  function buildP(typeId: string): string | null {
-    return buildWkPrompt(typeId, config, tone, fields, wkRecapPhotos, wkSPPhotos, wkOutlookPhoto, { date: todayItalian() });
+  function buildP(typeId: string, withExtra = false): string | null {
+    return buildWkPrompt(typeId, config, tone, fields, wkRecapPhotos, wkSPPhotos, wkOutlookPhoto, { date: todayItalian(), extra: withExtra ? extraNote.trim() : '' });
   }
 
   function photoForType(typeId: string): string | string[] | null {
@@ -157,7 +159,7 @@ export function WeekendPanel() {
   }
 
   async function handleSingle() {
-    const prompt = buildP(selectedTypeId);
+    const prompt = buildP(selectedTypeId, true);
     if (!prompt) return;
     const text = await run(prompt, 0.88, photoForType(selectedTypeId));
     if (text) setSingleResult(parseBilingual(text));
@@ -212,7 +214,7 @@ export function WeekendPanel() {
           <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-2">
             {types.map(t => (
               <button key={t.id}
-                onClick={() => { setSelectedTypeId(t.id); setSingleResult({ it: '', en: '' }); }}
+                onClick={() => { setSelectedTypeId(t.id); setSingleResult({ it: '', en: '' }); setExtraOpen(false); setExtraNote(''); }}
                 className={`type-card ${selectedTypeId === t.id ? 'selected' : ''}`}
                 style={selectedTypeId === t.id ? { borderColor: t.color + '60', background: t.color + '14' } : {}}
               >
@@ -271,6 +273,30 @@ export function WeekendPanel() {
                   max={4}
                 />
               </>
+            )}
+          </div>
+        )}
+
+        {mode === 'single' && (
+          <div className="mt-4">
+            <button
+              type="button"
+              onClick={() => setExtraOpen(o => !o)}
+              className="flex items-center gap-1.5 text-xs text-[var(--text3)] hover:text-[var(--text2)] transition-colors"
+            >
+              <Icon name={extraOpen ? 'ChevronUp' : 'ChevronDown'} size={12} />
+              Vuoi aggiungere qualcosa in più per questa generazione?
+            </button>
+            {extraOpen && (
+              <div className="mt-2">
+                <textarea
+                  className="w-full text-sm"
+                  rows={2}
+                  value={extraNote}
+                  placeholder="Aggiungi contesto, dettagli o istruzioni extra..."
+                  onChange={e => setExtraNote(e.target.value)}
+                />
+              </div>
             )}
           </div>
         )}

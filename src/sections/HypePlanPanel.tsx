@@ -6,7 +6,7 @@ import { PhotoUploader } from '../components/PhotoUploader';
 import { PlanCard } from '../components/PlanCard';
 import { buildHypePrompt, parseBilingual, todayItalian } from '../services/prompts';
 import { HYPE_SLOTS } from '../constants/data';
-import { Flame, Copy, Globe, Zap, Camera } from '../components/Icon';
+import { Icon, Flame, Copy, Globe, Zap, Camera } from '../components/Icon';
 import type { PlanCardData } from '../components/PlanCard';
 import type { Tone } from '../types';
 
@@ -116,21 +116,24 @@ export function HypePlanPanel() {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [singleResult, setSingleResult] = useState({ it: '', en: '' });
   const [dayResults, setDayResults] = useState<PlanCardData[]>([]);
+  const [extraOpen, setExtraOpen] = useState(false);
+  const [extraNote, setExtraNote] = useState('');
 
   function setField(k: string, v: string) {
     setFieldsState(prev => ({ ...prev, [k]: v }));
   }
 
-  const ctx = () => ({
+  const ctx = (withExtra = false) => ({
     cfg: config,
     date: todayItalian(),
     tone,
     fields,
+    extra: withExtra ? extraNote.trim() : '',
   });
 
   async function handleSingle() {
     const slot = HYPE_SLOTS.find(s => s.id === selectedSlot)!;
-    const prompt = buildHypePrompt(slot, ctx());
+    const prompt = buildHypePrompt(slot, ctx(true));
     if (!prompt) return;
     const usePhoto = slot.shot && photo ? photo : null;
     const text = await run(prompt, 0.92, usePhoto);
@@ -189,7 +192,7 @@ export function HypePlanPanel() {
               {HYPE_SLOTS.map(s => (
                 <button
                   key={s.id}
-                  onClick={() => { setSelectedSlot(s.id); setSingleResult({ it: '', en: '' }); setFieldsState({}); }}
+                  onClick={() => { setSelectedSlot(s.id); setSingleResult({ it: '', en: '' }); setFieldsState({}); setExtraOpen(false); setExtraNote(''); }}
                   className={`alt-plan-btn text-left ${selectedSlot === s.id ? 'active' : ''}`}
                   style={selectedSlot === s.id && s.tag ? { borderColor: (tagColors[s.tag] || '#FE9920') + '80', background: (tagColors[s.tag] || '#FE9920') + '14' } : {}}
                 >
@@ -222,6 +225,30 @@ export function HypePlanPanel() {
               onPhoto={(b64) => { setPhoto(b64); setPhotoPreview(`data:image/jpeg;base64,${b64}`); }}
               onClear={() => { setPhoto(null); setPhotoPreview(null); }}
             />
+          </div>
+        )}
+
+        {mode === 'single' && (
+          <div className="mt-4">
+            <button
+              type="button"
+              onClick={() => setExtraOpen(o => !o)}
+              className="flex items-center gap-1.5 text-xs text-[var(--text3)] hover:text-[var(--text2)] transition-colors"
+            >
+              <Icon name={extraOpen ? 'ChevronUp' : 'ChevronDown'} size={12} />
+              Vuoi aggiungere qualcosa in più per questa generazione?
+            </button>
+            {extraOpen && (
+              <div className="mt-2">
+                <textarea
+                  className="w-full text-sm"
+                  rows={2}
+                  value={extraNote}
+                  placeholder="Aggiungi contesto, dettagli o istruzioni extra..."
+                  onChange={e => setExtraNote(e.target.value)}
+                />
+              </div>
+            )}
           </div>
         )}
 
