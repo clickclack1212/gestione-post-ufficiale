@@ -1,4 +1,4 @@
-import type { Tone, DailySlot, AltType, WkType, CalendarEvent } from '../types';
+import type { Tone, EmojiLevel, DailySlot, AltType, WkType, CalendarEvent } from '../types';
 import type { Config } from '../types';
 import { getLinkIT, getLinkEN } from './storage';
 
@@ -75,6 +75,17 @@ export function parseBilingual(text: string): { it: string; en: string } {
 // ── ESCAPE HTML ────────────────────────────────────────────────────────────
 export function escH(s: string): string {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// ── EMOJI DENSITY INSTRUCTION ───────────────────────────────────────────────
+function emojiBlock(level?: EmojiLevel): string {
+  if (!level) return '';
+  const map: Record<EmojiLevel, string> = {
+    '1-2': `\n\nEMOJI: usa ESATTAMENTE 1-2 emoji in tutto il messaggio (entrambe le versioni IT e EN). Posizionale nei punti di maggiore impatto. ZERO emoji aggiuntive.`,
+    '2-4': `\n\nEMOJI: usa 2-4 emoji nel messaggio (entrambe le versioni IT e EN). Distribuiscile strategicamente nei momenti chiave — hook, risultato principale, CTA.`,
+    '4-5': `\n\nEMOJI: usa 4-5 emoji nel messaggio (entrambe le versioni IT e EN). Una per ogni blocco principale per dare ritmo e energia visiva.`,
+  };
+  return map[level];
 }
 
 // ── BASE PROMPT ────────────────────────────────────────────────────────────
@@ -155,6 +166,7 @@ export function buildPrompt(
   tone: Tone,
   fields: Record<string, string>,
   newsPhoto: string | null,
+  emojiLevel?: EmojiLevel,
 ): string | null {
   const date = todayItalian();
   const base = basePrompt(cfg, tone, date);
@@ -317,9 +329,9 @@ CTA con angolo configurazione — varia ogni volta: "non ti chiedo di fare tradi
 
   const result = map[type] || null;
   if (result && v('extra')) {
-    return result + `\n\nNOTA AGGIUNTIVA DAL TRADER (integra in modo naturale nel messaggio): ${v('extra')}`;
+    return result + `\n\nNOTA AGGIUNTIVA DAL TRADER (integra in modo naturale nel messaggio): ${v('extra')}` + emojiBlock(emojiLevel);
   }
-  return result;
+  return result ? result + emojiBlock(emojiLevel) : null;
 }
 
 // ── DAILY PLAN PROMPT ──────────────────────────────────────────────────────
@@ -329,9 +341,10 @@ export function buildDailyPrompt(
     cfg: Config; date: string; tone: Tone;
     news: string; extra: string; hasPhoto: boolean; calEvents: string;
     fields?: Record<string, string>;
+    emojiLevel?: EmojiLevel;
   },
 ): string | null {
-  const { cfg, date, tone, news, extra, hasPhoto, calEvents, fields = {} } = ctx;
+  const { cfg, date, tone, news, extra, hasPhoto, calEvents, fields = {}, emojiLevel } = ctx;
   const f = (k: string) => fields[k] || '';
   const trader = cfg.traderName || 'Il Trader';
   const lIT = getLinkIT(cfg);
@@ -425,17 +438,17 @@ CTA forte.`,
   };
   const dailyResult = prompts[slot.id] || null;
   if (dailyResult && extra) {
-    return dailyResult + `\n\nNOTA AGGIUNTIVA DAL TRADER (integra in modo naturale nel messaggio): ${extra}`;
+    return dailyResult + `\n\nNOTA AGGIUNTIVA DAL TRADER (integra in modo naturale nel messaggio): ${extra}` + emojiBlock(emojiLevel);
   }
-  return dailyResult;
+  return dailyResult ? dailyResult + emojiBlock(emojiLevel) : null;
 }
 
 // ── NS (no signal) DAILY PROMPTS ───────────────────────────────────────────
 export function buildNSPrompt(
   slot: DailySlot,
-  ctx: { cfg: Config; date: string; tone: Tone; news: string; extra: string; hasPhoto: boolean; fields?: Record<string, string> },
+  ctx: { cfg: Config; date: string; tone: Tone; news: string; extra: string; hasPhoto: boolean; fields?: Record<string, string>; emojiLevel?: EmojiLevel },
 ): string | null {
-  const { cfg, date, tone, news, extra, hasPhoto, fields = {} } = ctx;
+  const { cfg, date, tone, news, extra, hasPhoto, fields = {}, emojiLevel } = ctx;
   const f = (k: string) => fields[k] || '';
   const trader = cfg.traderName || 'Il Trader';
   const lIT = getLinkIT(cfg);
@@ -487,9 +500,9 @@ Racconta come ha reagito XAUUSD e cosa hanno ottenuto VIP + CopyTrading durante 
   };
   const nsResult = prompts[slot.id] || null;
   if (nsResult && extra) {
-    return nsResult + `\n\nNOTA AGGIUNTIVA DAL TRADER (integra in modo naturale nel messaggio): ${extra}`;
+    return nsResult + `\n\nNOTA AGGIUNTIVA DAL TRADER (integra in modo naturale nel messaggio): ${extra}` + emojiBlock(emojiLevel);
   }
-  return nsResult;
+  return nsResult ? nsResult + emojiBlock(emojiLevel) : null;
 }
 
 // ── ALT PLAN A PROMPTS ─────────────────────────────────────────────────────
@@ -498,7 +511,7 @@ export function buildAltPromptA(
   cfg: Config,
   tone: Tone,
   fields: Record<string, string>,
-  ctx?: { date?: string; news?: string; mktCtx?: string; extra?: string },
+  ctx?: { date?: string; news?: string; mktCtx?: string; extra?: string; emojiLevel?: EmojiLevel },
 ): string | null {
   const date = ctx?.date || todayItalian();
   const lIT = getLinkIT(cfg);
@@ -506,6 +519,7 @@ export function buildAltPromptA(
   const trader = cfg.traderName || 'Il Trader';
   const news = ctx?.news || '';
   const mktCtx = ctx?.mktCtx || '';
+  const emojiLevel = ctx?.emojiLevel;
   const av = (k: string) => fields[k] || '';
 
   const base = `Sei il gestore del canale Telegram XAUUSD di ${trader}. Data di oggi: ${date}.
@@ -615,9 +629,9 @@ CTA forte finale con link.`,
 
   const altAResult = map[type] || null;
   if (altAResult && ctx?.extra) {
-    return altAResult + `\n\nNOTA AGGIUNTIVA DAL TRADER (integra in modo naturale nel messaggio): ${ctx.extra}`;
+    return altAResult + `\n\nNOTA AGGIUNTIVA DAL TRADER (integra in modo naturale nel messaggio): ${ctx.extra}` + emojiBlock(emojiLevel);
   }
-  return altAResult;
+  return altAResult ? altAResult + emojiBlock(emojiLevel) : null;
 }
 
 // ── ALT PLAN B PROMPTS ─────────────────────────────────────────────────────
@@ -626,7 +640,7 @@ export function buildAltPromptB(
   cfg: Config,
   tone: Tone,
   fields: Record<string, string>,
-  ctx?: { date?: string; news?: string; mktCtx?: string; extra?: string },
+  ctx?: { date?: string; news?: string; mktCtx?: string; extra?: string; emojiLevel?: EmojiLevel },
 ): string | null {
   const date = ctx?.date || todayItalian();
   const lIT = getLinkIT(cfg);
@@ -634,6 +648,7 @@ export function buildAltPromptB(
   const trader = cfg.traderName || 'Il Trader';
   const news = ctx?.news || '';
   const mktCtx = ctx?.mktCtx || '';
+  const emojiLevel = ctx?.emojiLevel;
   const bv = (k: string) => fields[k] || '';
 
   const base = `Sei il gestore del canale Telegram XAUUSD di ${trader}. Data: ${date}.
@@ -710,9 +725,9 @@ CTA forte finale: "Se vuoi essere dentro dal prossimo ciclo, questo è l'ultimo 
 
   const altBResult = map[type] || null;
   if (altBResult && ctx?.extra) {
-    return altBResult + `\n\nNOTA AGGIUNTIVA DAL TRADER (integra in modo naturale nel messaggio): ${ctx.extra}`;
+    return altBResult + `\n\nNOTA AGGIUNTIVA DAL TRADER (integra in modo naturale nel messaggio): ${ctx.extra}` + emojiBlock(emojiLevel);
   }
-  return altBResult;
+  return altBResult ? altBResult + emojiBlock(emojiLevel) : null;
 }
 
 // ── WEEKEND PROMPTS ────────────────────────────────────────────────────────
@@ -724,12 +739,13 @@ export function buildWkPrompt(
   wkRecapPhotos: string[],
   wkSPPhotos: string[],
   wkOutlookPhoto: string | null,
-  ctx?: { date?: string; extra?: string },
+  ctx?: { date?: string; extra?: string; emojiLevel?: EmojiLevel },
 ): string | null {
   const date = ctx?.date || todayItalian();
   const lIT = getLinkIT(cfg);
   const lEN = getLinkEN(cfg);
   const trader = cfg.traderName || 'Il Trader';
+  const emojiLevel = ctx?.emojiLevel;
   const wv = (k: string) => fields[k] || '';
 
   const base = `Sei il gestore del canale Telegram XAUUSD di ${trader}. Data: ${date}.
@@ -925,9 +941,9 @@ Tono diretto, quasi secco. Nessuna promessa di guadagno. Solo logistica operativ
 
   const wkResult = map[type] || null;
   if (wkResult && ctx?.extra) {
-    return wkResult + `\n\nNOTA AGGIUNTIVA DAL TRADER (integra in modo naturale nel messaggio): ${ctx.extra}`;
+    return wkResult + `\n\nNOTA AGGIUNTIVA DAL TRADER (integra in modo naturale nel messaggio): ${ctx.extra}` + emojiBlock(emojiLevel);
   }
-  return wkResult;
+  return wkResult ? wkResult + emojiBlock(emojiLevel) : null;
 }
 
 // ── OPTIMIZE PROMPT ────────────────────────────────────────────────────────
@@ -936,6 +952,7 @@ export function buildOptPrompt(
   typeVal: string,
   cfg: Config,
   tone: Tone,
+  emojiLevel?: EmojiLevel,
 ): string {
   const lIT = getLinkIT(cfg);
   const lEN = getLinkEN(cfg);
@@ -983,7 +1000,7 @@ CTA INGLESE — mettila alla fine della versione inglese, formato esatto con lin
 👉 CLICK HERE TO [VARIABLE TEXT]:
 ${lEN}
 
-Varia il testo CTA ogni volta: "UNIRTI AL COPYTRADING", "ACCEDERE ALLA SALA VIP", "REPLICARE I RISULTATI", "ENTRARE NEL PROGRAMMA", "COPIARE I SEGNALI IN AUTOMATICO" ecc.`;
+Varia il testo CTA ogni volta: "UNIRTI AL COPYTRADING", "ACCEDERE ALLA SALA VIP", "REPLICARE I RISULTATI", "ENTRARE NEL PROGRAMMA", "COPIARE I SEGNALI IN AUTOMATICO" ecc.` + emojiBlock(emojiLevel);
 }
 
 // ── TRANSLATE PROMPT ───────────────────────────────────────────────────────
@@ -1013,13 +1030,12 @@ export function buildAnalisiPrompt(
   tone: Tone,
   timeframe: string,
   note: string,
+  emojiLevel?: EmojiLevel,
 ): string {
-  const lIT = getLinkIT(cfg);
-  const lEN = getLinkEN(cfg);
   const trader = cfg.traderName || 'Il Trader';
   const date = todayItalian();
 
-  return `Sei il gestore del canale Telegram XAUUSD di ${trader} e il tuo compito è trasformare un'analisi grezza in un report professionale, pronto per essere pubblicato. Data: ${date}.
+  return `Sei ${trader}, analista XAUUSD. Il tuo compito è trasformare un'analisi grezza in un report tecnico professionale per il canale VIP Telegram. Data: ${date}.
 
 ANALISI GREZZA DA OTTIMIZZARE:
 """
@@ -1030,58 +1046,63 @@ ${timeframe ? 'Timeframe di riferimento: ' + timeframe : ''}
 ${note ? 'Note / contesto aggiuntivo: ' + note : ''}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-PROTOCOLLO DI OTTIMIZZAZIONE (applica tutti e 6 i passi in sequenza):
+PROTOCOLLO DI OTTIMIZZAZIONE (applica tutti i passi in sequenza):
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-① PULIZIA E DE-BULKING
-Rimuovi ripetizioni e riempitivi. Trasforma i muri di testo in punti elenco compatti. Mantieni SOLO le informazioni operative (livelli, direzioni, target, contesto). Zero prolissità.
+① ESTRAZIONE E GERARCHIA DEI LIVELLI
+Identifica e distingui OBBLIGATORIAMENTE tra:
+- MAJOR levels (zone principali, alta confluenza, su timeframe alti H4/D1/W)
+- IMMEDIATE/INTERNAL levels (zone locali, operativi nel breve, M15/H1)
 
-② GERARCHIA VISIVA (SCANNABILITY)
-Applica queste regole di formattazione:
-- 🔴 davanti a ogni resistenza o livello di SELL/SHORT
-- 🔵 davanti a ogni supporto o livello di BUY/LONG
-- Scrivi i prezzi esatti in MAIUSCOLO o con emphasis (es. $2.345 → $2.345 — non arrotondare MAI)
-- Le direzioni (BUY, SELL, BULLISH, BEARISH, LONG, SHORT) vanno sempre in MAIUSCOLO
-- Usa una riga "---" come separatore tra la sezione "cosa è successo" e la sezione "cosa potrebbe succedere"
+Formattazione livelli:
+🔴 SUPPLY / Resistenza (zona di vendita) → es: 🔴 SUPPLY MAJOR: $2.380 – $2.395
+🔵 DEMAND / Supporto (zona di acquisto) → es: 🔵 DEMAND IMMEDIATE: $2.330 – $2.340
+- Riporta i prezzi come range numerico (es. $2.320 – $2.330), mai arrotondare
+- BUY, SELL, BULLISH, BEARISH, LONG, SHORT sempre in MAIUSCOLO
+- Separa Major e Immediate in blocchi distinti con titolo chiaro
 
-③ LOGICA IF-THEN (SCENARI OPERATIVI)
-L'analisi deve sempre contenere DUE scenari distinti:
-📈 SCENARIO BULLISH: cosa deve succedere per confermare il rialzo (livello da superare, candelastick di conferma, target)
-📉 SCENARIO BEARISH: quale livello invalida l'idea e dove porta il prezzo al ribasso
-Se l'analisi originale presenta già scenari, li ristrutturi in questo formato. Se mancano, li costruisci partendo dai livelli presenti.
+② SENTIMENT DI MERCATO (CHoCH / BOS)
+Riassumi la struttura di mercato attuale con la terminologia corretta:
+- BOS (Break of Structure): rottura confermata del trend
+- CHoCH (Change of Character): primo segnale di inversione
+- Descrivi la formazione di massimi/minimi (Higher Highs/Lower Lows o viceversa)
+- Identifica se il prezzo è in zona Premium (sopra equilibrio), Discount (sotto equilibrio) o Fair Value
 
-④ IL "PERCHÉ" FONDAMENTALE
-Se nell'analisi originale mancano riferimenti al contesto macro/fondamentale, integra brevemente il driver principale attuale (es. prossime dichiarazioni Fed/Powell, dati NFP in arrivo, tensioni geopolitiche, risk-off/risk-on). Questo unisce grafico e notizia, dando autorevolezza all'analisi tecnica. Usa solo 1-2 frasi — non diluire il focus tecnico.
+③ SCENARI IF/THEN (LOGICA OPERATIVA)
+Genera OBBLIGATORIAMENTE due scenari distinti:
 
-⑤ MIRRORING DEL TONO E DELLA TERMINOLOGIA
-Adatta il linguaggio a quello dell'analisi originale:
-- Se usa ICT / Smart Money Concepts: mantieni i termini FVG, BOS, CHOCH, liquidity sweep, order block, imbalance, discount/premium zone
-- Se usa retail / tradizionale: mantieni supporti, resistenze, trend, medie mobili, RSI, livelli Fibonacci
-NON mescolare i due lessici nello stesso post.
+📈 SCENARIO BULLISH:
+→ Condizione necessaria (es: "Rottura e chiusura sopra $X.XXX")
+→ Target di espansione (zona Supply successiva)
 
-⑥ ANGOLO BRAND E CHIUSURA
-Aggiungi il commento personale di ${trader}: perché questo setup è interessante, cosa lo rende unico, come gestire il rischio.
-Chiudi SEMPRE con: "Chi è nella Sala VIP riceve il piano operativo preciso nel momento in cui il prezzo si attiva."
+📉 SCENARIO BEARISH:
+→ Punto di rottura critico (es: "Perdita del livello $X.XXX")
+→ Espansione al ribasso verso (zona Demand successiva)
+
+Se l'analisi non presenta scenari espliciti, costruiscili dai livelli presenti.
+
+④ CONTESTO MACRO (driver fondamentale)
+1-2 frasi sul driver macro principale attuale (Fed/Powell, tensioni geopolitiche, risk-off/risk-on, dati NFP/CPI imminenti). Non diluire il focus tecnico — serve solo per dare autorevolezza.
+
+⑤ MIRRORING DELLA TERMINOLOGIA
+- Se l'analisi usa ICT / Smart Money: mantieni FVG, BOS, CHoCH, liquidity sweep, order block, imbalance
+- Se usa retail/tradizionale: mantieni supporti, resistenze, trend, Fibonacci, RSI
+NON mescolare i due lessici.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 REGOLE OUTPUT:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-- Output = SOLO il testo del post — zero prefissi, zero metadati, zero commenti sul processo
+- Output = SOLO il testo del report — zero prefissi, zero metadati, zero commenti
 - NON usare asterischi (*) o markdown
-- Non inventare livelli di prezzo, percentuali o dati non presenti nell'originale
-- Prima versione italiana COMPLETA con CTA, poi ESATTAMENTE questa riga separatore: ──────────────, poi versione inglese COMPLETA con CTA
+- Non inventare livelli di prezzo non presenti nell'analisi originale
+- Tono: asciutto, tecnico, professionale — come un analista che parla a trader già esperti
+- ZERO call to action, ZERO link, ZERO promozioni — questo report va al canale VIP
+- Organizza in blocchi separati da righe vuote, usa grassetto sparingly per i titoli sezione
+- Prima versione italiana COMPLETA, poi ESATTAMENTE questa riga: ──────────────, poi versione inglese COMPLETA
 
 ${toneInstructions(tone)}
 
-CTA ITALIANA (alla fine della versione IT, link su riga nuova):
-👉 CLICCA QUI PER [TESTO VARIABILE]:
-${lIT}
-
-CTA INGLESE (alla fine della versione EN, link su riga nuova):
-👉 CLICK HERE TO [VARIABLE TEXT]:
-${lEN}
-
-Varia il testo CTA ogni volta tra: "ACCEDERE AL VIP", "RICEVERE IL SEGNALE OPERATIVO", "COPIARE LA GESTIONE IN AUTOMATICO", "ENTRARE NELLA SALA VIP", "REPLICARE L'ANALISI IN TEMPO REALE", "RICEVERE L'ALERT SUI LIVELLI CHIAVE" ecc.`;
+${emojiBlock(emojiLevel)}`;
 }
 
 // ── CALENDAR PARSE PROMPT ──────────────────────────────────────────────────
@@ -1114,6 +1135,7 @@ export function buildCalendarNewsPrompt(
   events: CalendarEvent[],
   cfg: Config,
   tone: Tone,
+  emojiLevel?: EmojiLevel,
 ): string {
   const lIT = getLinkIT(cfg);
   const lEN = getLinkEN(cfg);
@@ -1149,11 +1171,11 @@ ${lIT}
 
 CTA inglese:
 👉 CLICK HERE TO [TEXT]:
-${lEN}`;
+${lEN}` + emojiBlock(emojiLevel);
 }
 
 // ── CALENDARIO V1 — Market Mover ────────────────────────────────────────────
-export function buildCalV1Prompt(cfg: Config, tone: Tone, notes: string): string {
+export function buildCalV1Prompt(cfg: Config, tone: Tone, notes: string, emojiLevel?: EmojiLevel): string {
   const lIT = getLinkIT(cfg);
   const lEN = getLinkEN(cfg);
   const trader = cfg.traderName || 'Il Trader';
@@ -1164,26 +1186,35 @@ HAI UNO SCREENSHOT DEL CALENDARIO ECONOMICO ALLEGATO. Analizzalo con cura prima 
 
 ${notes ? 'Note aggiuntive: ' + notes : ''}
 
-COMPITO — Versione "MARKET MOVER":
-Identifica immediatamente l'evento con la Cartella Rossa (High Impact) più vicino o più significativo per XAUUSD.
+${toneInstructions(tone)}
 
-STRUTTURA OBBLIGATORIA:
-🚨 Titolo d'allerta — nome evento + orario esatto (usa il timing reale dallo screenshot)
-1-2 righe: spiega la logica del prezzo in modo semplice e diretto
-  → Es: "Se l'occupazione ADP esce sopra le attese, il Dollaro sale e il Gold scende"
-  → Es: "Un CPI più alto del previsto = pressione ribassista sull'Oro"
-Scenario con emoji:
-  🟢 Se il dato è debole per il Dollaro → Gold sale
-  🔴 Se il dato è forte per il Dollaro → Gold scende
-Timing esatto da segnare sul calendario
-Chiudi con: "Noi nel VIP abbiamo già il piano operativo pronto per questo momento — entry, SL e TP definiti."
-CTA alla Sala VIP
+COMPITO — Versione "MARKET MOVER" (ispirata a questo stile):
+
+TITOLO: 📊 [GIORNO DD MESE]: [NOME SESSIONE/TEMA PRINCIPALE]!
+
+INTRO (2-3 righe): Racconta il "mood" del calendario di oggi — se è light (pochi dati ad alto impatto) il focus sarà tecnico; se è denso, crea aspettativa. Usa il "noi" per rafforzare il brand del team.
+
+🔥 IL MARKET MOVER (Ore HH:MM): Identifica l'evento più significativo per XAUUSD dalla foto.
+- Nome esatto dell'evento + orario reale dallo screenshot
+- 1-2 righe: spiega la logica causa→effetto in modo semplice
+  → Es: "Se l'ADP esce sopra le attese → Dollaro sale → Gold sotto pressione"
+  → Es: "CPI più alto del previsto → pressione ribassista sull'Oro"
+- 🟢 Dato debole per il Dollaro → Gold sale | 🔴 Dato forte per il Dollaro → Gold scende
+
+Se ci sono 1-2 altri eventi di impatto Medio/Basso degni di nota:
+📉 [Evento 2]: [Orario] — breve spiegazione in 1 riga
+📊 [Evento 3]: [Orario] — breve spiegazione in 1 riga
+
+💡 CONSIGLIO OPERATIVO: 1-2 righe di strategia pratica per oggi (es: "In assenza di news Red, cerca entrate sui ritracciamenti", "Giornata ideale per lo scalping chirurgico", "Aspetta la reazione post-dato prima di entrare").
+
+Chiudi con: "Noi nel VIP abbiamo già il piano operativo pronto per ogni scenario — entry, SL e TP definiti prima che il dato esca."
+CTA
 
 REGOLE:
-- Usa il "Noi" per rafforzare il brand del team, non l'"Io"
-- Tono: allerta operativa, da analista di fiducia — emoji 🚨⚡️🎯🔴🟢
-- Se lo screenshot mostra dati già usciti nelle ore precedenti, trattali come "appena rilasciati" con il loro actual value
-- Frasi corte, massima leggibilità su mobile
+- Usa il "Noi" — mai l'"Io"
+- Usa gli orari REALI dallo screenshot — non inventare
+- Se lo screenshot mostra dati già usciti nelle ore precedenti, trattali come "appena rilasciati"
+- Frasi corte, blocchi separati, massima leggibilità su mobile
 - ZERO asterischi. Prima versione IT completa, poi ──────────────, poi versione EN.
 
 CTA italiana:
@@ -1192,11 +1223,11 @@ ${lIT}
 
 CTA inglese:
 👉 CLICK HERE TO [VARIABLE TEXT]:
-${lEN}`;
+${lEN}` + emojiBlock(emojiLevel);
 }
 
 // ── CALENDARIO V2 — Analisi Macro & Tecnica ─────────────────────────────
-export function buildCalV2Prompt(cfg: Config, tone: Tone, notes: string): string {
+export function buildCalV2Prompt(cfg: Config, tone: Tone, notes: string, emojiLevel?: EmojiLevel): string {
   const lIT = getLinkIT(cfg);
   const lEN = getLinkEN(cfg);
   const trader = cfg.traderName || 'Il Trader';
@@ -1207,36 +1238,40 @@ HAI UNO SCREENSHOT DEL CALENDARIO ECONOMICO ALLEGATO. Analizzalo con attenzione 
 
 ${notes ? 'Note aggiuntive (includi geopolitica, eventi speciali, cigni neri se rilevanti per il Gold): ' + notes : ''}
 
-COMPITO — Versione "ANALISI MACRO & TECNICA":
-Scrivi un post articolato che racconta l'intera sessione di oggi — posizionamento e autorità.
+${toneInstructions(tone)}
 
-STRUTTURA OBBLIGATORIA:
-📊 Titolo professionale (es. "Giornata macro intensa su XAUUSD — ecco il piano")
+COMPITO — Versione "ANALISI MACRO" (ispirata a questo stile):
 
-Timeline della sessione divisa in 3 blocchi logici:
-🌅 MATTINATA (7:00–12:00): eventi Euro/GBP + impatto atteso sull'umore prima di Wall Street
-🌇 POMERIGGIO (12:00–17:00): dati USA/CAD + eventi principali che muovono il Gold
-🌙 SERA/NOTTE (17:00+): dati Asia/AUD/NZD se presenti, volatilità notturna prevista
+TITOLO: 📈 ANALISI [GG/MM]: [TEMA MACRO PRINCIPALE] 📉
 
-Correlazioni tra dati: collega i dati tra loro
-→ Es: "PMI europei deboli → umore risk-off → Gold come bene rifugio prima dell'apertura USA"
-→ Es: "CPI forte → Fed hawkish → USD sale → pressione ribassista sul Gold"
+INTRO (2-3 righe): Racconta cosa monitoriamo oggi — qual è il focus macro della sessione. Usa "noi" e "voi" per creare senso di squadra.
 
-Se nelle note è presente una notizia geopolitica (conflitti, tensioni, decisioni macro straordinarie):
-→ Spiega come questo "cigno nero" distorce i pattern standard: "I grafici tecnici oggi vanno letti con cautela perché la geopolitica sta alterando le correlazioni normali"
+Poi elenca gli eventi chiave in ordine cronologico con questo formato numerato:
+1️⃣ [Ora] — [Flag paese] [Nome evento]: [Impatto con colore 🔴/🟠/🟡]
+   → Spiega in 1-2 righe cosa monitoriamo e perché impatta XAUUSD
+   → Correlazione: es. "Dati sopra attese → USD forte → pressione ribassista sull'Oro"
 
-Risk Management — sempre presente, 1 riga concreta:
-→ Es: "Giornata ad alta volatilità: ridurre le size rispetto alla norma"
-→ Es: "Evitare posizioni overnight in vista dei dati notturni"
-→ Es: "Aspettare la reazione post-news prima di entrare"
+2️⃣ [Ora] — [Flag paese] [Nome evento]: [Impatto]
+   → ...
 
-Chiudi con: "Noi nel VIP gestiamo ogni evento in tempo reale con un piano già definito — entry, SL e livelli TP pronti prima che il dato esca."
+3️⃣ [Ora] — [Flag paese] [Nome evento]: [Impatto]
+   → ...
+
+(Includi solo gli eventi realmente visibili nello screenshot e rilevanti per il Gold)
+
+Se nelle note è presente geopolitica o un cigno nero rilevante:
+→ Aggiungilo come punto separato: "⚠️ FATTORE EXTRA: [descrizione] — questo distorce le correlazioni standard oggi"
+
+🛡️ STRATEGIA: 1-2 righe concrete di gestione del rischio per oggi (es: "Gestite il rischio con size standard. Senza news esplosive il mercato rispetterà meglio i livelli tecnici").
+
+Chiudi con: "Noi nel VIP gestiamo ogni evento in tempo reale con piano già definito — entry, SL e TP pronti prima che il dato esca."
 CTA
 
 REGOLE:
-- Usa il "Noi" per rafforzare il brand del team
-- Tono professionale e diretto, da analista che parla alla sua squadra
-- Usa gli orari reali dallo screenshot
+- Usa il "Noi" — mai l'"Io"
+- Usa gli orari e i nomi degli eventi REALI dallo screenshot
+- Se dati già usciti: trattali come "appena rilasciati" con actual value se visibile
+- Frasi corte, blocchi separati, massima leggibilità su mobile
 - ZERO asterischi. Prima versione IT completa, poi ──────────────, poi versione EN.
 
 CTA italiana:
@@ -1245,11 +1280,11 @@ ${lIT}
 
 CTA inglese:
 👉 CLICK HERE TO [VARIABLE TEXT]:
-${lEN}`;
+${lEN}` + emojiBlock(emojiLevel);
 }
 
 // ── CALENDARIO V3 — Flash Report ────────────────────────────────────────────
-export function buildCalV3Prompt(cfg: Config, tone: Tone, notes: string): string {
+export function buildCalV3Prompt(cfg: Config, tone: Tone, notes: string, emojiLevel?: EmojiLevel): string {
   const lIT = getLinkIT(cfg);
   const lEN = getLinkEN(cfg);
   const trader = cfg.traderName || 'Il Trader';
@@ -1260,33 +1295,32 @@ HAI UNO SCREENSHOT DEL CALENDARIO ECONOMICO ALLEGATO. Analizzalo prima di scrive
 
 ${notes ? 'Note aggiuntive: ' + notes : ''}
 
-COMPITO — Versione "FLASH REPORT" (Sintetica):
-Il post perfetto per chi legge da mobile in 10 secondi mentre lavora. Massima scansionabilità.
+${toneInstructions(tone)}
 
-STRUTTURA OBBLIGATORIA:
-⚡ Titolo brevissimo — es: "Flash Calendar XAUUSD — ${date}"
+COMPITO — Versione "ROADMAP FLASH" (Sintetica — ispirata a questo stile):
 
-Lista degli eventi rilevanti per il Gold, formato ESATTO per ogni riga:
-[EMOJI IMPATTO] [ORARIO] [VALUTA] [NOME EVENTO] — [impatto in max 4 parole]
+TITOLO: ⚡️ CALENDARIO [GIORNO DD MESE]: ROADMAP OPERATIVA 🗓️
 
-Codifica colori impatto — usa SOLO questi:
-🔴 = Alto (High Impact / Cartella Rossa)
-🟠 = Medio (Medium Impact)
-🟡 = Basso (Low Impact)
+INTRO (1 riga): Breve contesto su cosa aspettarsi oggi (es: "Giornata dominata da dati a basso impatto — ottima per price action pura").
 
-Estrai solo l'essenziale: Orario | Valuta | Nome Evento. Niente spiegazioni lunghe.
-Usa gli orari reali dallo screenshot.
+Poi lista degli eventi rilevanti per il Gold in ordine orario, uno per riga, formato ESATTO:
+[FLAG PAESE] [Orario] [Nome Evento] [EMOJI IMPATTO]
 
-Riga finale obbligatoria (1 riga sola):
-"Mood Gold oggi: 🟢 RIALZISTA / 🔴 RIBASSISTA / 🟡 NEUTRO — [motivazione in 5 parole]"
+Codifica impatto:
+🔴 = Alto impatto (High / Cartella Rossa)
+🟠 = Medio impatto (Medium / Cartella Arancione)
+🟡 = Basso impatto (Low)
+
+(Includi solo gli eventi visibili nello screenshot. Usa gli orari reali.)
+
+⚠️ NOTE: 1-2 righe massimo sulle caratteristiche della giornata (es: "Giornata con dati gialli e arancioni. Ottima per scalping tecnico e price action pura").
 
 CTA cortissima (max 1 riga)
 
-REGOLE FORMATO:
-- Niente paragrafi, niente blocchi di testo
-- Solo icone + dati + parole chiave
-- Massima leggibilità su Telegram mobile
-- ZERO asterischi. Prima versione IT, poi ──────────────, poi versione EN.
+REGOLE:
+- Niente paragrafi, niente spiegazioni lunghe — solo icone + orario + evento + impatto
+- Massima scansionabilità su Telegram mobile
+- ZERO asterischi. Prima versione IT completa, poi ──────────────, poi versione EN.
 
 CTA italiana:
 👉 CLICCA QUI PER [TESTO VARIABILE]:
@@ -1294,11 +1328,11 @@ ${lIT}
 
 CTA inglese:
 👉 CLICK HERE TO [VARIABLE TEXT]:
-${lEN}`;
+${lEN}` + emojiBlock(emojiLevel);
 }
 
 // ── CALENDARIO RISULTATI V1 — Autorità e Trasparenza ─────────────────────────
-export function buildCalRisultatiV1Prompt(cfg: Config, tone: Tone, notes: string): string {
+export function buildCalRisultatiV1Prompt(cfg: Config, tone: Tone, notes: string, emojiLevel?: EmojiLevel): string {
   const lIT = getLinkIT(cfg);
   const lEN = getLinkEN(cfg);
   const trader = cfg.traderName || 'Il Trader';
@@ -1341,11 +1375,11 @@ ${lIT}
 
 CTA inglese:
 👉 CLICK HERE TO [VARIABLE TEXT]:
-${lEN}`;
+${lEN}` + emojiBlock(emojiLevel);
 }
 
 // ── CALENDARIO RISULTATI V2 — Hype / FOMO ────────────────────────────────────
-export function buildCalRisultatiV2Prompt(cfg: Config, tone: Tone, notes: string): string {
+export function buildCalRisultatiV2Prompt(cfg: Config, tone: Tone, notes: string, emojiLevel?: EmojiLevel): string {
   const lIT = getLinkIT(cfg);
   const lEN = getLinkEN(cfg);
   const trader = cfg.traderName || 'Il Trader';
@@ -1386,11 +1420,11 @@ ${lIT}
 
 CTA inglese:
 👉 CLICK HERE TO [VARIABLE TEXT]:
-${lEN}`;
+${lEN}` + emojiBlock(emojiLevel);
 }
 
 // ── CALENDARIO RISULTATI V3 — Report Internazionale ──────────────────────────
-export function buildCalRisultatiV3Prompt(cfg: Config, tone: Tone, notes: string): string {
+export function buildCalRisultatiV3Prompt(cfg: Config, tone: Tone, notes: string, emojiLevel?: EmojiLevel): string {
   const lIT = getLinkIT(cfg);
   const lEN = getLinkEN(cfg);
   const trader = cfg.traderName || 'Il Trader';
@@ -1433,15 +1467,15 @@ ${lIT}
 
 CTA inglese:
 👉 CLICK HERE TO [VARIABLE TEXT]:
-${lEN}`;
+${lEN}` + emojiBlock(emojiLevel);
 }
 
 // ── HYPE & VENDITA DAILY PROMPTS ─────────────────────────────────────────────
 export function buildHypePrompt(
   slot: { id: string; time: string; label: string },
-  ctx: { cfg: Config; date: string; fields?: Record<string, string>; tone?: Tone; extra?: string },
+  ctx: { cfg: Config; date: string; fields?: Record<string, string>; tone?: Tone; extra?: string; emojiLevel?: EmojiLevel },
 ): string | null {
-  const { cfg, date, fields = {}, tone = 'hype', extra } = ctx;
+  const { cfg, date, fields = {}, tone = 'hype', extra, emojiLevel } = ctx;
   const f = (k: string) => fields[k] || '';
   const trader = cfg.traderName || 'Il Trader';
   const toneNote = tone !== 'hype'
@@ -1557,17 +1591,17 @@ Parola d'ordine suggerita: WEEKEND, RECAP, LUNEDI, STASERA`,
 
   const hypeResult = prompts[slot.id] || null;
   if (hypeResult && extra) {
-    return hypeResult + `\n\nNOTA AGGIUNTIVA DAL TRADER (integra in modo naturale nel messaggio): ${extra}`;
+    return hypeResult + `\n\nNOTA AGGIUNTIVA DAL TRADER (integra in modo naturale nel messaggio): ${extra}` + emojiBlock(emojiLevel);
   }
-  return hypeResult;
+  return hypeResult ? hypeResult + emojiBlock(emojiLevel) : null;
 }
 
 // ── COSTANZA & METODO DAILY PROMPTS ──────────────────────────────────────────
 export function buildCostanzaPrompt(
   slot: { id: string; time: string; label: string },
-  ctx: { cfg: Config; date: string; fields?: Record<string, string>; tone?: Tone; extra?: string },
+  ctx: { cfg: Config; date: string; fields?: Record<string, string>; tone?: Tone; extra?: string; emojiLevel?: EmojiLevel },
 ): string | null {
-  const { cfg, date, fields = {}, tone = 'assertivo', extra } = ctx;
+  const { cfg, date, fields = {}, tone = 'assertivo', extra, emojiLevel } = ctx;
   const f = (k: string) => fields[k] || '';
   const trader = cfg.traderName || 'Il Trader';
   const lIT = getLinkIT(cfg);
@@ -1698,13 +1732,13 @@ Parola chiave CTA: DOMANI, COSTRUISCI, METODO, LUNEDI`,
 
   const costanzaResult = prompts[slot.id] || null;
   if (costanzaResult && extra) {
-    return costanzaResult + `\n\nNOTA AGGIUNTIVA DAL TRADER (integra in modo naturale nel messaggio): ${extra}`;
+    return costanzaResult + `\n\nNOTA AGGIUNTIVA DAL TRADER (integra in modo naturale nel messaggio): ${extra}` + emojiBlock(emojiLevel);
   }
-  return costanzaResult;
+  return costanzaResult ? costanzaResult + emojiBlock(emojiLevel) : null;
 }
 
 // ── CALENDARIO MT — MetaTrader 5 Summary Report ───────────────────────────────
-export function buildCalMTV1Prompt(cfg: Config, tone: Tone, notes: string): string {
+export function buildCalMTV1Prompt(cfg: Config, tone: Tone, notes: string, emojiLevel?: EmojiLevel): string {
   const lIT = getLinkIT(cfg);
   const lEN = getLinkEN(cfg);
   const trader = cfg.traderName || 'Il Trader';
@@ -1751,10 +1785,10 @@ ${lIT}
 
 CTA inglese:
 👉 CLICK HERE TO [VARIABLE TEXT]:
-${lEN}`;
+${lEN}` + emojiBlock(emojiLevel);
 }
 
-export function buildCalMTV2Prompt(cfg: Config, tone: Tone, notes: string): string {
+export function buildCalMTV2Prompt(cfg: Config, tone: Tone, notes: string, emojiLevel?: EmojiLevel): string {
   const lIT = getLinkIT(cfg);
   const lEN = getLinkEN(cfg);
   const trader = cfg.traderName || 'Il Trader';
@@ -1802,10 +1836,10 @@ ${lIT}
 
 CTA inglese:
 👉 CLICK HERE TO [VARIABLE TEXT]:
-${lEN}`;
+${lEN}` + emojiBlock(emojiLevel);
 }
 
-export function buildCalMTV3Prompt(cfg: Config, tone: Tone, notes: string): string {
+export function buildCalMTV3Prompt(cfg: Config, tone: Tone, notes: string, emojiLevel?: EmojiLevel): string {
   const lIT = getLinkIT(cfg);
   const lEN = getLinkEN(cfg);
   const trader = cfg.traderName || 'Il Trader';
@@ -1847,5 +1881,5 @@ ${lIT}
 
 CTA inglese:
 👉 CLICK HERE TO [VARIABLE TEXT]:
-${lEN}`;
+${lEN}` + emojiBlock(emojiLevel);
 }

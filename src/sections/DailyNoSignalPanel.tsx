@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { useGemini } from '../hooks/useGemini';
 import { ToneSelector } from '../components/ToneSelector';
+import { EmojiSelector } from '../components/EmojiSelector';
 import { PhotoUploader } from '../components/PhotoUploader';
 import { PlanCard } from '../components/PlanCard';
 import { buildNSPrompt, parseBilingual, todayItalian } from '../services/prompts';
 import { DAILY_SLOTS_NS } from '../constants/data';
 import { ClipboardList, Copy, Globe, Zap, Camera, Icon } from '../components/Icon';
 import type { PlanCardData } from '../components/PlanCard';
-import type { Tone } from '../types';
+import type { Tone, EmojiLevel } from '../types';
 
 function Field({
   label, name, value, onChange, placeholder = '',
@@ -110,6 +111,7 @@ export function DailyNoSignalPanel() {
   const { loading, elapsed, run } = useGemini();
 
   const [tone, setTone] = useState<Tone>('assertivo');
+  const [emojiLevel, setEmojiLevel] = useState<EmojiLevel>('2-4');
   const [mode, setMode] = useState<'single' | 'day'>('single');
   const [selectedSlot, setSelectedSlot] = useState(DAILY_SLOTS_NS[0].id);
   const [fields, setFieldsState] = useState<Record<string, string>>({});
@@ -132,6 +134,7 @@ export function DailyNoSignalPanel() {
     extra: withExtra ? extraNote.trim() : '',
     hasPhoto: !!photo,
     fields,
+    emojiLevel,
   });
 
   async function handleSingle() {
@@ -182,6 +185,9 @@ export function DailyNoSignalPanel() {
         </div>
 
         <ToneSelector value={tone} onChange={setTone} />
+        <div className="mt-3">
+          <EmojiSelector value={emojiLevel} onChange={setEmojiLevel} />
+        </div>
 
         {mode === 'single' && (
           <div className="mt-4 space-y-2">

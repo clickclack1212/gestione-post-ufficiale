@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { useGemini } from '../hooks/useGemini';
 import { ToneSelector } from '../components/ToneSelector';
+import { EmojiSelector } from '../components/EmojiSelector';
 import { PhotoUploader } from '../components/PhotoUploader';
 import { PlanCard } from '../components/PlanCard';
 import { buildHypePrompt, parseBilingual, todayItalian } from '../services/prompts';
 import { HYPE_SLOTS } from '../constants/data';
 import { Icon, Flame, Copy, Globe, Zap, Camera } from '../components/Icon';
 import type { PlanCardData } from '../components/PlanCard';
-import type { Tone } from '../types';
+import type { Tone, EmojiLevel } from '../types';
 
 type GenMode = 'single' | 'day';
 
@@ -109,6 +110,7 @@ export function HypePlanPanel() {
   const { loading, elapsed, run } = useGemini();
 
   const [tone, setTone] = useState<Tone>('hype');
+  const [emojiLevel, setEmojiLevel] = useState<EmojiLevel>('2-4');
   const [mode, setMode] = useState<GenMode>('single');
   const [selectedSlot, setSelectedSlot] = useState(HYPE_SLOTS[0].id);
   const [fields, setFieldsState] = useState<Record<string, string>>({});
@@ -129,6 +131,7 @@ export function HypePlanPanel() {
     tone,
     fields,
     extra: withExtra ? extraNote.trim() : '',
+    emojiLevel,
   });
 
   async function handleSingle() {
@@ -183,6 +186,9 @@ export function HypePlanPanel() {
         </div>
 
         <ToneSelector value={tone} onChange={setTone} />
+        <div className="mt-3">
+          <EmojiSelector value={emojiLevel} onChange={setEmojiLevel} />
+        </div>
 
         {/* Slot selector (single mode) */}
         {mode === 'single' && (

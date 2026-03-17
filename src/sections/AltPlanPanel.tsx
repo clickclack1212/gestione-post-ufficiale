@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { useGemini } from '../hooks/useGemini';
 import { ToneSelector } from '../components/ToneSelector';
+import { EmojiSelector } from '../components/EmojiSelector';
 import { PlanCard } from '../components/PlanCard';
 import { buildAltPromptA, buildAltPromptB, parseBilingual, todayItalian } from '../services/prompts';
 import {
@@ -10,7 +11,7 @@ import {
 } from '../constants/data';
 import { Icon, Diamond, Zap, Copy, Globe, Camera } from '../components/Icon';
 import type { PlanCardData } from '../components/PlanCard';
-import type { AltType, Tone } from '../types';
+import type { AltType, Tone, EmojiLevel } from '../types';
 
 type AltPlan = 'A' | 'B';
 type GenMode = 'single' | 'day';
@@ -170,6 +171,7 @@ export function AltPlanPanel() {
   const [plan, setPlan] = useState<AltPlan>('A');
   const [mode, setMode] = useState<GenMode>('single');
   const [tone, setTone] = useState<Tone>('assertivo');
+  const [emojiLevel, setEmojiLevel] = useState<EmojiLevel>('2-4');
   const [selectedTypeId, setSelectedTypeId] = useState(ALT_TYPES[0].id);
   const [fields, setFields] = useState<Record<string, string>>({});
   const [news, setNews] = useState('');
@@ -186,7 +188,7 @@ export function AltPlanPanel() {
     setFields(prev => ({ ...prev, [k]: v }));
   }
 
-  const ctx = (withExtra = false) => ({ date: todayItalian(), news, mktCtx, extra: withExtra ? extraNote.trim() : '' });
+  const ctx = (withExtra = false) => ({ date: todayItalian(), news, mktCtx, extra: withExtra ? extraNote.trim() : '', emojiLevel });
 
   const buildPromptFn = (typeId: string, withExtra = false) =>
     plan === 'A'
@@ -264,6 +266,9 @@ export function AltPlanPanel() {
         </div>
 
         <ToneSelector value={tone} onChange={setTone} />
+        <div className="mt-3">
+          <EmojiSelector value={emojiLevel} onChange={setEmojiLevel} />
+        </div>
 
         {/* Type grid (single mode) */}
         {mode === 'single' && (

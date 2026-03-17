@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { useGemini } from '../hooks/useGemini';
 import { ToneSelector } from '../components/ToneSelector';
+import { EmojiSelector } from '../components/EmojiSelector';
 import { PhotoUploader } from '../components/PhotoUploader';
 import { PlanCard } from '../components/PlanCard';
 import { buildDailyPrompt, parseBilingual, todayItalian } from '../services/prompts';
 import { DAILY_SLOTS } from '../constants/data';
 import { ClipboardList, Copy, Globe, Zap, Camera, Icon } from '../components/Icon';
 import type { PlanCardData } from '../components/PlanCard';
-import type { Tone } from '../types';
+import type { Tone, EmojiLevel } from '../types';
 
 type GenMode = 'single' | 'day';
 
@@ -149,6 +150,7 @@ export function DailySignalPanel() {
   const { loading, elapsed, run } = useGemini();
 
   const [tone, setTone] = useState<Tone>('assertivo');
+  const [emojiLevel, setEmojiLevel] = useState<EmojiLevel>('2-4');
   const [mode, setMode] = useState<GenMode>('single');
   const [selectedSlot, setSelectedSlot] = useState(DAILY_SLOTS[0].id);
   const [fields, setFieldsState] = useState<Record<string, string>>({});
@@ -176,6 +178,7 @@ export function DailySignalPanel() {
     hasPhoto: !!photo,
     calEvents: calEventsStr,
     fields,
+    emojiLevel,
   });
 
   async function handleSingle() {
@@ -233,6 +236,9 @@ export function DailySignalPanel() {
         </div>
 
         <ToneSelector value={tone} onChange={setTone} />
+        <div className="mt-3">
+          <EmojiSelector value={emojiLevel} onChange={setEmojiLevel} />
+        </div>
 
         {/* Slot selector (single mode) */}
         {mode === 'single' && (

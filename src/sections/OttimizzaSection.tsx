@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { useGemini } from '../hooks/useGemini';
 import { ToneSelector } from '../components/ToneSelector';
+import { EmojiSelector } from '../components/EmojiSelector';
 import { BilingualResult } from '../components/BilingualResult';
 import { buildOptPrompt, buildAnalisiPrompt, parseBilingual } from '../services/prompts';
 import { Sparkles, BarChart2 } from '../components/Icon';
-import type { Tone } from '../types';
+import type { Tone, EmojiLevel } from '../types';
 
 const OPT_TYPES = [
   { id: 'auto',         label: 'Auto' },
@@ -28,13 +29,14 @@ function MessaggioPanel() {
   const { config } = useApp();
   const { loading, elapsed, run } = useGemini();
   const [tone, setTone] = useState<Tone>('assertivo');
+  const [emojiLevel, setEmojiLevel] = useState<EmojiLevel>('2-4');
   const [typeVal, setTypeVal] = useState('auto');
   const [rawText, setRawText] = useState('');
   const [result, setResult] = useState({ it: '', en: '' });
 
   async function handleOptimize() {
     if (!rawText.trim()) return;
-    const prompt = buildOptPrompt(rawText, typeVal, config, tone);
+    const prompt = buildOptPrompt(rawText, typeVal, config, tone, emojiLevel);
     const text = await run(prompt);
     if (text) setResult(parseBilingual(text));
   }
@@ -70,6 +72,9 @@ function MessaggioPanel() {
         </div>
 
         <ToneSelector value={tone} onChange={setTone} />
+        <div className="mt-3">
+          <EmojiSelector value={emojiLevel} onChange={setEmojiLevel} />
+        </div>
 
         {/* Raw text */}
         <div className="space-y-1 mt-4">
@@ -112,6 +117,7 @@ function AnalisiPanel() {
   const { config } = useApp();
   const { loading, elapsed, run } = useGemini();
   const [tone, setTone] = useState<Tone>('assertivo');
+  const [emojiLevel, setEmojiLevel] = useState<EmojiLevel>('2-4');
   const [rawAnalysis, setRawAnalysis] = useState('');
   const [timeframe, setTimeframe] = useState('H1');
   const [note, setNote] = useState('');
@@ -119,7 +125,7 @@ function AnalisiPanel() {
 
   async function handleGenerate() {
     if (!rawAnalysis.trim()) return;
-    const prompt = buildAnalisiPrompt(rawAnalysis, config, tone, timeframe, note);
+    const prompt = buildAnalisiPrompt(rawAnalysis, config, tone, timeframe, note, emojiLevel);
     const text = await run(prompt, 0.82);
     if (text) setResult(parseBilingual(text));
   }
@@ -155,6 +161,9 @@ function AnalisiPanel() {
         </div>
 
         <ToneSelector value={tone} onChange={setTone} />
+        <div className="mt-3">
+          <EmojiSelector value={emojiLevel} onChange={setEmojiLevel} />
+        </div>
 
         {/* Raw analysis */}
         <div className="space-y-1 mt-4">

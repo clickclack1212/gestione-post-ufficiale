@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { useGemini } from '../hooks/useGemini';
 import { ToneSelector } from '../components/ToneSelector';
+import { EmojiSelector } from '../components/EmojiSelector';
 import { PhotoUploader } from '../components/PhotoUploader';
 import { BilingualResult } from '../components/BilingualResult';
 import { buildPrompt, parseBilingual } from '../services/prompts';
 import { TYPES, NO_FIELDS_MAIN } from '../constants/data';
 import { Icon, Zap, Camera, Diamond, Rocket } from '../components/Icon';
-import type { Tone } from '../types';
+import type { Tone, EmojiLevel } from '../types';
 
 type ResultSubType = 'primi' | 'durante' | 'conclusi';
 
@@ -251,6 +252,7 @@ export function GeneraSection() {
   const [selectedType, setSelectedType] = useState(TYPES[0].id);
   const [subType, setSubType] = useState<ResultSubType>('primi');
   const [tone, setTone] = useState<Tone>('assertivo');
+  const [emojiLevel, setEmojiLevel] = useState<EmojiLevel>('2-4');
   const [fields, setFields] = useState<Record<string, string>>({});
   const [newsPhoto, setNewsPhoto] = useState<string | null>(null);
   const [newsPhotoPreview, setNewsPhotoPreview] = useState<string | null>(null);
@@ -283,7 +285,7 @@ export function GeneraSection() {
     const fieldsWithExtra = extraNote.trim()
       ? { ...fields, extra: extraNote.trim() }
       : fields;
-    const prompt = buildPrompt(effectiveTypeId, config, tone, fieldsWithExtra, newsPhoto);
+    const prompt = buildPrompt(effectiveTypeId, config, tone, fieldsWithExtra, newsPhoto, emojiLevel);
     if (!prompt) return;
     const text = await run(prompt, 0.88, newsPhoto ? newsPhoto : null);
     if (text) setResult(parseBilingual(text));
@@ -354,8 +356,11 @@ export function GeneraSection() {
           </div>
         )}
 
-        {/* Tone */}
+        {/* Tone + Emoji */}
         <ToneSelector value={tone} onChange={setTone} />
+        <div className="mt-3">
+          <EmojiSelector value={emojiLevel} onChange={setEmojiLevel} />
+        </div>
 
         {/* Dynamic fields */}
         {!NO_FIELDS_MAIN.includes(effectiveTypeId) && (

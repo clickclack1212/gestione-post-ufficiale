@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { useGemini } from '../hooks/useGemini';
 import { ToneSelector } from '../components/ToneSelector';
+import { EmojiSelector } from '../components/EmojiSelector';
 import { PhotoUploader } from '../components/PhotoUploader';
 import { BilingualResult } from '../components/BilingualResult';
 import {
@@ -11,7 +12,7 @@ import {
   parseBilingual,
 } from '../services/prompts';
 import { Newspaper, Zap, TrendingUp, BarChart2 } from '../components/Icon';
-import type { Tone } from '../types';
+import type { Tone, EmojiLevel } from '../types';
 
 type CalResults = {
   v1: { it: string; en: string } | null;
@@ -30,6 +31,7 @@ function EconomicoPanel() {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [notes, setNotes] = useState('');
   const [tone, setTone] = useState<Tone>('assertivo');
+  const [emojiLevel, setEmojiLevel] = useState<EmojiLevel>('2-4');
   const [results, setResults] = useState<CalResults>({ v1: null, v2: null, v3: null });
   const [genStep, setGenStep] = useState(0);
 
@@ -38,17 +40,17 @@ function EconomicoPanel() {
     setResults({ v1: null, v2: null, v3: null });
 
     setGenStep(1);
-    const p1 = buildCalV1Prompt(config, tone, notes);
+    const p1 = buildCalV1Prompt(config, tone, notes, emojiLevel);
     const t1 = await run(p1, 0.88, photo);
     if (t1) setResults(prev => ({ ...prev, v1: parseBilingual(t1) }));
 
     setGenStep(2);
-    const p2 = buildCalV2Prompt(config, tone, notes);
+    const p2 = buildCalV2Prompt(config, tone, notes, emojiLevel);
     const t2 = await run(p2, 0.88, photo);
     if (t2) setResults(prev => ({ ...prev, v2: parseBilingual(t2) }));
 
     setGenStep(3);
-    const p3 = buildCalV3Prompt(config, tone, notes);
+    const p3 = buildCalV3Prompt(config, tone, notes, emojiLevel);
     const t3 = await run(p3, 0.88, photo);
     if (t3) setResults(prev => ({ ...prev, v3: parseBilingual(t3) }));
 
@@ -87,6 +89,9 @@ function EconomicoPanel() {
 
         <div className="mt-4">
           <ToneSelector value={tone} onChange={setTone} />
+          <div className="mt-3">
+            <EmojiSelector value={emojiLevel} onChange={setEmojiLevel} />
+          </div>
         </div>
 
         <button
@@ -163,6 +168,7 @@ function RisultatiPanel() {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [notes, setNotes] = useState('');
   const [tone, setTone] = useState<Tone>('assertivo');
+  const [emojiLevel, setEmojiLevel] = useState<EmojiLevel>('2-4');
   const [results, setResults] = useState<CalResults>({ v1: null, v2: null, v3: null });
   const [genStep, setGenStep] = useState(0);
 
@@ -171,17 +177,17 @@ function RisultatiPanel() {
     setResults({ v1: null, v2: null, v3: null });
 
     setGenStep(1);
-    const p1 = buildCalRisultatiV1Prompt(config, tone, notes);
+    const p1 = buildCalRisultatiV1Prompt(config, tone, notes, emojiLevel);
     const t1 = await run(p1, 0.88, photo);
     if (t1) setResults(prev => ({ ...prev, v1: parseBilingual(t1) }));
 
     setGenStep(2);
-    const p2 = buildCalRisultatiV2Prompt(config, tone, notes);
+    const p2 = buildCalRisultatiV2Prompt(config, tone, notes, emojiLevel);
     const t2 = await run(p2, 0.88, photo);
     if (t2) setResults(prev => ({ ...prev, v2: parseBilingual(t2) }));
 
     setGenStep(3);
-    const p3 = buildCalRisultatiV3Prompt(config, tone, notes);
+    const p3 = buildCalRisultatiV3Prompt(config, tone, notes, emojiLevel);
     const t3 = await run(p3, 0.88, photo);
     if (t3) setResults(prev => ({ ...prev, v3: parseBilingual(t3) }));
 
@@ -220,6 +226,9 @@ function RisultatiPanel() {
 
         <div className="mt-4">
           <ToneSelector value={tone} onChange={setTone} />
+          <div className="mt-3">
+            <EmojiSelector value={emojiLevel} onChange={setEmojiLevel} />
+          </div>
         </div>
 
         <button
@@ -296,6 +305,7 @@ function MTPanel() {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [notes, setNotes] = useState('');
   const [tone, setTone] = useState<Tone>('assertivo');
+  const [emojiLevel, setEmojiLevel] = useState<EmojiLevel>('2-4');
   const [results, setResults] = useState<CalResults>({ v1: null, v2: null, v3: null });
   const [genStep, setGenStep] = useState(0);
 
@@ -304,17 +314,17 @@ function MTPanel() {
     setResults({ v1: null, v2: null, v3: null });
 
     setGenStep(1);
-    const p1 = buildCalMTV1Prompt(config, tone, notes);
+    const p1 = buildCalMTV1Prompt(config, tone, notes, emojiLevel);
     const t1 = await run(p1, 0.85, photo);
     if (t1) setResults(prev => ({ ...prev, v1: parseBilingual(t1) }));
 
     setGenStep(2);
-    const p2 = buildCalMTV2Prompt(config, tone, notes);
+    const p2 = buildCalMTV2Prompt(config, tone, notes, emojiLevel);
     const t2 = await run(p2, 0.82, photo);
     if (t2) setResults(prev => ({ ...prev, v2: parseBilingual(t2) }));
 
     setGenStep(3);
-    const p3 = buildCalMTV3Prompt(config, tone, notes);
+    const p3 = buildCalMTV3Prompt(config, tone, notes, emojiLevel);
     const t3 = await run(p3, 0.88, photo);
     if (t3) setResults(prev => ({ ...prev, v3: parseBilingual(t3) }));
 
@@ -353,6 +363,9 @@ function MTPanel() {
 
         <div className="mt-4">
           <ToneSelector value={tone} onChange={setTone} />
+          <div className="mt-3">
+            <EmojiSelector value={emojiLevel} onChange={setEmojiLevel} />
+          </div>
         </div>
 
         <button

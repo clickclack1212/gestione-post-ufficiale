@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { useGemini } from '../hooks/useGemini';
 import { ToneSelector } from '../components/ToneSelector';
+import { EmojiSelector } from '../components/EmojiSelector';
 import { PhotoUploader, MultiPhotoUploader } from '../components/PhotoUploader';
 import { PlanCard } from '../components/PlanCard';
 import { buildWkPrompt, parseBilingual, todayItalian } from '../services/prompts';
@@ -9,7 +10,7 @@ import {
   WK_TYPES_SAB, WK_TYPES_DOM, WK_NO_FIELDS,
 } from '../constants/data';
 import { Icon, Waves, Zap, Copy, Globe } from '../components/Icon';
-import type { WkType, Tone } from '../types';
+import type { WkType, Tone, EmojiLevel } from '../types';
 import type { PlanCardData } from '../components/PlanCard';
 
 type WkDay = 'sabato' | 'domenica';
@@ -128,6 +129,7 @@ export function WeekendPanel() {
   const [day, setDay] = useState<WkDay>('sabato');
   const [mode, setMode] = useState<GenMode>('single');
   const [tone, setTone] = useState<Tone>('assertivo');
+  const [emojiLevel, setEmojiLevel] = useState<EmojiLevel>('2-4');
   const [selectedTypeId, setSelectedTypeId] = useState(WK_TYPES_SAB[0].id);
   const [fields, setFields] = useState<Record<string, string>>({});
 
@@ -148,7 +150,7 @@ export function WeekendPanel() {
   }
 
   function buildP(typeId: string, withExtra = false): string | null {
-    return buildWkPrompt(typeId, config, tone, fields, wkRecapPhotos, wkSPPhotos, wkOutlookPhoto, { date: todayItalian(), extra: withExtra ? extraNote.trim() : '' });
+    return buildWkPrompt(typeId, config, tone, fields, wkRecapPhotos, wkSPPhotos, wkOutlookPhoto, { date: todayItalian(), extra: withExtra ? extraNote.trim() : '', emojiLevel });
   }
 
   function photoForType(typeId: string): string | string[] | null {
@@ -208,6 +210,9 @@ export function WeekendPanel() {
         </div>
 
         <ToneSelector value={tone} onChange={setTone} />
+        <div className="mt-3">
+          <EmojiSelector value={emojiLevel} onChange={setEmojiLevel} />
+        </div>
 
         {/* Type grid */}
         {mode === 'single' && (
