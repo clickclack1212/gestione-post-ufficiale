@@ -1885,7 +1885,101 @@ ${lEN}` + emojiBlock(emojiLevel);
 }
 
 // ── SETTIMANA SECTION PROMPTS ──────────────────────────────────────────────
-const SETTIMANA_SLOT_INSTRUCTIONS: Record<string, string> = {
+
+// Tema psicologico per ogni giorno — applicato a TUTTI i 10 slot della giornata
+const DAY_THEMES: Record<string, { label: string; theme: string; instruction: string }> = {
+  lun: {
+    label: 'Lunedì',
+    theme: "L'Antidoto alla Routine",
+    instruction: `TEMA LUNEDÌ — L'ANTIDOTO ALLA ROUTINE:
+Tutti i post di oggi martelleranno un'unica idea: noi amiamo il lunedì perché i mercati riaprono, mentre la massa è depressa in ufficio.
+LEVA PSICOLOGICA: Il disgusto per la routine lavorativa. Contrasto tra chi torna in ufficio frustrato e chi aspettava il lunedì per fare soldi.
+REGOLA: Qualunque sia il contenuto del post (buongiorno, segnale, screen clienti, recap...), il copy richiama sempre questo contrasto. Energia alta, tono controtendenza.
+CTA del giorno: "Sveglia il tuo conto", "Inizia la settimana in verde", "Il lunedì migliore della tua vita".`,
+  },
+  mar: {
+    label: 'Martedì',
+    theme: 'La Conferma del Metodo',
+    instruction: `TEMA MARTEDÌ — LA CONFERMA DEL METODO:
+Tutti i post di oggi avranno un tono razionale, quasi scientifico. Ieri è andata bene — oggi confermiamo.
+LEVA PSICOLOGICA: La logica smonta l'idea che il trading sia fortuna. Parole chiave: COSTANZA, METODO, SISTEMA, MATEMATICA.
+REGOLA: Ogni post fa riferimento a ieri ("Ieri abbiamo vinto. Oggi ripetiamo."). Il CopyTrading non sa che giorno è — sa solo eseguire il modello.
+CTA del giorno: spingere chi dubitava lunedì — "Se ieri ti sembrava fortuna, oggi ti stai ricredendo?"`,
+  },
+  mer: {
+    label: 'Mercoledì',
+    theme: 'Il Giro di Boa — 3 su 3',
+    instruction: `TEMA MERCOLEDÌ — IL GIRO DI BOA / 3 SU 3:
+Tutti i post di oggi spingono sull'inarrestabilità. Siamo a metà settimana — la gente è stanca, la nostra macchina no.
+LEVA PSICOLOGICA: Fatica lavorativa vs instancabilità della macchina. Tre giorni di profitti consecutivi: Lun ✓ Mar ✓ Mer ✓.
+REGOLA: Ogni post evoca questa sequenza inarrestabile. Negli screen clienti: "Siamo al terzo giorno di profitti di fila, tu sei ancora a zero."
+CTA del giorno: FOMO intensa — "Siamo a metà settimana, hai già perso 3 giorni. Vuoi perdere anche Giovedì e Venerdì?"`,
+  },
+  gio: {
+    label: 'Giovedì',
+    theme: "L'Efficienza Automatica",
+    instruction: `TEMA GIOVEDÌ — L'EFFICIENZA AUTOMATICA:
+Tutti i post di oggi hanno una sola narrativa: sforzo zero. Il sistema lavora, tu no.
+LEVA PSICOLOGICA: Giovedì i trader manuali fanno errori per stanchezza mentale. È il giorno ideale per massimizzare il messaggio sul CopyTrading.
+REGOLA: In ogni post usa frasi come "Mentre tu sei in riunione...", "Mentre sei impegnato...", "Il sistema lavora al posto tuo". Dipingi l'immagine di chi guadagna senza guardare lo schermo.
+CTA del giorno: "Stai lavorando? Sei stanco? Perfetto — attiva il CopyTrading e lascia fare a noi."`,
+  },
+  ven: {
+    label: 'Venerdì',
+    theme: 'Il Payday e il Lifestyle',
+    instruction: `TEMA VENERDÌ — IL PAYDAY E L'URGENZA PRE-LUNEDÌ:
+La mattina e il pomeriggio celebrano l'incasso della settimana per pagarsi il weekend. Nel tardo pomeriggio/sera si usa urgenza.
+LEVA PSICOLOGICA: Stipendio vs Rendita. I soldi del weekend. Chi è fuori aspetta ancora lo stipendio mensile, chi è dentro ha già incassato.
+REGOLA MATTINA/POMERIGGIO: Tono celebrativo. "Stiamo incassando la settimana." Lifestyle — cena coi soldi del mercato, non dello stipendio.
+REGOLA SLOT SERALE (18:00): Urgenza massima — "I mercati chiudono. Entra nel VIP o attiva il Copy questo weekend così Lunedì sei già operativo."
+CTA del giorno: "Noi stasera usciamo a cena coi soldi del Gold. E tu?"`,
+  },
+};
+
+// Istruzioni specifiche per ciascuno dei 10 slot fissi (uguali ogni giorno)
+const SLOT_INSTRUCTIONS: Record<string, string> = {
+  buongiorno: `SLOT 07:30 — BUONGIORNO:
+Primo messaggio della giornata. Energizza il canale, setta il tono del giorno.
+Struttura: Hook con orario, emoji visiva, saluto non banale. Accenna subito al "tema del giorno". Chiudi con micro-anticipazione di cosa succederà oggi sul canale.`,
+
+  risultati_vip_mat: `SLOT 08:00 — RISULTATI VIP MATTUTINI:
+Mostra i primi risultati della sessione mattutina nella Sala VIP. Social proof del mattino.
+Struttura: Risultati concreti (pip, percentuali se forniti). Contrasto insider VIP vs canale gratuito che aspetta. CTA per entrare nel VIP.`,
+
+  recap_ieri: `SLOT 09:00 — RECAP GIORNO PRECEDENTE:
+Riepilogo sintetico dei risultati di ieri. Serve per continuità e per chi si è perso la giornata.
+Struttura: Bilancio ieri in 1-2 righe. Proietta su oggi ("Ieri così. Oggi ripetiamo."). Connetti al tema del giorno.`,
+
+  segnale_gratis: `SLOT 10:00 — SEGNALE GRATIS XAUUSD:
+Segnale gratuito per il canale pubblico. Se entry/SL/TP sono nelle note, usali — altrimenti presentalo in modo generico.
+Struttura: Direzione (BUY/SELL), zona di entry, SL e TP se disponibili. Tono professionale e sicuro. Ricorda che nel VIP c'è molto di più.`,
+
+  fine_segnale: `SLOT 11:00 — FINE SEGNALE:
+Chiusura del segnale gratuito. Risultato (profit/loss) se fornito, altrimenti in modo generico.
+Struttura: Risultato del segnale (es. "+47 pip", "TP raggiunto", "SL toccato"). Se profit: celebra e collega al VIP. Se loss: onesto e professionale — il metodo funziona nel lungo termine.`,
+
+  screen_clienti: `SLOT 12:00 — SCREEN RISULTATI CLIENTI:
+Social proof basata su screenshot di clienti soddisfatti o risultati reali del CopyTrading.
+Struttura: Descrivi ciò che lo screen mostra. Usa il "tema del giorno" per colorare il commento — stesso screen, copy completamente diverso ogni giorno. CTA per accedere.`,
+
+  calendario_eco: `SLOT 13:00 — CALENDARIO ECONOMICO:
+Cosa succede oggi sui mercati — eventi macro, dati USA, newsflow rilevante per XAUUSD.
+Struttura: 1-2 eventi chiave del pomeriggio/sera. Come impattano sull'oro. Cosa stiamo facendo nel VIP per prepararci. CTA per essere dentro prima dei dati.`,
+
+  passaggio_vip: `SLOT 14:00 — PASSAGGIO ESCLUSIVO AL VIP:
+Post interamente dedicato a portare il canale gratuito ad accedere alla Sala VIP.
+Struttura: CTA forte e diretta. Benefici del VIP (segnali in tempo reale, protezione dati, copy trading). Tono esclusivo — non tutti entrano, solo chi decide. Urgenza soft.`,
+
+  risultati_usa: `SLOT 15:30 — RISULTATI USA (COPY + VIP):
+Risultati della sessione americana pomeridiana — sia Copy Trading che Sala VIP.
+Struttura: Mostra risultati pomeridiani. Doppio beneficio: Copy funziona automaticamente, VIP ha guadagnato con i dati USA. Chi era fuori ha perso l'opportunità. CTA.`,
+
+  recap_finale: `SLOT 18:00 — RECAP FINALE DEL GIORNO:
+Chiusura della giornata. Bilancio completo. Chiude il cerchio della narrativa del giorno.
+Struttura: Riepilogo in 2-3 punti. Celebrazione o onestà sul risultato. Anticipa domani. CTA serale forte — chi non è ancora dentro non dovrebbe aspettare.`,
+};
+
+const SETTIMANA_SLOT_INSTRUCTIONS_LEGACY: Record<string, string> = {
   lun_mattina: `
 SLOT: LUNEDÌ MATTINA — L'ANTIDOTO ALLA ROUTINE
 LEVA PSICOLOGICA: Il disgusto per la sveglia lavorativa del lunedì. Noi amiamo il lunedì perché i mercati riaprono.
@@ -2015,28 +2109,31 @@ export interface SettimanaCtx {
   emojiLevel?: EmojiLevel;
 }
 
-export function buildSettimanaPrompt(slotId: string, ctx: SettimanaCtx): string {
+export function buildSettimanaPrompt(slotId: string, dayId: string, ctx: SettimanaCtx): string {
   const { cfg, date, tone, extra, emojiLevel } = ctx;
-  const slotInstructions = SETTIMANA_SLOT_INSTRUCTIONS[slotId] ?? '';
+  const day = DAY_THEMES[dayId] ?? DAY_THEMES['lun'];
+  const slotInstructions = SLOT_INSTRUCTIONS[slotId] ?? SETTIMANA_SLOT_INSTRUCTIONS_LEGACY[slotId] ?? '';
   const extraBlock = extra?.trim() ? `\n\nNOTE AGGIUNTIVE DAL TRADER: ${extra.trim()}` : '';
   return basePrompt(cfg, tone, date) + `
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-MATRICE SETTIMANALE — ISTRUZIONI SPECIFICHE
+MATRICE SETTIMANALE — ${day.label.toUpperCase()}: ${day.theme.toUpperCase()}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-FORMULA OBBLIGATORIA (4 blocchi in questo ordine esatto):
-1. HOOK VISIVO: orario indicativo + 1-2 emoji + TITOLO IN MAIUSCOLO. Cattura chi scorre velocemente Telegram.
-2. EMPATIA (Ricalco): riconosci lo stato d'animo del lettore in quel preciso giorno/momento.
-3. CONTRASTO (Soluzione): mostra come noi — XAUUSD, Sala VIP, CopyTrading — viviamo l'ESATTO OPPOSTO del suo problema. Lui fatica, noi automatizziamo.
-4. CTA INVARIABILE: freccia in giù 👉, comando verbale, link su riga nuova.
+FORMULA BASE — 4 BLOCCHI OBBLIGATORI (in questo ordine):
+1. HOOK VISIVO: orario del slot + 1-2 emoji + TITOLO IN MAIUSCOLO che ferma il pollice.
+2. EMPATIA (Ricalco): riconosci lo stato d'animo del lettore in questo momento specifico.
+3. CONTRASTO (Soluzione): mostra come noi — XAUUSD, Sala VIP, CopyTrading — viviamo l'ESATTO OPPOSTO. Lui fatica, noi automatizziamo.
+4. CTA INVARIABILE: 👉 freccia + comando verbale + link su riga nuova.
 
 FORMATTAZIONE:
-- Paragrafi di MAX 3 righe.
-- Spazio bianco tra ogni blocco.
-- ZERO blocchi di testo pesante.
+- Paragrafi di MAX 3 righe. Spazio bianco tra ogni blocco.
 - VIETATI asterischi e markdown.
-- Asset principale: XAUUSD (Oro).
-- Nomina spesso: Sala VIP (per esclusività) e CopyTrading (come soluzione senza stress).
+- Asset: XAUUSD (Oro). Nomina Sala VIP e CopyTrading spesso.
+
+TEMA DEL GIORNO — applica questa "vibe" a TUTTO il post, indipendentemente dal contenuto:
+${day.instruction}
+
+ISTRUZIONI SPECIFICHE PER QUESTO SLOT:
 ${slotInstructions}${extraBlock}` + emojiBlock(emojiLevel);
 }
