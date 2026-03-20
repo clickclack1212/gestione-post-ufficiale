@@ -1,4 +1,4 @@
-export type Tab = 'generate' | 'prog' | 'calendar' | 'optimize' | 'translate' | 'settings';
+export type Tab = 'generate' | 'prog' | 'weekly' | 'calendar' | 'optimize' | 'translate' | 'settings';
 export type Tone = 'assertivo' | 'hype' | 'essenziale';
 export type EmojiLevel = '1-2' | '2-4' | '4-5';
 export type ProgMode = 'daily_signal' | 'daily_nosignal' | 'alt_signal' | 'alt_nosignal' | 'weekend_sab' | 'weekend_dom';

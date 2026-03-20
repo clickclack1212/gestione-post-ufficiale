@@ -8,7 +8,8 @@ import {
   CloudLightning, Smile, AlertTriangle, Layers, Lock,
   Copy, Clipboard, Globe, Camera, Save, X, RotateCw,
   ArrowLeftRight, Download, CalendarDays, Settings, Diamond,
-  Sparkles, ChevronDown, ChevronUp,
+  Sparkles, ChevronDown, ChevronUp, CalendarRange, PlayCircle,
+  ChevronRight, AlertCircle,
 } from 'lucide-react';
 
 type LI = ComponentType<LucideProps>;
@@ -21,7 +22,8 @@ const MAP: Record<string, LI> = {
   CloudLightning, Smile, AlertTriangle, Layers, Lock,
   Copy, Clipboard, Globe, Camera, Save, X, RotateCw,
   ArrowLeftRight, Download, CalendarDays, Settings, Diamond,
-  Sparkles, ChevronDown, ChevronUp,
+  Sparkles, ChevronDown, ChevronUp, CalendarRange, PlayCircle,
+  ChevronRight, AlertCircle,
 };
 
 export interface IconProps {
@@ -47,5 +49,6 @@ export {
   CloudLightning, Smile, AlertTriangle, Layers, Lock,
   Copy, Clipboard, Globe, Camera, Save, X, RotateCw,
   ArrowLeftRight, Download, CalendarDays, Settings, Diamond,
-  Sparkles, ChevronDown, ChevronUp,
+  Sparkles, ChevronDown, ChevronUp, CalendarRange, PlayCircle,
+  ChevronRight, AlertCircle,
 } from 'lucide-react';

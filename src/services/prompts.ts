@@ -1883,3 +1883,160 @@ CTA inglese:
 👉 CLICK HERE TO [VARIABLE TEXT]:
 ${lEN}` + emojiBlock(emojiLevel);
 }
+
+// ── SETTIMANA SECTION PROMPTS ──────────────────────────────────────────────
+const SETTIMANA_SLOT_INSTRUCTIONS: Record<string, string> = {
+  lun_mattina: `
+SLOT: LUNEDÌ MATTINA — L'ANTIDOTO ALLA ROUTINE
+LEVA PSICOLOGICA: Il disgusto per la sveglia lavorativa del lunedì. Noi amiamo il lunedì perché i mercati riaprono.
+OBIETTIVO: Gancio che evoca il contrasto tra chi va in ufficio frustrato e chi invece aspettava il lunedì per fare soldi.
+STRUTTURA OBBLIGATORIA:
+1. HOOK (MAIUSCOLO): orario mattutino + titolo energico — es. "L'ANTIDOTO AL LUNEDÌ" o "I MERCATI RIAPRONO"
+2. EMPATIA: riconosci il lunedì mattina di chi lavora — la sveglia, il traffico, la stanchezza di tornare in ufficio
+3. CONTRASTO: noi invece lo amiamo — i mercati riaprono e il primo profit della settimana è già in vista
+4. CTA: chi vuole vivere i lunedì come noi deve entrare oggi`,
+
+  lun_sera: `
+SLOT: LUNEDÌ SERA — SI FA SUL SERIO
+LEVA PSICOLOGICA: Il primo giorno finito in positivo setta il mood per tutta la settimana.
+OBIETTIVO: Celebra il primo profitto settimanale. Iniziare in positivo cambia la psicologia dei 4 giorni successivi.
+STRUTTURA OBBLIGATORIA:
+1. HOOK: orario serale + "GIORNO 1" o "LUNEDÌ FATTO" — tono soddisfatto ma già proiettato verso martedì
+2. EMPATIA: la maggior parte delle persone ha solo sopravvissuto alla giornata lavorativa
+3. CONTRASTO: noi abbiamo aggiunto un risultato concreto al conto. La settimana parte da una posizione di vantaggio
+4. CTA: il prossimo lunedì può essere diverso — entra ora`,
+
+  mar_mattina: `
+SLOT: MARTEDÌ MATTINA — LA CONFERMA DEL METODO
+LEVA PSICOLOGICA: La logica. Smontare l'idea che il trading sia fortuna. La parola chiave è COSTANZA.
+OBIETTIVO: Mostrare che lunedì non era un caso. Oggi si ripete la stessa cosa. È un metodo matematico.
+STRUTTURA OBBLIGATORIA:
+1. HOOK: orario + titolo che include "METODO" o "COSTANZA" o "SISTEMA" in maiuscolo
+2. EMPATIA: chi pensa al trading come lotteria, chi ha paura che il successo di ieri non si ripeta
+3. CONTRASTO: il CopyTrading non sa che giorno è. Sa solo leggere lo XAUUSD e replicare il modello. "Ieri ha funzionato. Oggi funzionerà."
+4. CTA: smettila di sperare e inizia a replicare`,
+
+  mar_sera: `
+SLOT: MARTEDÌ SERA — ZERO EMOZIONI
+LEVA PSICOLOGICA: La macchina è fredda, matematica, senza stati d'animo.
+OBIETTIVO: Due giorni di fila. Non è fortuna, è ingegneria. Tono gelido e razionale — quasi scientifico.
+STRUTTURA OBBLIGATORIA:
+1. HOOK: orario + "GIORNO 2" o "2 SU 2" — sottolinea la continuità da lunedì
+2. EMPATIA: chi ha vissuto oggi pieno di emozioni — stress da lavoro, notizie, ansie, paure
+3. CONTRASTO: il sistema non sa cosa sia l'ansia. Legge i prezzi, esegue. Oggi risultato, ieri risultato. Domani stesso sistema.
+4. CTA: vuoi anche tu un sistema senza emozioni?`,
+
+  mer_mattina: `
+SLOT: MERCOLEDÌ MATTINA — IL GIRO DI BOA
+LEVA PSICOLOGICA: Siamo a metà settimana. I lavoratori sono già stanchi. Il sistema no.
+OBIETTIVO: Enfatizza "3 su 3" — mentre il mondo arranca verso mercoledì, noi siamo già in vantaggio.
+STRUTTURA OBBLIGATORIA:
+1. HOOK: orario + "MERCOLEDÌ" o "GIRO DI BOA" o "3 SU 3" — tono di chi è inarrestabile
+2. EMPATIA: la fatica di metà settimana lavorativa — il mercoledì che sembra non finire mai
+3. CONTRASTO: il nostro CopyTrading è come un treno. Non conosce fatica. Lun ✓ Mar ✓ Mer ✓ — inarrestabile.
+4. CTA: entra prima che finisca la settimana`,
+
+  mer_sera: `
+SLOT: MERCOLEDÌ SERA — FOMO DEL MERCOLEDÌ
+LEVA PSICOLOGICA: Urgenza. Metà settimana finita. Chi non è dentro ha già perso 3 giorni di profitti.
+OBIETTIVO: Creare FOMO autentica. Ogni giorno senza CopyTrading è un giorno di profitti persi.
+STRUTTURA OBBLIGATORIA:
+1. HOOK: orario + titolo che brucia — "HAI GIÀ PERSO 3 GIORNI" o "METÀ SETTIMANA ANDATA"
+2. EMPATIA: la frustrazione di chi guarda da fuori e aspetta il "momento giusto"
+3. CONTRASTO: non esiste il momento giusto. Siamo già a mercoledì — giovedì e venerdì stanno arrivando.
+4. CTA aggressiva: "Vuoi perdere anche Giovedì e Venerdì?" + link`,
+
+  gio_mattina: `
+SLOT: GIOVEDÌ MATTINA — EFFICIENZA AUTOMATICA
+LEVA PSICOLOGICA: Sforzo zero. Delega totale. Furbizia vs fatica.
+OBIETTIVO: Giovedì i trader manuali fanno errori per stanchezza mentale. Il CopyTrading no.
+STRUTTURA OBBLIGATORIA:
+1. HOOK: orario + "SFORZO: ZERO" o "MENTRE SEI IN RIUNIONE" — tono rilassato e superiore
+2. EMPATIA: la stanchezza mentale di giovedì, chi inizia a fare errori dopo 3 giorni di lavoro
+3. CONTRASTO: il sistema lavora al posto tuo. "Mentre tu sei in riunione...", "Mentre sei impegnato...". Zero errori. Zero emozioni. Solo risultati.
+4. CTA: delegare è furbo, non pigro`,
+
+  gio_sera: `
+SLOT: GIOVEDÌ SERA — LAVORA AL POSTO TUO
+LEVA PSICOLOGICA: I guadagni avvengono "dietro le quinte" mentre tu fai altro.
+OBIETTIVO: L'utente non ha dovuto fare nulla. Il sistema ha lavorato in silenzio per tutto il giorno.
+STRUTTURA OBBLIGATORIA:
+1. HOOK: orario + "RISULTATO DI OGGI" o "DIETRO LE QUINTE" — un altro giorno profittevole senza sforzo
+2. EMPATIA: la giornata di lavoro, le riunioni, la stanchezza — hai avuto mille cose da fare
+3. CONTRASTO: mentre vivevi la tua vita, il CopyTrading lavorava in silenzio. Trades chiusi senza che tu muovessi un dito.
+4. CTA: inizia la delega oggi, raccogli i risultati domani`,
+
+  ven_mattina: `
+SLOT: VENERDÌ MATTINA — PAYDAY
+LEVA PSICOLOGICA: Il giorno di paga. Stipendio vs Rendita.
+OBIETTIVO: Venerdì è il "Payday" — l'ultimo trade della settimana come giorno di paga alternativo allo stipendio mensile.
+STRUTTURA OBBLIGATORIA:
+1. HOOK: orario + "PAYDAY" o "GIORNO DI PAGA" — tono celebrativo ma esclusivo
+2. EMPATIA: chi aspetta lo stipendio alla fine del mese, chi conta i giorni al bonifico del datore
+3. CONTRASTO: noi abbiamo un "giorno di paga" ogni settimana — anzi, ogni giorno. L'ultimo trade della settimana è in vista.
+4. CTA: vuoi il tuo payday settimanale? Entra.`,
+
+  ven_pomeriggio: `
+SLOT: VENERDÌ POMERIGGIO — ALLERTA DATI USA
+LEVA PSICOLOGICA: Professionalità e protezione. Noi sappiamo cose che il pubblico non sa.
+OBIETTIVO: Venerdì pomeriggio — spesso dati USA (NFP, CPI, ecc.). Il canale pubblico è avvertito; il VIP è già protetto.
+STRUTTURA OBBLIGATORIA:
+1. HOOK: orario + "ATTENZIONE" o "ALLERTA MERCATI" — tono serio, professionale
+2. EMPATIA: chi opera senza sapere dei dati macro USA e rischia di essere colpito da spike improvvisi
+3. CONTRASTO: nella Sala VIP siamo già posizionati e protetti. Chi è fuori è esposto, chi è dentro è al sicuro.
+4. CTA: entra nel VIP per essere protetto durante i dati macro`,
+
+  ven_sera: `
+SLOT: VENERDÌ SERA — LIFESTYLE RECAP
+LEVA PSICOLOGICA: I soldi del weekend. Stipendio vs Rendita. Tono leggermente arrogante (in senso buono).
+OBIETTIVO: Il recap del venerdì sera deve fare male positivamente. "Noi usciamo a cena coi soldi del mercato."
+STRUTTURA OBBLIGATORIA:
+1. HOOK: orario serale + "5 SU 5" o "FINE SETTIMANA" — tono celebrativo, esclusivo
+2. EMPATIA: chi ha lavorato tutta la settimana e aspetta il weekend come "liberazione"
+3. CONTRASTO (deve bruciare): "Questa settimana il mercato ci ha pagato. Stasera usciamo coi soldi del Gold." — Lifestyle, libertà, esclusività.
+4. CTA: vuoi che anche il tuo weekend sia pagato dal mercato?`,
+
+  ven_chiusura: `
+SLOT: VENERDÌ CHIUSURA — URGENZA PRE-LUNEDÌ
+LEVA PSICOLOGICA: Urgenza pre-weekend. Il mercato chiude. Chi decide ora è operativo lunedì mattina.
+OBIETTIVO: Chi fa il setup questo weekend è già operativo alle 07:30 di lunedì prossimo.
+STRUTTURA OBBLIGATORIA:
+1. HOOK: orario tardo + "IL MERCATO CHIUDE" o "ULTIMO AVVISO" — tono urgente, quasi definitivo
+2. EMPATIA: chi ha rimandato per settimane — "ci penso da lunedì prossimo..."
+3. CONTRASTO: il mercato non aspetta. Lunedì mattina riaprirà — con o senza di te. Chi fa il setup questo weekend è operativo già alle 07:30.
+4. CTA urgente: "Hai questo weekend per decidere. Lunedì i mercati riaprono."`,
+};
+
+export interface SettimanaCtx {
+  cfg: Config;
+  date: string;
+  tone: Tone;
+  extra?: string;
+  emojiLevel?: EmojiLevel;
+}
+
+export function buildSettimanaPrompt(slotId: string, ctx: SettimanaCtx): string {
+  const { cfg, date, tone, extra, emojiLevel } = ctx;
+  const slotInstructions = SETTIMANA_SLOT_INSTRUCTIONS[slotId] ?? '';
+  const extraBlock = extra?.trim() ? `\n\nNOTE AGGIUNTIVE DAL TRADER: ${extra.trim()}` : '';
+  return basePrompt(cfg, tone, date) + `
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MATRICE SETTIMANALE — ISTRUZIONI SPECIFICHE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+FORMULA OBBLIGATORIA (4 blocchi in questo ordine esatto):
+1. HOOK VISIVO: orario indicativo + 1-2 emoji + TITOLO IN MAIUSCOLO. Cattura chi scorre velocemente Telegram.
+2. EMPATIA (Ricalco): riconosci lo stato d'animo del lettore in quel preciso giorno/momento.
+3. CONTRASTO (Soluzione): mostra come noi — XAUUSD, Sala VIP, CopyTrading — viviamo l'ESATTO OPPOSTO del suo problema. Lui fatica, noi automatizziamo.
+4. CTA INVARIABILE: freccia in giù 👉, comando verbale, link su riga nuova.
+
+FORMATTAZIONE:
+- Paragrafi di MAX 3 righe.
+- Spazio bianco tra ogni blocco.
+- ZERO blocchi di testo pesante.
+- VIETATI asterischi e markdown.
+- Asset principale: XAUUSD (Oro).
+- Nomina spesso: Sala VIP (per esclusività) e CopyTrading (come soluzione senza stress).
+${slotInstructions}${extraBlock}` + emojiBlock(emojiLevel);
+}

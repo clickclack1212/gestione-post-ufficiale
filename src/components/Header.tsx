@@ -5,12 +5,13 @@ import { Icon, Diamond, ChevronDown } from './Icon';
 import type { Tab } from '../types';
 
 const TABS: { id: Tab; label: string; icon: string }[] = [
-  { id: 'generate',  label: 'Genera',        icon: 'Zap'         },
-  { id: 'prog',      label: 'Programmazione', icon: 'CalendarDays'},
-  { id: 'calendar',  label: 'Calendario',     icon: 'Newspaper'   },
-  { id: 'optimize',  label: 'Ottimizza',      icon: 'Sparkles'    },
-  { id: 'translate', label: 'Traduci',        icon: 'Globe'       },
-  { id: 'settings',  label: 'Config',         icon: 'Settings'    },
+  { id: 'generate',  label: 'Genera',        icon: 'Zap'          },
+  { id: 'prog',      label: 'Programmazione', icon: 'CalendarDays' },
+  { id: 'weekly',    label: 'Settimana',      icon: 'CalendarRange'},
+  { id: 'calendar',  label: 'Calendario',     icon: 'Newspaper'    },
+  { id: 'optimize',  label: 'Ottimizza',      icon: 'Sparkles'     },
+  { id: 'translate', label: 'Traduci',        icon: 'Globe'        },
+  { id: 'settings',  label: 'Config',         icon: 'Settings'     },
 ];
 
 const MODEL_COUNTS = [
