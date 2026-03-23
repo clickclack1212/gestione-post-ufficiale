@@ -2137,3 +2137,128 @@ ${day.instruction}
 ISTRUZIONI SPECIFICHE PER QUESTO SLOT:
 ${slotInstructions}${extraBlock}` + emojiBlock(emojiLevel);
 }
+
+// ── SCALETTA UFFICIALE PROMPTS ────────────────────────────────────────────────
+const SCALETTA_SLOTS: Record<string, { time: string; label: string; objective: string; types: string; instructions: string }> = {
+  early_morning: {
+    time: '06:00–07:30',
+    label: 'Early Morning',
+    objective: 'Attivare il pubblico + mindset',
+    types: '"Good morning / Happy Monday", motivazionale breve, energia + hype',
+    instructions: `Primo post della giornata — deve svegliare e attivare il canale.
+Formula: saluto ad alto impatto + breve messaggio motivazionale legato al trading/finanza + micro-anticipazione di cosa succederà oggi sul canale. Energia pura. Nessuna CTA aggressiva in questo slot.`,
+  },
+  prova_sociale: {
+    time: '07:00–09:00',
+    label: 'Prova Sociale',
+    objective: 'Credibilità immediata',
+    types: 'Screenshot guadagni membri, messaggi clienti, risultati recenti Copy/VIP',
+    instructions: `Social proof del mattino. Mostra risultati reali o del giorno precedente.
+Se inizio settimana (lunedì): mostra guadagni membri, messaggi clienti soddisfatti, o risultati mattutini del CopyTrading/Sala VIP.
+Se metà settimana: risultati del giorno precedente + quelli già presenti questa mattina.
+Formula: commenta brevemente lo screenshot (anche se generico), aggiungi contesto emotivo, CTA soft per unirsi.`,
+  },
+  contenuto_valore: {
+    time: '09:00–12:00',
+    label: 'Contenuto / Valore',
+    objective: 'Educare + aumentare fiducia',
+    types: 'Analisi mercato, spiegazioni, mini tutorial, contenuto educativo',
+    instructions: `Post educativo di valore. Insegna qualcosa di utile sull'XAUUSD o sul trading in generale.
+Formula: titolo forte in MAIUSCOLO + spiegazione in 2-3 paragrafi brevi + conclusione che collega il concetto al tuo metodo/servizio. Tono da esperto autorevole, non da venditore. Zero CTA invadente.`,
+  },
+  soft_cta: {
+    time: '10:00–12:30',
+    label: 'Soft CTA',
+    objective: 'Portare gente nel gruppo / DM',
+    types: '"Scrivi START", "Accesso gratuito", "Posti limitati"',
+    instructions: `Call to action morbida per generare lead. Non vendere direttamente — invita all'azione semplice.
+Formula: problema che risolvi in 1-2 righe → soluzione che offri → azione facile ("scrivi START", "clicca sotto", "manda un DM"). Sensazione di accesso esclusivo, non di vendita aggressiva.`,
+  },
+  pre_trade_hype: {
+    time: '11:30–13:30',
+    label: 'Pre-Trade Hype',
+    objective: 'Preparare al segnale',
+    types: '"Stiamo per entrare", "Analisi pronta", "Are you ready?"',
+    instructions: `Teaser pre-segnale. Crea anticipazione e tensione positiva prima di entrare a mercato.
+Formula: segnala che stai monitorando/analizzando senza rivelare l'entry → crea curiosità ("qualcosa si sta muovendo sull'oro") → rimanda al VIP per il segnale completo. Frasi corte, ritmo frenetico, urgenza crescente.`,
+  },
+  trade_live: {
+    time: '13:00–15:00',
+    label: 'Trade Live',
+    objective: 'Engagement massimo',
+    types: 'Segnale, Entry, TP raggiunti, Aggiornamenti live',
+    instructions: `Post del segnale/trade attivo. Massimo engagement — le persone aspettano questo momento.
+Se le note contengono entry/SL/TP: usali. Altrimenti presentali in modo generico professionale.
+Formula: annuncio diretto (BUY/SELL XAUUSD) → dati tecnici → invito a seguire nel VIP per aggiornamenti in tempo reale. Tono deciso, nessuna incertezza.`,
+  },
+  post_trade_proof: {
+    time: 'Subito dopo il trade',
+    label: 'Post-Trade Proof',
+    objective: 'Rinforzo psicologico',
+    types: 'Screenshot risultati, "Easy profit", Testimonianze',
+    instructions: `Post-trade proof. Mostra il risultato appena il trade si chiude — momento di massimo impatto emotivo.
+Se le note contengono il risultato: usalo. Altrimenti usa un risultato generico positivo.
+Formula: annuncia il risultato (TP raggiunto / pip guadagnati) → commento breve ("come previsto", "il metodo non sbaglia") → rinforza che nel VIP succede OGNI GIORNO → CTA forte.`,
+  },
+  cta_forte: {
+    time: '15:00–17:00',
+    label: 'CTA Forte',
+    objective: 'Conversione',
+    types: '"Vuoi anche tu?", "Ultimi posti", "Join now"',
+    instructions: `Call to action forte e diretta. Post di conversione pura.
+Formula: ricorda brevemente cosa è appena successo (il trade/risultati di oggi) → chiedi direttamente "Vuoi fare lo stesso?" → crea urgenza reale o percepita (posti limitati, finestra temporale) → link diretto. Nessuna ambiguità — questo post spinge all'azione immediata.`,
+  },
+  motivazionale: {
+    time: '18:00–21:00',
+    label: 'Contenuto Motivazionale',
+    objective: 'Retention + brand',
+    types: 'Lifestyle, mentalità, story personale',
+    instructions: `Post motivazionale serale. Retention e brand identity. Crea connessione emotiva con il pubblico.
+Formula: storia personale o riflessione (anche in prima persona del trader) → messaggio di mentalità legato al successo finanziario → connessione al lifestyle che il trading permette → CTA soft ("se anche tu vuoi..."). Tono personale, autentico, mai patinato.`,
+  },
+  evening_close: {
+    time: '21:00–23:30',
+    label: 'Evening / Close',
+    objective: 'Tenere attenzione + FOMO',
+    types: '"Domani si trade", "Turn notifications on", Reminder',
+    instructions: `Ultimo post della giornata. Chiude il ciclo e prepara per domani. Genera FOMO per chi non ha partecipato.
+Formula: mini recap serale (giornata positiva/apprendimento) → anticipazione di domani ("domani potrebbe essere ancora più interessante") → invito ad attivare le notifiche → CTA leggera per chi non è ancora dentro. Tono rilassato ma con urgenza latente.`,
+  },
+};
+
+export interface ScalettaCtx {
+  cfg: Config;
+  date: string;
+  tone: Tone;
+  extra?: string;
+  emojiLevel?: EmojiLevel;
+}
+
+export function buildScalettaPrompt(slotId: string, ctx: ScalettaCtx): string {
+  const { cfg, date, tone, extra, emojiLevel } = ctx;
+  const slot = SCALETTA_SLOTS[slotId];
+  if (!slot) return '';
+  const extraBlock = extra?.trim() ? `\n\nNOTE AGGIUNTIVE DAL TRADER: ${extra.trim()}` : '';
+  return basePrompt(cfg, tone, date) + `
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SCALETTA UFFICIALE — ${slot.label.toUpperCase()} (${slot.time})
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+OBIETTIVO: ${slot.objective.toUpperCase()}
+TIPO DI CONTENUTO: ${slot.types}
+
+FORMULA OBBLIGATORIA (4 blocchi in questo ordine):
+1. HOOK VISIVO: fascia oraria + 1-2 emoji + TITOLO IN MAIUSCOLO che ferma il pollice.
+2. EMPATIA (Ricalco): riconosci lo stato d'animo del lettore in questo preciso momento della giornata.
+3. CONTRASTO (Soluzione): mostra come noi — XAUUSD, Sala VIP, CopyTrading — siamo l'esatto opposto del suo problema.
+4. CTA: 👉 azione chiara e diretta + link su riga nuova.
+
+FORMATTAZIONE:
+- Paragrafi di MAX 3 righe. Spazio bianco tra ogni blocco.
+- VIETATI asterischi e markdown.
+- Asset: XAUUSD (Oro). Nomina Sala VIP e CopyTrading dove pertinente.
+
+ISTRUZIONI SPECIFICHE:
+${slot.instructions}${extraBlock}` + emojiBlock(emojiLevel);
+}
