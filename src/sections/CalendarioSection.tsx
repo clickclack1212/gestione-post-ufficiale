@@ -11,7 +11,7 @@ import {
   buildCalMTV1Prompt, buildCalMTV2Prompt, buildCalMTV3Prompt,
   parseBilingual,
 } from '../services/prompts';
-import { Newspaper, Zap, TrendingUp, BarChart2 } from '../components/Icon';
+import { Newspaper, Zap, TrendingUp, BarChart2, RotateCw } from '../components/Icon';
 import type { Tone, EmojiLevel } from '../types';
 
 type CalResults = {
@@ -34,6 +34,7 @@ function EconomicoPanel() {
   const [emojiLevel, setEmojiLevel] = useState<EmojiLevel>('2-4');
   const [results, setResults] = useState<CalResults>({ v1: null, v2: null, v3: null });
   const [genStep, setGenStep] = useState(0);
+  const [regenSlot, setRegenSlot] = useState<'v1' | 'v2' | 'v3' | null>(null);
 
   async function handleGenerate() {
     if (!photo) return;
@@ -55,6 +56,17 @@ function EconomicoPanel() {
     if (t3) setResults(prev => ({ ...prev, v3: parseBilingual(t3) }));
 
     setGenStep(0);
+  }
+
+  async function regenVersion(v: 'v1' | 'v2' | 'v3') {
+    if (!photo) return;
+    setRegenSlot(v);
+    const builders = {
+      v1: buildCalV1Prompt, v2: buildCalV2Prompt, v3: buildCalV3Prompt,
+    };
+    const text = await run(builders[v](config, tone, notes, emojiLevel), 0.88, photo);
+    if (text) setResults(prev => ({ ...prev, [v]: parseBilingual(text) }));
+    setRegenSlot(null);
   }
 
   const hasAnyResult = !!(results.v1 || results.v2 || results.v3);
@@ -121,7 +133,15 @@ function EconomicoPanel() {
         <div className="card animate-[slideUp_0.3s_ease]">
           <div className="flex items-center gap-2 mb-3">
             <span className="text-base">🚨</span>
-            <span className="card-title mb-0">Market Mover</span>
+            <span className="card-title mb-0 flex-1">Market Mover</span>
+            <button
+              onClick={() => regenVersion('v1')}
+              disabled={loading}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-[var(--radius-sm)] text-[11px] font-medium border border-[var(--bg3)] text-[var(--text3)] hover:text-[var(--text)] hover:border-[var(--bg4)] transition-colors disabled:opacity-40"
+            >
+              {regenSlot === 'v1' ? <span className="mini-spinner" /> : <RotateCw size={11} />}
+              {regenSlot === 'v1' ? `${elapsed}s` : 'Rigenera'}
+            </button>
           </div>
           <BilingualResult it={results.v1.it} en={results.v1.en} />
         </div>
@@ -131,7 +151,15 @@ function EconomicoPanel() {
         <div className="card animate-[slideUp_0.3s_ease]">
           <div className="flex items-center gap-2 mb-3">
             <span className="text-base">📊</span>
-            <span className="card-title mb-0">Analisi Macro &amp; Tecnica</span>
+            <span className="card-title mb-0 flex-1">Analisi Macro &amp; Tecnica</span>
+            <button
+              onClick={() => regenVersion('v2')}
+              disabled={loading}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-[var(--radius-sm)] text-[11px] font-medium border border-[var(--bg3)] text-[var(--text3)] hover:text-[var(--text)] hover:border-[var(--bg4)] transition-colors disabled:opacity-40"
+            >
+              {regenSlot === 'v2' ? <span className="mini-spinner" /> : <RotateCw size={11} />}
+              {regenSlot === 'v2' ? `${elapsed}s` : 'Rigenera'}
+            </button>
           </div>
           <BilingualResult it={results.v2.it} en={results.v2.en} />
         </div>
@@ -141,7 +169,15 @@ function EconomicoPanel() {
         <div className="card animate-[slideUp_0.3s_ease]">
           <div className="flex items-center gap-2 mb-3">
             <span className="text-base">⚡</span>
-            <span className="card-title mb-0">Flash Report</span>
+            <span className="card-title mb-0 flex-1">Flash Report</span>
+            <button
+              onClick={() => regenVersion('v3')}
+              disabled={loading}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-[var(--radius-sm)] text-[11px] font-medium border border-[var(--bg3)] text-[var(--text3)] hover:text-[var(--text)] hover:border-[var(--bg4)] transition-colors disabled:opacity-40"
+            >
+              {regenSlot === 'v3' ? <span className="mini-spinner" /> : <RotateCw size={11} />}
+              {regenSlot === 'v3' ? `${elapsed}s` : 'Rigenera'}
+            </button>
           </div>
           <BilingualResult it={results.v3.it} en={results.v3.en} />
         </div>
@@ -171,6 +207,7 @@ function RisultatiPanel() {
   const [emojiLevel, setEmojiLevel] = useState<EmojiLevel>('2-4');
   const [results, setResults] = useState<CalResults>({ v1: null, v2: null, v3: null });
   const [genStep, setGenStep] = useState(0);
+  const [regenSlot, setRegenSlot] = useState<'v1' | 'v2' | 'v3' | null>(null);
 
   async function handleGenerate() {
     if (!photo) return;
@@ -192,6 +229,17 @@ function RisultatiPanel() {
     if (t3) setResults(prev => ({ ...prev, v3: parseBilingual(t3) }));
 
     setGenStep(0);
+  }
+
+  async function regenVersion(v: 'v1' | 'v2' | 'v3') {
+    if (!photo) return;
+    setRegenSlot(v);
+    const builders = {
+      v1: buildCalRisultatiV1Prompt, v2: buildCalRisultatiV2Prompt, v3: buildCalRisultatiV3Prompt,
+    };
+    const text = await run(builders[v](config, tone, notes, emojiLevel), 0.88, photo);
+    if (text) setResults(prev => ({ ...prev, [v]: parseBilingual(text) }));
+    setRegenSlot(null);
   }
 
   const hasAnyResult = !!(results.v1 || results.v2 || results.v3);
@@ -258,7 +306,15 @@ function RisultatiPanel() {
         <div className="card animate-[slideUp_0.3s_ease]">
           <div className="flex items-center gap-2 mb-3">
             <span className="text-base">🏛️</span>
-            <span className="card-title mb-0">Autorità &amp; Trasparenza</span>
+            <span className="card-title mb-0 flex-1">Autorità &amp; Trasparenza</span>
+            <button
+              onClick={() => regenVersion('v1')}
+              disabled={loading}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-[var(--radius-sm)] text-[11px] font-medium border border-[var(--bg3)] text-[var(--text3)] hover:text-[var(--text)] hover:border-[var(--bg4)] transition-colors disabled:opacity-40"
+            >
+              {regenSlot === 'v1' ? <span className="mini-spinner" /> : <RotateCw size={11} />}
+              {regenSlot === 'v1' ? `${elapsed}s` : 'Rigenera'}
+            </button>
           </div>
           <BilingualResult it={results.v1.it} en={results.v1.en} />
         </div>
@@ -268,7 +324,15 @@ function RisultatiPanel() {
         <div className="card animate-[slideUp_0.3s_ease]">
           <div className="flex items-center gap-2 mb-3">
             <span className="text-base">🚀</span>
-            <span className="card-title mb-0">Hype / FOMO</span>
+            <span className="card-title mb-0 flex-1">Hype / FOMO</span>
+            <button
+              onClick={() => regenVersion('v2')}
+              disabled={loading}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-[var(--radius-sm)] text-[11px] font-medium border border-[var(--bg3)] text-[var(--text3)] hover:text-[var(--text)] hover:border-[var(--bg4)] transition-colors disabled:opacity-40"
+            >
+              {regenSlot === 'v2' ? <span className="mini-spinner" /> : <RotateCw size={11} />}
+              {regenSlot === 'v2' ? `${elapsed}s` : 'Rigenera'}
+            </button>
           </div>
           <BilingualResult it={results.v2.it} en={results.v2.en} />
         </div>
@@ -278,7 +342,15 @@ function RisultatiPanel() {
         <div className="card animate-[slideUp_0.3s_ease]">
           <div className="flex items-center gap-2 mb-3">
             <span className="text-base">🌍</span>
-            <span className="card-title mb-0">Report Internazionale</span>
+            <span className="card-title mb-0 flex-1">Report Internazionale</span>
+            <button
+              onClick={() => regenVersion('v3')}
+              disabled={loading}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-[var(--radius-sm)] text-[11px] font-medium border border-[var(--bg3)] text-[var(--text3)] hover:text-[var(--text)] hover:border-[var(--bg4)] transition-colors disabled:opacity-40"
+            >
+              {regenSlot === 'v3' ? <span className="mini-spinner" /> : <RotateCw size={11} />}
+              {regenSlot === 'v3' ? `${elapsed}s` : 'Rigenera'}
+            </button>
           </div>
           <BilingualResult it={results.v3.it} en={results.v3.en} />
         </div>
@@ -308,6 +380,7 @@ function MTPanel() {
   const [emojiLevel, setEmojiLevel] = useState<EmojiLevel>('2-4');
   const [results, setResults] = useState<CalResults>({ v1: null, v2: null, v3: null });
   const [genStep, setGenStep] = useState(0);
+  const [regenSlot, setRegenSlot] = useState<'v1' | 'v2' | 'v3' | null>(null);
 
   async function handleGenerate() {
     if (!photo) return;
@@ -329,6 +402,18 @@ function MTPanel() {
     if (t3) setResults(prev => ({ ...prev, v3: parseBilingual(t3) }));
 
     setGenStep(0);
+  }
+
+  async function regenVersion(v: 'v1' | 'v2' | 'v3') {
+    if (!photo) return;
+    setRegenSlot(v);
+    const temps: Record<'v1' | 'v2' | 'v3', number> = { v1: 0.85, v2: 0.82, v3: 0.88 };
+    const builders = {
+      v1: buildCalMTV1Prompt, v2: buildCalMTV2Prompt, v3: buildCalMTV3Prompt,
+    };
+    const text = await run(builders[v](config, tone, notes, emojiLevel), temps[v], photo);
+    if (text) setResults(prev => ({ ...prev, [v]: parseBilingual(text) }));
+    setRegenSlot(null);
   }
 
   const hasAnyResult = !!(results.v1 || results.v2 || results.v3);
@@ -395,7 +480,15 @@ function MTPanel() {
         <div className="card animate-[slideUp_0.3s_ease]">
           <div className="flex items-center gap-2 mb-3">
             <span className="text-base">🛡️</span>
-            <span className="card-title mb-0">Rendimento / Rischio</span>
+            <span className="card-title mb-0 flex-1">Rendimento / Rischio</span>
+            <button
+              onClick={() => regenVersion('v1')}
+              disabled={loading}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-[var(--radius-sm)] text-[11px] font-medium border border-[var(--bg3)] text-[var(--text3)] hover:text-[var(--text)] hover:border-[var(--bg4)] transition-colors disabled:opacity-40"
+            >
+              {regenSlot === 'v1' ? <span className="mini-spinner" /> : <RotateCw size={11} />}
+              {regenSlot === 'v1' ? `${elapsed}s` : 'Rigenera'}
+            </button>
           </div>
           <BilingualResult it={results.v1.it} en={results.v1.en} />
         </div>
@@ -405,7 +498,15 @@ function MTPanel() {
         <div className="card animate-[slideUp_0.3s_ease]">
           <div className="flex items-center gap-2 mb-3">
             <span className="text-base">📊</span>
-            <span className="card-title mb-0">Coefficienti Professionali</span>
+            <span className="card-title mb-0 flex-1">Coefficienti Professionali</span>
+            <button
+              onClick={() => regenVersion('v2')}
+              disabled={loading}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-[var(--radius-sm)] text-[11px] font-medium border border-[var(--bg3)] text-[var(--text3)] hover:text-[var(--text)] hover:border-[var(--bg4)] transition-colors disabled:opacity-40"
+            >
+              {regenSlot === 'v2' ? <span className="mini-spinner" /> : <RotateCw size={11} />}
+              {regenSlot === 'v2' ? `${elapsed}s` : 'Rigenera'}
+            </button>
           </div>
           <BilingualResult it={results.v2.it} en={results.v2.en} />
         </div>
@@ -415,7 +516,15 @@ function MTPanel() {
         <div className="card animate-[slideUp_0.3s_ease]">
           <div className="flex items-center gap-2 mb-3">
             <span className="text-base">⚡</span>
-            <span className="card-title mb-0">Social Proof Flash</span>
+            <span className="card-title mb-0 flex-1">Social Proof Flash</span>
+            <button
+              onClick={() => regenVersion('v3')}
+              disabled={loading}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-[var(--radius-sm)] text-[11px] font-medium border border-[var(--bg3)] text-[var(--text3)] hover:text-[var(--text)] hover:border-[var(--bg4)] transition-colors disabled:opacity-40"
+            >
+              {regenSlot === 'v3' ? <span className="mini-spinner" /> : <RotateCw size={11} />}
+              {regenSlot === 'v3' ? `${elapsed}s` : 'Rigenera'}
+            </button>
           </div>
           <BilingualResult it={results.v3.it} en={results.v3.en} />
         </div>
