@@ -12,13 +12,16 @@ export function setPreferredModelIdx(i: number) {
 export type ModelChangeCallback = (modelIdx: number) => void;
 export type ToastCallback = (msg: string) => void;
 
+type CallResult = { res: Response; d: unknown };
+
 async function callModel(
   modelId: string,
   prompt: string,
   apiKey: string,
   temp: number,
   img: string | string[] | null,
-): Promise<{ res: Response; d: unknown }> {
+  maxTokens = 8192,
+): Promise<CallResult> {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${apiKey}`;
   const parts: unknown[] = [];
   const imgs = Array.isArray(img) ? img : (img ? [img] : []);
@@ -43,7 +46,7 @@ async function callModel(
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts }],
-        generationConfig: { temperature: temp, maxOutputTokens: 4096 },
+        generationConfig: { temperature: temp, maxOutputTokens: maxTokens },
       }),
       signal: controller.signal,
     });
@@ -55,6 +58,14 @@ async function callModel(
     if ((e as Error).name === 'AbortError') throw new Error('TIMEOUT');
     throw e;
   }
+}
+
+function extractText(d: unknown): { text: string; truncated: boolean } {
+  const candidate = (d as { candidates?: { content?: { parts?: { text?: string }[] }; finishReason?: string }[] })
+    ?.candidates?.[0];
+  const text = candidate?.content?.parts?.[0]?.text ?? '';
+  const truncated = candidate?.finishReason === 'MAX_TOKENS';
+  return { text, truncated };
 }
 
 export async function gemini(
@@ -85,14 +96,30 @@ export async function gemini(
       throw new Error('Nessun modello raggiungibile. Controlla la connessione.');
     }
     if (res.ok) {
-      const text = (d as { candidates?: { content?: { parts?: { text?: string }[] } }[] })
-        ?.candidates?.[0]?.content?.parts?.[0]?.text;
+      const { text, truncated } = extractText(d);
       if (!text) {
         if (i + 1 < GEMINI_MODELS.length) {
           onToast?.(`${model.label} risposta vuota — passo a ${GEMINI_MODELS[i+1].label}...`);
           continue;
         }
         throw new Error('Risposta vuota da tutti i modelli');
+      }
+      // Auto-retry once with 16k tokens if output was truncated
+      if (truncated) {
+        onToast?.(`⚠️ Testo troncato — riprovo con limite esteso...`);
+        try {
+          const { res: res2, d: d2 } = await callModel(model.id, prompt, apiKey, temp, img, 16384);
+          if (res2.ok) {
+            const { text: text2, truncated: still } = extractText(d2);
+            if (text2) {
+              if (still) onToast?.(`⚠️ Risposta ancora lunga — potrebbe essere parziale`);
+              if (i > activeModelIdx) { activeModelIdx = i; onModelChange?.(i); }
+              incCounter(i);
+              return text2;
+            }
+          }
+        } catch { /* fallback to original text below */ }
+        onToast?.(`⚠️ Retry fallito — testo potrebbe essere incompleto`);
       }
       if (i > activeModelIdx) {
         activeModelIdx = i;
