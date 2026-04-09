@@ -10,6 +10,7 @@ import {
 } from '../services/prompts';
 import { CalendarRange, Layers, Zap, PlayCircle, Target } from '../components/Icon';
 import type { Tone, EmojiLevel } from '../types';
+import type { ScalettaDayType } from '../services/prompts';
 
 // ── Stato slot ────────────────────────────────────────────────────────────────
 interface SlotState {
@@ -261,9 +262,31 @@ const SCALETTA_SLOTS = [
   },
 ];
 
+const DAY_TYPES: { id: ScalettaDayType; label: string; desc: string; color: string }[] = [
+  {
+    id: 'normale',
+    label: 'Giornata Normale',
+    desc: 'Segnali operativi attesi — scaletta standard',
+    color: '#22c55e',
+  },
+  {
+    id: 'no_segnale',
+    label: 'Nessun Segnale',
+    desc: 'Nessuna operatività — aggiornamenti, news e valorizzazione risultati precedenti',
+    color: '#f59e0b',
+  },
+  {
+    id: 'segnale_negativo',
+    label: 'Segnale Negativo',
+    desc: 'Primo trade in stop loss — comunicazione trasparente + social proof passata',
+    color: '#ef4444',
+  },
+];
+
 function ScalettaPanel() {
   const { config } = useApp();
   const { loading, elapsed, run } = useGemini();
+  const [dayType, setDayType] = useState<ScalettaDayType>('normale');
   const [slotStates, setSlotStates] = useState<Record<string, SlotState>>(
     () => initSlots(SCALETTA_SLOTS)
   );
@@ -273,13 +296,14 @@ function ScalettaPanel() {
   const update = (id: string, patch: Partial<SlotState>) =>
     setSlotStates(p => ({ ...p, [id]: { ...p[id], ...patch } }));
 
+  const buildCtx = (s: SlotState) => ({
+    cfg: config, date: todayItalian(), tone: s.tone, extra: s.extra, emojiLevel: s.emojiLevel, dayType,
+  });
+
   async function generateOne(slotId: string) {
     const s = slotStates[slotId];
     setGeneratingSlot(slotId);
-    const text = await run(
-      buildScalettaPrompt(slotId, { cfg: config, date: todayItalian(), tone: s.tone, extra: s.extra, emojiLevel: s.emojiLevel }),
-      0.88
-    );
+    const text = await run(buildScalettaPrompt(slotId, buildCtx(s)), 0.88);
     if (text) update(slotId, { result: parseBilingual(text) });
     setGeneratingSlot(null);
   }
@@ -291,18 +315,64 @@ function ScalettaPanel() {
       setGeneratingSlot(slot.id);
       setGenProgress(i + 1);
       const s = slotStates[slot.id];
-      const text = await run(
-        buildScalettaPrompt(slot.id, { cfg: config, date: todayItalian(), tone: s.tone, extra: s.extra, emojiLevel: s.emojiLevel }),
-        0.88
-      );
+      const text = await run(buildScalettaPrompt(slot.id, buildCtx(s)), 0.88);
       if (text) update(slot.id, { result: parseBilingual(text) });
     }
     setGeneratingSlot(null);
     setGenProgress(0);
   }
 
+  const activeDayType = DAY_TYPES.find(d => d.id === dayType)!;
+
   return (
     <div className="space-y-5">
+      {/* Tipo di giornata */}
+      <div className="card">
+        <label className="block text-xs text-[var(--text3)] uppercase tracking-widest mb-3">
+          Tipo di Giornata
+        </label>
+        <div className="flex flex-col gap-2">
+          {DAY_TYPES.map(dt => (
+            <button
+              key={dt.id}
+              onClick={() => setDayType(dt.id)}
+              className={`flex items-start gap-3 p-3 rounded-[var(--radius-sm)] border text-left transition-all
+                ${dayType === dt.id
+                  ? 'border-transparent'
+                  : 'border-[var(--bg3)] hover:border-[var(--bg4)]'}`}
+              style={dayType === dt.id
+                ? { background: dt.color + '15', borderColor: dt.color + '50' }
+                : {}}
+            >
+              <span
+                className="w-2 h-2 rounded-full mt-1 shrink-0"
+                style={{ background: dt.color }}
+              />
+              <div>
+                <span
+                  className="text-xs font-semibold block"
+                  style={{ color: dayType === dt.id ? dt.color : 'var(--text)' }}
+                >
+                  {dt.label}
+                </span>
+                <span className="text-[11px] text-[var(--text3)]">{dt.desc}</span>
+              </div>
+            </button>
+          ))}
+        </div>
+
+        {dayType !== 'normale' && (
+          <div
+            className="mt-3 p-2.5 rounded-[var(--radius-sm)] text-[11px] text-[var(--text3)] leading-relaxed"
+            style={{ background: activeDayType.color + '0f', borderLeft: `3px solid ${activeDayType.color}` }}
+          >
+            {dayType === 'no_segnale'
+              ? 'Gli slot Trade Live, Post-Trade Proof, CTA Forte ed Evening Close vengono riscritti per valorizzare i risultati precedenti e giustificare professionalmente l\'assenza di operatività.'
+              : 'Gli slot Post-Trade Proof, CTA Forte, Motivazionale ed Evening Close vengono riscritti per comunicare con trasparenza lo stop loss, ribadendo i profitti storici e rafforzando la fiducia nel metodo.'}
+          </div>
+        )}
+      </div>
+
       <button className="btn-generate w-full" onClick={generateAll} disabled={loading}>
         {loading && genProgress > 0 ? (
           <span className="flex items-center justify-center gap-2">
@@ -318,9 +388,18 @@ function ScalettaPanel() {
       {SCALETTA_SLOTS.map((slot, idx) => {
         const s = slotStates[slot.id];
         const isThisSlot = generatingSlot === slot.id;
+        // Indica visivamente se questo slot ha un override di scenario attivo
+        const hasScenarioOverride = dayType !== 'normale' && (
+          (dayType === 'no_segnale' && ['trade_live', 'post_trade_proof', 'cta_forte', 'evening_close'].includes(slot.id)) ||
+          (dayType === 'segnale_negativo' && ['post_trade_proof', 'cta_forte', 'motivazionale', 'evening_close'].includes(slot.id))
+        );
+        const scenarioColor = activeDayType.color;
         return (
           <div key={slot.id} className="space-y-3">
-            <div className="card">
+            <div
+              className="card"
+              style={hasScenarioOverride ? { borderLeft: `3px solid ${scenarioColor}55` } : {}}
+            >
               {/* Header slot */}
               <div className="flex items-start gap-3 mb-4">
                 <span
@@ -338,6 +417,14 @@ function ScalettaPanel() {
                       {slot.time}
                     </span>
                     <span className="text-sm font-semibold text-[var(--text)]">{slot.label}</span>
+                    {hasScenarioOverride && (
+                      <span
+                        className="text-[10px] font-medium px-1.5 py-0.5 rounded-[var(--radius-sm)]"
+                        style={{ background: scenarioColor + '18', color: scenarioColor }}
+                      >
+                        {dayType === 'no_segnale' ? '↺ adattato' : '⚠ adattato'}
+                      </span>
+                    )}
                     {s.result && (
                       <span className="text-[10px] text-[#22c55e] font-medium">✓ Generato</span>
                     )}

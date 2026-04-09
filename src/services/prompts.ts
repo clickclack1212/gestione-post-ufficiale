@@ -2226,25 +2226,80 @@ Formula: mini recap serale (giornata positiva/apprendimento) → anticipazione d
   },
 };
 
+export type ScalettaDayType = 'normale' | 'no_segnale' | 'segnale_negativo';
+
+// Istruzioni di scenario per tipo di giornata — applicate ai soli slot pertinenti
+const SCENARIO_OVERRIDES: Record<ScalettaDayType, Partial<Record<string, string>>> = {
+  normale: {},
+
+  no_segnale: {
+    trade_live: `SCENARIO — GIORNATA SENZA SEGNALI OPERATIVI:
+Oggi non ci sono operazioni attive. NON pubblicare un segnale. Sostituisci con un aggiornamento di mercato o una news rilevante sull'XAUUSD che giustifichi l'assenza di operatività in modo professionale.
+Tono: trasparente, autorevole. "Il mercato oggi non offre setup di qualità — aspettiamo il momento giusto." Usa questa comunicazione come prova di serietà e disciplina, non come debolezza. CTA verso il VIP dove i segnali sono continui.`,
+
+    post_trade_proof: `SCENARIO — GIORNATA SENZA SEGNALI OPERATIVI:
+Nessun trade da chiudere oggi. Sostituisci il post-trade proof con una valorizzazione dei risultati dei giorni precedenti.
+Struttura: condividi una review o un report dei profitti recenti (screenshot del calendario risultati o messaggi clienti) → commenta brevemente i numeri → usa questa social proof per dimostrare che il metodo funziona anche nei giorni "fermi" → CTA.`,
+
+    cta_forte: `SCENARIO — GIORNATA SENZA SEGNALI OPERATIVI:
+Non c'è un trade appena chiuso da usare come leva. Usa i risultati della settimana/periodo precedente come base per la CTA.
+Struttura: "Oggi il mercato si prende una pausa. Noi no." → mostra i profitti recenti → "Questi risultati sono stati fatti anche senza operare ogni giorno. Immagina cosa succede quando il mercato si muove." → CTA urgente.`,
+
+    evening_close: `SCENARIO — GIORNATA SENZA SEGNALI OPERATIVI:
+Chiudi la giornata in modo onesto e costruttivo. Non ogni giorno si opera — questo è il metodo.
+Struttura: "Oggi abbiamo preferito non entrare. Ecco perché." → breve spiegazione tecnica (nessun setup di qualità, volatilità assente, dati importanti domani) → "I soldi si proteggono anche così" → anticipazione di domani → CTA.`,
+  },
+
+  segnale_negativo: {
+    post_trade_proof: `SCENARIO — SEGNALE NEGATIVO (STOP LOSS):
+Il primo segnale della giornata ha toccato lo stop loss. Gestisci questa comunicazione con massima trasparenza e professionalità.
+MONITORAGGIO PROVIDER: se il provider di segnali ha già indicato uno stop e propone un rientro, puoi accennare a questa possibilità ("stiamo valutando un eventuale rientro secondo la strategia del provider").
+SE NON C'È RIENTRO: comunica con onestà che è una giornata difficile. Ribadisci che non si possono avere risultati positivi ogni singolo giorno — questo è il trading reale. Usa i profitti dei giorni precedenti come ancora psicologica (screenshot calendario risultati, messaggi clienti soddisfatti). Tono: autorevole, mai difensivo. Chi conosce il trading capisce — chi non capisce ha bisogno di educazione, non di scuse.`,
+
+    cta_forte: `SCENARIO — SEGNALE NEGATIVO (STOP LOSS):
+La CTA di oggi deve trasformare la perdita in prova di trasparenza e affidabilità.
+Struttura: "Oggi abbiamo perso. Lo diciamo chiaramente." → "Chi vi dice che vince sempre sta mentendo." → mostra i profitti dei giorni precedenti come controprova (screenshot concreti) → "Su 10 trade, 8 vanno bene. Questo è il metodo." → CTA: "Chi vuole trading reale e non favole, sa dove trovarci." Tono: fermo, diretto, rispettoso. Zero vittimismo.`,
+
+    motivazionale: `SCENARIO — SEGNALE NEGATIVO (STOP LOSS):
+Post motivazionale serale che trasforma la giornata negativa in contenuto di valore e brand positioning.
+Struttura: riflessione personale sulla perdita ("Anche oggi ho perso un trade. Ed è normale.") → filosofia del trading come marathon, non sprint → i profitti di lungo periodo che annullano le perdite singole → "Chi si spaventa per uno stop loss non è pronto per i mercati. Chi lo vede come parte del sistema, sta crescendo." → CTA soft. Tono: autentico, umano, ispirazionale.`,
+
+    evening_close: `SCENARIO — SEGNALE NEGATIVO (STOP LOSS):
+Chiudi la giornata con un recap onesto che rafforzi la fiducia nel lungo termine.
+Struttura: mini recap della giornata difficile → "Oggi -X pip. Non lo nascondiamo." → bilancio settimanale/mensile positivo a contrasto → "Il metodo non è un singolo trade — è la costanza nel tempo." → anticipazione di domani ("domani il mercato riapre, il metodo non cambia") → CTA. Tono: trasparente, solido, mai ansioso.`,
+  },
+};
+
 export interface ScalettaCtx {
   cfg: Config;
   date: string;
   tone: Tone;
   extra?: string;
   emojiLevel?: EmojiLevel;
+  dayType?: ScalettaDayType;
 }
 
 export function buildScalettaPrompt(slotId: string, ctx: ScalettaCtx): string {
-  const { cfg, date, tone, extra, emojiLevel } = ctx;
+  const { cfg, date, tone, extra, emojiLevel, dayType = 'normale' } = ctx;
   const slot = SCALETTA_SLOTS[slotId];
   if (!slot) return '';
   const extraBlock = extra?.trim() ? `\n\nNOTE AGGIUNTIVE DAL TRADER: ${extra.trim()}` : '';
+
+  // Se esiste un override di scenario per questo slot, sostituisce le istruzioni di default
+  const scenarioOverride = SCENARIO_OVERRIDES[dayType]?.[slotId];
+  const slotInstructions = scenarioOverride ?? slot.instructions;
+
+  // Banner scenario visibile nel prompt solo se non è normale
+  const scenarioBanner = dayType !== 'normale'
+    ? `\n⚠️ TIPO DI GIORNATA: ${dayType === 'no_segnale' ? 'NESSUN SEGNALE OPERATIVO' : 'SEGNALE NEGATIVO — STOP LOSS'}\nAdatta il copy di conseguenza seguendo le istruzioni specifiche dello slot.\n`
+    : '';
+
   return basePrompt(cfg, tone, date) + `
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 SCALETTA UFFICIALE — ${slot.label.toUpperCase()} (${slot.time})
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+${scenarioBanner}
 OBIETTIVO: ${slot.objective.toUpperCase()}
 TIPO DI CONTENUTO: ${slot.types}
 
@@ -2260,5 +2315,5 @@ FORMATTAZIONE:
 - Asset: XAUUSD (Oro). Nomina Sala VIP e CopyTrading dove pertinente.
 
 ISTRUZIONI SPECIFICHE:
-${slot.instructions}${extraBlock}` + emojiBlock(emojiLevel);
+${slotInstructions}${extraBlock}` + emojiBlock(emojiLevel);
 }
