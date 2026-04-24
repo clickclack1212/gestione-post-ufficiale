@@ -2,6 +2,7 @@ import { useApp } from './context/AppContext';
 import { Header } from './components/Header';
 import { Toast } from './components/Toast';
 import { LandingPage } from './components/LandingPage';
+import { XauusdApp } from './components/XauusdApp';
 import { GeneraSection } from './sections/GeneraSection';
 import { ProgrammazioneSection } from './sections/ProgrammazioneSection';
 import { SettimanaSection } from './sections/SettimanaSection';
@@ -21,6 +22,10 @@ export function App() {
         <Toast />
       </>
     );
+  }
+
+  if (screen === 'xauusd') {
+    return <XauusdApp />;
   }
 
   return (

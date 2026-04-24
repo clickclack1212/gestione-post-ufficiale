@@ -25,9 +25,9 @@ const APPS: AppCard[] = [
     id: 'xauusd',
     icon: <BarChart2 size={28} strokeWidth={1.5} />,
     title: 'Gestione XAUUSD',
-    desc: 'Analisi tecnica avanzata, gestione operativa e reportistica delle performance su Gold.',
-    tag: 'Prossimamente',
-    active: false,
+    desc: 'Analisi tecnica, bias giornaliero, risk calculator, journal AI e prompt kit completo per il trading su Gold.',
+    tag: 'Disponibile',
+    active: true,
     color: '#3b82f6',
   },
   {
@@ -73,7 +73,7 @@ export function LandingPage() {
         {APPS.map(app => (
           <button
             key={app.id}
-            onClick={app.active ? () => setScreen('app') : undefined}
+            onClick={app.active ? () => setScreen(app.id === 'xauusd' ? 'xauusd' : 'app') : undefined}
             disabled={!app.active}
             className={`relative group text-left p-6 rounded-[var(--radius)] border transition-all duration-200
               ${app.active

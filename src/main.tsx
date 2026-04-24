@@ -7,10 +7,10 @@ import './globals.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <AuthGate>
-      <AppProvider>
+    <AppProvider>
+      <AuthGate>
         <App />
-      </AppProvider>
-    </AuthGate>
+      </AuthGate>
+    </AppProvider>
   </React.StrictMode>,
 );

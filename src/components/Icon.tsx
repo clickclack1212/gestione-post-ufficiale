@@ -10,7 +10,7 @@ import {
   ArrowLeftRight, Download, CalendarDays, Settings, Diamond,
   Sparkles, ChevronDown, ChevronUp, CalendarRange, PlayCircle,
   ChevronRight, AlertCircle, Home, MessageSquare, Send, Music,
-  LayoutGrid, ChevronLeft,
+  LayoutGrid, ChevronLeft, Plus,
 } from 'lucide-react';
 
 type LI = ComponentType<LucideProps>;
@@ -25,7 +25,7 @@ const MAP: Record<string, LI> = {
   ArrowLeftRight, Download, CalendarDays, Settings, Diamond,
   Sparkles, ChevronDown, ChevronUp, CalendarRange, PlayCircle,
   ChevronRight, AlertCircle, Home, MessageSquare, Send, Music,
-  LayoutGrid, ChevronLeft,
+  LayoutGrid, ChevronLeft, Plus,
 };
 
 export interface IconProps {
@@ -53,5 +53,5 @@ export {
   ArrowLeftRight, Download, CalendarDays, Settings, Diamond,
   Sparkles, ChevronDown, ChevronUp, CalendarRange, PlayCircle,
   ChevronRight, AlertCircle, Home, MessageSquare, Send, Music,
-  LayoutGrid, ChevronLeft,
+  LayoutGrid, ChevronLeft, Plus,
 } from 'lucide-react';
