@@ -105,6 +105,9 @@ ISTRUZIONI TECNICHE:
 - Poi scrivi la versione inglese COMPLETA con la sua CTA inglese.
 - NON usare asterischi (*) o markdown.
 
+VERSIONE INGLESE — QUALITÀ MADRELINGUA:
+NON tradurre letteralmente dall'italiano. Riscrivi il messaggio come lo scriverebbe un trader madrelingua inglese per la sua community Telegram internazionale. Grammatica impeccabile, sintassi naturale, espressioni idiomatiche del trading in inglese (es. "hit TP", "closed in profit", "price action", "follow the money", "already in", ecc.). Adatta il tono culturalmente — niente calchi dall'italiano, niente frasi che suonano tradotte.
+
 CTA ITALIANA (alla fine della versione IT, link su riga nuova):
 👉 CLICCA QUI PER [TESTO VARIABILE]:
 ${lIT}

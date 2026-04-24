@@ -1,17 +1,18 @@
 import { useState, useRef, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { GEMINI_MODELS } from '../constants/data';
-import { Icon, Diamond, ChevronDown } from './Icon';
+import { Icon, Diamond, ChevronDown, Home } from './Icon';
 import type { Tab } from '../types';
 
 const TABS: { id: Tab; label: string; icon: string }[] = [
-  { id: 'generate',  label: 'Genera',        icon: 'Zap'          },
-  { id: 'prog',      label: 'Programmazione', icon: 'CalendarDays' },
-  { id: 'weekly',    label: 'Settimana',      icon: 'CalendarRange'},
-  { id: 'calendar',  label: 'Calendario',     icon: 'Newspaper'    },
-  { id: 'optimize',  label: 'Ottimizza',      icon: 'Sparkles'     },
-  { id: 'translate', label: 'Traduci',        icon: 'Globe'        },
-  { id: 'settings',  label: 'Config',         icon: 'Settings'     },
+  { id: 'generate',  label: 'Genera',        icon: 'Zap'           },
+  { id: 'prog',      label: 'Programmazione', icon: 'CalendarDays'  },
+  { id: 'weekly',    label: 'Settimana',      icon: 'CalendarRange' },
+  { id: 'calendar',  label: 'Calendario',     icon: 'Newspaper'     },
+  { id: 'optimize',  label: 'Ottimizza',      icon: 'Sparkles'      },
+  { id: 'translate', label: 'Traduci',        icon: 'Globe'         },
+  { id: 'chat',      label: 'Chat AI',        icon: 'MessageSquare' },
+  { id: 'settings',  label: 'Config',         icon: 'Settings'      },
 ];
 
 const MODEL_COUNTS = [
@@ -22,7 +23,7 @@ const MODEL_COUNTS = [
 ];
 
 export function Header() {
-  const { activeTab, setActiveTab, config, counter, activeModelIdx, preferredModelIdx, setPreferredModelIdx } = useApp();
+  const { activeTab, setActiveTab, setScreen, config, counter, activeModelIdx, preferredModelIdx, setPreferredModelIdx } = useApp();
   const [modelOpen, setModelOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const model = GEMINI_MODELS[activeModelIdx] ?? GEMINI_MODELS[0];
@@ -44,8 +45,15 @@ export function Header() {
     <header className="sticky top-0 z-30 bg-[var(--bg)]/95 backdrop-blur border-b border-[var(--bg3)]">
       {/* Top bar */}
       <div className="flex items-center justify-between gap-3 px-4 py-3">
-        {/* Logo */}
+        {/* Logo + Home */}
         <div className="flex items-center gap-2 min-w-0">
+          <button
+            onClick={() => setScreen('landing')}
+            className="w-7 h-7 flex items-center justify-center rounded-[var(--radius-sm)] text-[var(--text3)] hover:text-[var(--gold)] hover:bg-[rgba(254,153,32,0.08)] transition-colors shrink-0"
+            title="Torna alla Home"
+          >
+            <Home size={14} />
+          </button>
           <Diamond size={17} className="text-[var(--gold)] shrink-0" strokeWidth={1.5} />
           <div className="min-w-0">
             <div className="font-semibold text-sm text-[var(--text)] leading-tight tracking-tight">

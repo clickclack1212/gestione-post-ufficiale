@@ -1,16 +1,27 @@
 import { useApp } from './context/AppContext';
 import { Header } from './components/Header';
 import { Toast } from './components/Toast';
+import { LandingPage } from './components/LandingPage';
 import { GeneraSection } from './sections/GeneraSection';
 import { ProgrammazioneSection } from './sections/ProgrammazioneSection';
 import { SettimanaSection } from './sections/SettimanaSection';
 import { CalendarioSection } from './sections/CalendarioSection';
 import { OttimizzaSection } from './sections/OttimizzaSection';
 import { TraduciSection } from './sections/TraduciSection';
+import { ChatSection } from './sections/ChatSection';
 import { SettingsSection } from './sections/SettingsSection';
 
 export function App() {
-  const { activeTab } = useApp();
+  const { screen, activeTab } = useApp();
+
+  if (screen === 'landing') {
+    return (
+      <>
+        <LandingPage />
+        <Toast />
+      </>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[var(--bg)] text-[var(--text)] font-grotesk">
@@ -23,6 +34,7 @@ export function App() {
         {activeTab === 'calendar'  && <CalendarioSection />}
         {activeTab === 'optimize'  && <OttimizzaSection />}
         {activeTab === 'translate' && <TraduciSection />}
+        {activeTab === 'chat'      && <ChatSection />}
         {activeTab === 'settings'  && <SettingsSection />}
       </main>
 

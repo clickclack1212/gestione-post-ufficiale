@@ -9,7 +9,8 @@ import {
   Copy, Clipboard, Globe, Camera, Save, X, RotateCw,
   ArrowLeftRight, Download, CalendarDays, Settings, Diamond,
   Sparkles, ChevronDown, ChevronUp, CalendarRange, PlayCircle,
-  ChevronRight, AlertCircle,
+  ChevronRight, AlertCircle, Home, MessageSquare, Send, Music,
+  LayoutGrid, ChevronLeft,
 } from 'lucide-react';
 
 type LI = ComponentType<LucideProps>;
@@ -23,7 +24,8 @@ const MAP: Record<string, LI> = {
   Copy, Clipboard, Globe, Camera, Save, X, RotateCw,
   ArrowLeftRight, Download, CalendarDays, Settings, Diamond,
   Sparkles, ChevronDown, ChevronUp, CalendarRange, PlayCircle,
-  ChevronRight, AlertCircle,
+  ChevronRight, AlertCircle, Home, MessageSquare, Send, Music,
+  LayoutGrid, ChevronLeft,
 };
 
 export interface IconProps {
@@ -50,5 +52,6 @@ export {
   Copy, Clipboard, Globe, Camera, Save, X, RotateCw,
   ArrowLeftRight, Download, CalendarDays, Settings, Diamond,
   Sparkles, ChevronDown, ChevronUp, CalendarRange, PlayCircle,
-  ChevronRight, AlertCircle,
+  ChevronRight, AlertCircle, Home, MessageSquare, Send, Music,
+  LayoutGrid, ChevronLeft,
 } from 'lucide-react';

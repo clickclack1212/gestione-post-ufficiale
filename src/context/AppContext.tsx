@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import type { Tab, Config, Counter, CalendarEvent } from '../types';
+import type { Tab, AppScreen, Config, Counter, CalendarEvent } from '../types';
 import { getConfig, getCounter } from '../services/storage';
 import { getActiveModelIdx, setPreferredModelIdx as setGeminiPreferred } from '../services/gemini';
 
@@ -9,6 +9,9 @@ export interface ToastMsg {
 }
 
 interface AppContextValue {
+  screen: AppScreen;
+  setScreen: (s: AppScreen) => void;
+
   activeTab: Tab;
   setActiveTab: (t: Tab) => void;
 
@@ -35,6 +38,14 @@ interface AppContextValue {
 const AppContext = createContext<AppContextValue | null>(null);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
+  const [screen, setScreenState] = useState<AppScreen>(() =>
+    (sessionStorage.getItem('xauusd_screen') as AppScreen) ?? 'landing'
+  );
+  const setScreen = (s: AppScreen) => {
+    sessionStorage.setItem('xauusd_screen', s);
+    setScreenState(s);
+  };
+
   const [activeTab, setActiveTab] = useState<Tab>('generate');
   const [config, setConfig] = useState<Config>(getConfig);
   const [counter, setCounter] = useState<Counter>(getCounter);
@@ -64,6 +75,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   return (
     <AppContext.Provider
       value={{
+        screen, setScreen,
         activeTab, setActiveTab,
         config, setConfig,
         counter, setCounter,
