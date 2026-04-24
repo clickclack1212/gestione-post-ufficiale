@@ -1,23 +1,20 @@
 import { useState } from 'react';
 import { useGemini } from '../../hooks/useGemini';
 import { buildMacroIntelPrompt } from '../../services/xauusdPrompts';
-import { Copy, Globe, RefreshCw } from '../../components/Icon';
+import { XauusdResultBox } from '../../components/XauusdResultBox';
+import { XauLangSelector } from '../../components/XauLangSelector';
+import { Globe, RefreshCw } from '../../components/Icon';
+import type { XauLang } from '../../services/xauusdPrompts';
 
 export function XauusdMacroSection() {
   const { loading, elapsed, run } = useGemini();
+  const [lang, setLang] = useState<XauLang>('it');
   const [result, setResult] = useState('');
-  const [copied, setCopied] = useState(false);
 
-  async function handleGenerate() {
-    const prompt = buildMacroIntelPrompt();
+  async function handleGenera() {
+    const prompt = buildMacroIntelPrompt(lang);
     const text = await run(prompt, 0.70);
     if (text) setResult(text);
-  }
-
-  async function handleCopy() {
-    await navigator.clipboard.writeText(result);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1800);
   }
 
   return (
@@ -25,29 +22,31 @@ export function XauusdMacroSection() {
       <div className="card">
         <div className="card-title">
           <Globe size={13} />
-          Macro Intel
+          Macro Intelligence
         </div>
         <p className="text-xs text-[var(--text3)] mb-4 leading-relaxed">
-          Get a structured daily macro briefing on Gold and the US Dollar — Fed stance, inflation data, geopolitics, bond yields, DXY direction and key risk events for the next 24–48 hours.
+          Briefing macro giornaliero strutturato su Oro e Dollaro USA — posizione Fed, dati inflazione, geopolitica, rendimenti obbligazionari, direzione DXY e eventi a rischio nelle prossime 24–48 ore.
         </p>
 
-        {/* Info chips */}
+        {/* Chip informativi */}
         <div className="flex flex-wrap gap-2 mb-4">
-          {['Fed Stance', 'CPI / PCE / PPI', 'Geopolitics', 'US 10Y Yield', 'DXY Levels', 'Risk Events 48h'].map(tag => (
+          {['Posizione Fed', 'CPI / PCE / PPI', 'Geopolitica', 'US 10Y Yield', 'Livelli DXY', 'Risk Events 48h'].map(tag => (
             <span key={tag} className="text-[10px] px-2 py-1 rounded-full bg-[var(--bg3)] border border-[var(--border)] text-[var(--text3)]">
               {tag}
             </span>
           ))}
         </div>
 
-        <div className="flex gap-2">
-          <button className="btn-generate" disabled={loading} onClick={handleGenerate}>
+        <XauLangSelector value={lang} onChange={setLang} />
+
+        <div className="flex gap-2 mt-3">
+          <button className="btn-generate" disabled={loading} onClick={handleGenera}>
             {loading
-              ? <><span className="mini-spinner" /><span>Fetching macro… {elapsed}s</span></>
-              : '🌍 Get Macro Briefing'}
+              ? <><span className="mini-spinner" /><span>Analisi macro in corso… {elapsed}s</span></>
+              : '🌍 Genera Briefing Macro'}
           </button>
           {result && (
-            <button onClick={() => setResult('')} className="btn-sec shrink-0 px-3" title="Clear">
+            <button onClick={() => setResult('')} className="btn-sec shrink-0 px-3" title="Cancella">
               <RefreshCw size={13} />
             </button>
           )}
@@ -55,18 +54,7 @@ export function XauusdMacroSection() {
       </div>
 
       {result && (
-        <div className="result-box">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)]">
-            <span className="text-xs font-bold text-[var(--gold)] uppercase tracking-widest">Macro Intel Briefing</span>
-            <button onClick={handleCopy} className="btn-sec py-1 px-2.5 text-[10px]">
-              <Copy size={11} />
-              {copied ? 'Copied!' : 'Copy'}
-            </button>
-          </div>
-          <div className="px-4 py-4 text-sm text-[var(--text)] whitespace-pre-wrap leading-relaxed">
-            {result}
-          </div>
-        </div>
+        <XauusdResultBox result={result} lang={lang} title="Briefing Macro" />
       )}
     </div>
   );

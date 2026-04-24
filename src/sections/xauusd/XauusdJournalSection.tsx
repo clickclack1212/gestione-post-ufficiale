@@ -2,41 +2,30 @@ import { useState, useRef, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { gemini } from '../../services/gemini';
 import { buildJournalPrompt } from '../../services/xauusdPrompts';
+import { XauLangSelector } from '../../components/XauLangSelector';
 import { BookOpen, Send, RotateCw, Copy, Plus } from '../../components/Icon';
+import type { XauLang } from '../../services/xauusdPrompts';
 
 interface Msg { role: 'user' | 'ai'; content: string; }
-
 type F = Record<string, string>;
 
-const TRADE_FIELDS: { key: string; label: string; placeholder: string; type?: string }[] = [
-  { key: 'datetime',  label: 'Date & Time',      placeholder: 'e.g. Mon Apr 28 10:15' },
-  { key: 'session',   label: 'Session',           placeholder: 'London / NY / Asian'   },
-  { key: 'direction', label: 'Direction',         placeholder: 'BUY or SELL'           },
-  { key: 'entry',     label: 'Entry Price',       placeholder: 'e.g. 3318.50'          },
-  { key: 'sl',        label: 'Stop Loss (pips)',  placeholder: 'e.g. 15'               },
-  { key: 'tp',        label: 'Target (pips)',     placeholder: 'e.g. 30'               },
-  { key: 'result',    label: 'Result',            placeholder: 'e.g. WIN +18p'         },
-  { key: 'reason',    label: 'Entry Reason',      placeholder: 'Why did you enter?'    },
-  { key: 'emotion',   label: 'Emotional State',   placeholder: 'e.g. calm, anxious'    },
-  { key: 'rules',     label: 'Followed Rules?',   placeholder: 'yes / no / partly'     },
-];
-
 function buildReplyPrompt(history: Msg[], answer: string): string {
-  const histStr = history.map(m =>
+  const hist = history.map(m =>
     `${m.role === 'user' ? 'TRADER' : 'JOURNAL'}: ${m.content}`
   ).join('\n\n');
-  return `${histStr}\n\nTRADER: ${answer}\n\nJOURNAL:`;
+  return `${hist}\n\nTRADER: ${answer}\n\nJOURNAL:`;
 }
 
 export function XauusdJournalSection() {
   const { config } = useApp();
   const [phase, setPhase] = useState<'form' | 'chat'>('form');
   const [fields, setFields] = useState<F>({ asset: 'XAUUSD' });
+  const [lang, setLang] = useState<XauLang>('it');
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [tradeCount, setTradeCount] = useState(0);
-  const [fullHistory, setFullHistory] = useState('');
+  const [nTrade, setNTrade] = useState(0);
+  const [cronologia, setCronologia] = useState('');
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -45,17 +34,17 @@ export function XauusdJournalSection() {
 
   const set = (k: string, v: string) => setFields(prev => ({ ...prev, [k]: v }));
 
-  async function handleLogTrade() {
+  async function handleRegistra() {
     if (loading) return;
     setLoading(true);
-    const prompt = buildJournalPrompt(fields, fullHistory);
+    const prompt = buildJournalPrompt(fields, cronologia, lang);
     try {
       const reply = await gemini(prompt, config.apiKey, 0.75);
-      const trimmed = reply.trim();
-      const newHistory = fullHistory + `\nTRADE #${tradeCount + 1}: ${JSON.stringify(fields)}\nJOURNAL: ${trimmed}`;
-      setFullHistory(newHistory);
-      setTradeCount(c => c + 1);
-      setMessages([{ role: 'ai', content: trimmed }]);
+      const testo = reply.trim();
+      const nuovaCron = cronologia + `\nTRADE #${nTrade + 1}: ${JSON.stringify(fields)}\nJOURNAL: ${testo}`;
+      setCronologia(nuovaCron);
+      setNTrade(n => n + 1);
+      setMessages([{ role: 'ai', content: testo }]);
       setPhase('chat');
     } catch (e) {
       alert((e as Error).message);
@@ -64,44 +53,44 @@ export function XauusdJournalSection() {
     }
   }
 
-  async function handleSend() {
+  async function handleInvia() {
     const text = input.trim();
     if (!text || loading) return;
-    const newMessages: Msg[] = [...messages, { role: 'user', content: text }];
-    setMessages(newMessages);
+    const nuoviMsg: Msg[] = [...messages, { role: 'user', content: text }];
+    setMessages(nuoviMsg);
     setInput('');
     setLoading(true);
     try {
-      const prompt = buildReplyPrompt(newMessages.slice(0, -1), text);
+      const prompt = buildReplyPrompt(nuoviMsg.slice(0, -1), text);
       const reply = await gemini(prompt, config.apiKey, 0.75);
-      const trimmed = reply.trim();
-      setFullHistory(prev => prev + `\nTRADER: ${text}\nJOURNAL: ${trimmed}`);
-      setMessages(prev => [...prev, { role: 'ai', content: trimmed }]);
+      const testo = reply.trim();
+      setCronologia(prev => prev + `\nTRADER: ${text}\nJOURNAL: ${testo}`);
+      setMessages(prev => [...prev, { role: 'ai', content: testo }]);
     } catch (e) {
-      setMessages(prev => [...prev, { role: 'ai', content: `⚠️ Error: ${(e as Error).message}` }]);
+      setMessages(prev => [...prev, { role: 'ai', content: `⚠️ Errore: ${(e as Error).message}` }]);
     } finally {
       setLoading(false);
     }
   }
 
   function handleKey(e: React.KeyboardEvent) {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleInvia(); }
   }
 
-  function handleNewTrade() {
+  function handleNuovoTrade() {
     setPhase('form');
     setFields({ asset: 'XAUUSD' });
     setMessages([]);
     setInput('');
   }
 
-  function handleFullReset() {
+  function handleResetCompleto() {
     setPhase('form');
     setMessages([]);
     setInput('');
     setFields({ asset: 'XAUUSD' });
-    setTradeCount(0);
-    setFullHistory('');
+    setNTrade(0);
+    setCronologia('');
   }
 
   const noKey = !config.apiKey;
@@ -112,57 +101,103 @@ export function XauusdJournalSection() {
         <div className="flex items-center justify-between">
           <div className="card-title mb-0">
             <BookOpen size={13} />
-            AI Trading Journal
+            Journal AI
           </div>
           <div className="flex items-center gap-2">
-            {tradeCount > 0 && (
+            {nTrade > 0 && (
               <span className="text-[10px] px-2 py-0.5 rounded-full bg-[rgba(254,153,32,0.12)] border border-[rgba(254,153,32,0.25)] text-[var(--gold)]">
-                {tradeCount} trade{tradeCount > 1 ? 's' : ''} logged
+                {nTrade} trade{nTrade > 1 ? ' registrati' : ' registrato'}
               </span>
             )}
             {phase === 'chat' && (
-              <button onClick={handleNewTrade} className="btn-sec py-1 px-2.5 text-[10px]">
-                <Plus size={11} /> New Trade
+              <button onClick={handleNuovoTrade} className="btn-sec py-1 px-2.5 text-[10px]">
+                <Plus size={11} /> Nuovo Trade
               </button>
             )}
-            {tradeCount > 0 && (
-              <button onClick={handleFullReset} className="btn-sec py-1 px-2.5 text-[10px]">
-                <RotateCw size={11} /> Reset All
+            {nTrade > 0 && (
+              <button onClick={handleResetCompleto} className="btn-sec py-1 px-2.5 text-[10px]">
+                <RotateCw size={11} /> Reset
               </button>
             )}
           </div>
         </div>
         <p className="text-xs text-[var(--text3)] mt-1 mb-2 leading-relaxed">
-          Log each trade after you close it. The AI builds a long-term profile, asks ONE specific question per trade, and flags patterns after 10+ trades.
+          Registra ogni trade dopo la chiusura. L'AI costruisce nel tempo il tuo profilo come trader, fa UNA domanda specifica per trade, e dopo 10+ trade evidenzia pattern, punti di forza e debolezze.
         </p>
         {noKey && (
-          <p className="text-xs text-[var(--red)] font-medium">⚠️ No API Key configured. Go to the main app Config tab.</p>
+          <p className="text-xs text-[var(--red)] font-medium">⚠️ Nessuna API Key configurata. Vai in Config nell'app principale.</p>
         )}
       </div>
 
       {phase === 'form' ? (
         <div className="card">
-          <p className="text-xs font-semibold text-[var(--text2)] mb-3">Trade #{tradeCount + 1}</p>
+          <p className="text-xs font-semibold text-[var(--text2)] mb-3">Trade #{nTrade + 1}</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
             <div>
               <label>Asset</label>
               <input value={fields.asset ?? 'XAUUSD'} onChange={e => set('asset', e.target.value)} placeholder="XAUUSD" />
             </div>
-            {TRADE_FIELDS.map(f => (
-              <div key={f.key} className={f.key === 'reason' || f.key === 'emotion' || f.key === 'rules' ? 'sm:col-span-1' : ''}>
-                <label>{f.label}</label>
-                {f.key === 'reason' ? (
-                  <textarea value={fields[f.key] ?? ''} onChange={e => set(f.key, e.target.value)} placeholder={f.placeholder} style={{ minHeight: 60 }} />
-                ) : (
-                  <input value={fields[f.key] ?? ''} onChange={e => set(f.key, e.target.value)} placeholder={f.placeholder} />
-                )}
-              </div>
-            ))}
+            <div>
+              <label>Data e Ora</label>
+              <input value={fields.datetime ?? ''} onChange={e => set('datetime', e.target.value)} placeholder="es. Lun 28 Apr 10:15" />
+            </div>
+            <div>
+              <label>Sessione</label>
+              <select value={fields.session ?? ''} onChange={e => set('session', e.target.value)}>
+                <option value="">Seleziona…</option>
+                <option value="London">London</option>
+                <option value="New York">New York</option>
+                <option value="Asian">Asian</option>
+                <option value="London/NY overlap">London/NY overlap</option>
+              </select>
+            </div>
+            <div>
+              <label>Direzione</label>
+              <select value={fields.direction ?? ''} onChange={e => set('direction', e.target.value)}>
+                <option value="">Seleziona…</option>
+                <option value="BUY">BUY</option>
+                <option value="SELL">SELL</option>
+              </select>
+            </div>
+            <div>
+              <label>Prezzo Entrata</label>
+              <input value={fields.entry ?? ''} onChange={e => set('entry', e.target.value)} placeholder="es. 3318.50" />
+            </div>
+            <div>
+              <label>Stop Loss (pips)</label>
+              <input value={fields.sl ?? ''} onChange={e => set('sl', e.target.value)} placeholder="es. 15" />
+            </div>
+            <div>
+              <label>Target (pips)</label>
+              <input value={fields.tp ?? ''} onChange={e => set('tp', e.target.value)} placeholder="es. 30" />
+            </div>
+            <div>
+              <label>Risultato</label>
+              <input value={fields.result ?? ''} onChange={e => set('result', e.target.value)} placeholder="es. WIN +18p" />
+            </div>
+            <div>
+              <label>Stato Emotivo</label>
+              <input value={fields.emotion ?? ''} onChange={e => set('emotion', e.target.value)} placeholder="es. calmo, ansioso" />
+            </div>
+            <div>
+              <label>Regole Seguite?</label>
+              <select value={fields.rules ?? ''} onChange={e => set('rules', e.target.value)}>
+                <option value="">Seleziona…</option>
+                <option value="sì">Sì</option>
+                <option value="no">No</option>
+                <option value="in parte">In parte</option>
+              </select>
+            </div>
+            <div className="sm:col-span-2">
+              <label>Motivo dell'Entrata</label>
+              <textarea value={fields.reason ?? ''} onChange={e => set('reason', e.target.value)} placeholder="Perché sei entrato in questo trade?" style={{ minHeight: 60 }} />
+            </div>
           </div>
-          <button className="btn-generate" disabled={loading || noKey} onClick={handleLogTrade}>
+          <XauLangSelector value={lang} onChange={setLang} />
+          <button className="btn-generate mt-3" disabled={loading || noKey} onClick={handleRegistra}>
             {loading
-              ? <><span className="mini-spinner" /><span>Logging trade…</span></>
-              : '📖 Log This Trade'}
+              ? <><span className="mini-spinner" /><span>Registrazione trade…</span></>
+              : '📖 Registra Questo Trade'}
           </button>
         </div>
       ) : (
@@ -182,7 +217,7 @@ export function XauusdJournalSection() {
                       onClick={() => navigator.clipboard.writeText(msg.content)}
                       className="mt-2 flex items-center gap-1 text-[10px] text-[var(--text3)] hover:text-[var(--gold)] transition-colors"
                     >
-                      <Copy size={9} /> Copy
+                      <Copy size={9} /> Copia
                     </button>
                   )}
                 </div>
@@ -192,7 +227,7 @@ export function XauusdJournalSection() {
               <div className="flex justify-start">
                 <div className="bg-[var(--bg2)] border border-[var(--border)] px-4 py-3 rounded-2xl rounded-bl-sm flex items-center gap-2">
                   <span className="mini-spinner" />
-                  <span className="text-xs text-[var(--text3)]">Thinking…</span>
+                  <span className="text-xs text-[var(--text3)]">Elaborazione…</span>
                 </div>
               </div>
             )}
@@ -202,7 +237,7 @@ export function XauusdJournalSection() {
           <div className="flex gap-2 items-end bg-[var(--bg2)] border border-[var(--border)] rounded-[var(--radius)] p-2 focus-within:border-[rgba(254,153,32,0.5)] transition-colors">
             <textarea
               className="flex-1 bg-transparent resize-none text-sm text-[var(--text)] placeholder-[var(--text3)] focus:outline-none py-1 px-1 max-h-32 min-h-[40px]"
-              placeholder="Answer the journal's question…"
+              placeholder="Rispondi alla domanda del journal…"
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={handleKey}
@@ -216,7 +251,7 @@ export function XauusdJournalSection() {
               }}
             />
             <button
-              onClick={handleSend}
+              onClick={handleInvia}
               disabled={!input.trim() || loading}
               className="shrink-0 w-9 h-9 rounded-[var(--radius-sm)] flex items-center justify-center transition-all
                 bg-[rgba(254,153,32,0.15)] text-[var(--gold)] border border-[rgba(254,153,32,0.3)]
@@ -225,7 +260,7 @@ export function XauusdJournalSection() {
               <Send size={15} />
             </button>
           </div>
-          <p className="text-[10px] text-[var(--text3)] mt-1.5 text-center">Enter · send &nbsp;·&nbsp; Shift+Enter · new line</p>
+          <p className="text-[10px] text-[var(--text3)] mt-1.5 text-center">Invio per inviare · Shift+Invio per andare a capo</p>
         </div>
       )}
     </div>

@@ -1,20 +1,23 @@
 import { useState } from 'react';
 import { useGemini } from '../../hooks/useGemini';
 import { buildGoNoGoPrompt } from '../../services/xauusdPrompts';
-import { Copy, Shield, RotateCw } from '../../components/Icon';
+import { XauusdResultBox } from '../../components/XauusdResultBox';
+import { XauLangSelector } from '../../components/XauLangSelector';
+import { Shield, RotateCw } from '../../components/Icon';
+import type { XauLang } from '../../services/xauusdPrompts';
 
 type F = Record<string, string>;
 
 export function XauusdGoNoGoSection() {
   const { loading, elapsed, run } = useGemini();
   const [fields, setFields] = useState<F>({ asset: 'XAUUSD' });
+  const [lang, setLang] = useState<XauLang>('it');
   const [result, setResult] = useState('');
-  const [copied, setCopied] = useState(false);
 
   const set = (k: string, v: string) => setFields(prev => ({ ...prev, [k]: v }));
 
-  async function handleGenerate() {
-    const prompt = buildGoNoGoPrompt(fields);
+  async function handleValida() {
+    const prompt = buildGoNoGoPrompt(fields, lang);
     const text = await run(prompt, 0.68);
     if (text) setResult(text);
   }
@@ -24,33 +27,28 @@ export function XauusdGoNoGoSection() {
     setResult('');
   }
 
-  async function handleCopy() {
-    await navigator.clipboard.writeText(result);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1800);
-  }
-
-  const verdict = result
-    ? result.includes('✅') || /\bGO\b/.test(result) ? 'go'
-    : result.includes('❌') || /\bNO.GO\b/i.test(result) ? 'nogo'
-    : result.includes('⏳') || /\bWAIT\b/.test(result) ? 'wait'
+  // Rileva il verdetto per colorare il box
+  const verdetto = result
+    ? /\bGO\b/.test(result) && !/NO.GO/i.test(result) ? 'go'
+    : /NO.GO/i.test(result) ? 'nogo'
+    : /\bWAIT\b|\bATTENDI\b/i.test(result) ? 'wait'
     : null
     : null;
 
-  const verdictColor =
-    verdict === 'go'   ? 'var(--green)'  :
-    verdict === 'nogo' ? 'var(--red)'    :
-    verdict === 'wait' ? 'var(--yellow)' : 'var(--gold)';
+  const coloreVerdetto =
+    verdetto === 'go'   ? 'var(--green)'  :
+    verdetto === 'nogo' ? 'var(--red)'    :
+    verdetto === 'wait' ? 'var(--yellow)' : 'var(--gold)';
 
   return (
     <div>
       <div className="card">
         <div className="card-title">
           <Shield size={13} />
-          Go / No-Go Validator
+          Validatore Go / No-Go
         </div>
         <p className="text-xs text-[var(--text3)] mb-4 leading-relaxed">
-          The AI acts as a skeptical pre-trade validator. Fill in your setup — it will give you 3 reasons NOT to take the trade, then a final GO / NO-GO / WAIT verdict.
+          L'AI fa da validatore scettico del tuo trade. Inserisci il setup — ti darà 3 motivi per <strong className="text-[var(--text2)]">non</strong> entrare, poi un verdetto finale: <span className="text-[var(--green)]">GO</span> / <span className="text-[var(--red)]">NO-GO</span> / <span className="text-[var(--yellow)]">ATTENDI</span>.
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
@@ -59,17 +57,17 @@ export function XauusdGoNoGoSection() {
             <input value={fields.asset ?? 'XAUUSD'} onChange={e => set('asset', e.target.value)} placeholder="XAUUSD" />
           </div>
           <div>
-            <label>Direction</label>
+            <label>Direzione</label>
             <select value={fields.direction ?? ''} onChange={e => set('direction', e.target.value)}>
-              <option value="">Select…</option>
+              <option value="">Seleziona…</option>
               <option value="BUY (Long)">BUY (Long)</option>
               <option value="SELL (Short)">SELL (Short)</option>
             </select>
           </div>
           <div>
-            <label>Session</label>
+            <label>Sessione</label>
             <select value={fields.session ?? ''} onChange={e => set('session', e.target.value)}>
-              <option value="">Select…</option>
+              <option value="">Seleziona…</option>
               <option value="London">London</option>
               <option value="New York">New York</option>
               <option value="Asian">Asian</option>
@@ -77,54 +75,56 @@ export function XauusdGoNoGoSection() {
             </select>
           </div>
           <div>
-            <label>Entry Price</label>
-            <input value={fields.entry ?? ''} onChange={e => set('entry', e.target.value)} placeholder="e.g. 3318.50" />
+            <label>Prezzo di Entrata</label>
+            <input value={fields.entry ?? ''} onChange={e => set('entry', e.target.value)} placeholder="es. 3318.50" />
           </div>
           <div>
             <label>Stop Loss (pips)</label>
-            <input value={fields.sl ?? ''} onChange={e => set('sl', e.target.value)} placeholder="e.g. 15" />
+            <input value={fields.sl ?? ''} onChange={e => set('sl', e.target.value)} placeholder="es. 15" />
           </div>
           <div>
-            <label>SL Direction</label>
-            <input value={fields.slDir ?? ''} onChange={e => set('slDir', e.target.value)} placeholder="e.g. below 3303" />
+            <label>Zona Stop Loss</label>
+            <input value={fields.slDir ?? ''} onChange={e => set('slDir', e.target.value)} placeholder="es. sotto 3303" />
           </div>
           <div>
             <label>Take Profit (pips)</label>
-            <input value={fields.tp ?? ''} onChange={e => set('tp', e.target.value)} placeholder="e.g. 30" />
+            <input value={fields.tp ?? ''} onChange={e => set('tp', e.target.value)} placeholder="es. 30" />
           </div>
           <div>
-            <label>TP Direction</label>
-            <input value={fields.tpDir ?? ''} onChange={e => set('tpDir', e.target.value)} placeholder="e.g. at 3348" />
+            <label>Zona Take Profit</label>
+            <input value={fields.tpDir ?? ''} onChange={e => set('tpDir', e.target.value)} placeholder="es. a 3348" />
           </div>
           <div>
-            <label>Risk-to-Reward (1:X)</label>
-            <input value={fields.rr ?? ''} onChange={e => set('rr', e.target.value)} placeholder="e.g. 2" />
+            <label>Rapporto Rischio/Rendimento (1:X)</label>
+            <input value={fields.rr ?? ''} onChange={e => set('rr', e.target.value)} placeholder="es. 2" />
           </div>
           <div>
-            <label>Confidence (1–10)</label>
-            <input type="number" min="1" max="10" value={fields.confidence ?? ''} onChange={e => set('confidence', e.target.value)} placeholder="e.g. 7" />
+            <label>Confidenza (1–10)</label>
+            <input type="number" min="1" max="10" value={fields.confidence ?? ''} onChange={e => set('confidence', e.target.value)} placeholder="es. 7" />
           </div>
           <div>
-            <label>News in next 2 hours</label>
-            <input value={fields.news ?? ''} onChange={e => set('news', e.target.value)} placeholder="e.g. NFP at 14:30 — or 'none'" />
+            <label>Notizie nelle prossime 2 ore</label>
+            <input value={fields.news ?? ''} onChange={e => set('news', e.target.value)} placeholder="es. NFP alle 14:30 — oppure 'nessuna'" />
           </div>
         </div>
 
         <div>
-          <label>Entry Reason</label>
+          <label>Motivazione dell'Entrata</label>
           <textarea
             value={fields.reason ?? ''}
             onChange={e => set('reason', e.target.value)}
-            placeholder="Describe your entry reason — e.g. BOS on 15M, retested order block at 3318, 4H structure bearish…"
+            placeholder="Descrivi il motivo dell'entrata — es. BOS sul 15M, order block retestato a 3318, struttura 4H ribassista…"
             style={{ minHeight: 70 }}
           />
         </div>
 
-        <div className="flex gap-2 mt-1">
-          <button className="btn-generate" disabled={loading} onClick={handleGenerate}>
+        <XauLangSelector value={lang} onChange={setLang} />
+
+        <div className="flex gap-2 mt-3">
+          <button className="btn-generate" disabled={loading} onClick={handleValida}>
             {loading
-              ? <><span className="mini-spinner" /><span>Validating… {elapsed}s</span></>
-              : '🛡 Validate This Trade'}
+              ? <><span className="mini-spinner" /><span>Validazione in corso… {elapsed}s</span></>
+              : '🛡 Valida il Trade'}
           </button>
           {(result || Object.keys(fields).length > 1) && (
             <button onClick={handleReset} className="btn-sec shrink-0 px-3" title="Reset">
@@ -135,19 +135,23 @@ export function XauusdGoNoGoSection() {
       </div>
 
       {result && (
-        <div className="result-box" style={{ borderColor: `${verdictColor}40` }}>
-          <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)]">
-            <span className="text-xs font-bold uppercase tracking-widest" style={{ color: verdictColor }}>
-              Trade Validation
-            </span>
-            <button onClick={handleCopy} className="btn-sec py-1 px-2.5 text-[10px]">
-              <Copy size={11} />
-              {copied ? 'Copied!' : 'Copy'}
-            </button>
-          </div>
-          <div className="px-4 py-4 text-sm text-[var(--text)] whitespace-pre-wrap leading-relaxed">
-            {result}
-          </div>
+        <XauusdResultBox
+          result={result}
+          lang={lang}
+          title="Validazione Trade"
+          // Passa il colore del verdetto tramite prop custom (gestito internamente con override stile)
+        />
+      )}
+
+      {/* Verdetto badge visibile subito */}
+      {result && verdetto && (
+        <div
+          className="mt-2 px-4 py-2 rounded-[var(--radius-sm)] border text-xs font-bold uppercase tracking-widest text-center"
+          style={{ borderColor: `${coloreVerdetto}40`, background: `${coloreVerdetto}10`, color: coloreVerdetto }}
+        >
+          {verdetto === 'go' && '✅ VERDETTO: GO — Setup sufficientemente valido'}
+          {verdetto === 'nogo' && '❌ VERDETTO: NO-GO — Salta questo trade'}
+          {verdetto === 'wait' && '⏳ VERDETTO: ATTENDI — Serve conferma'}
         </div>
       )}
     </div>

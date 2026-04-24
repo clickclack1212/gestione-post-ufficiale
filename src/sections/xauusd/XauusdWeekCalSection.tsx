@@ -1,25 +1,22 @@
 import { useState } from 'react';
 import { useGemini } from '../../hooks/useGemini';
 import { buildWeeklyCalendarPrompt } from '../../services/xauusdPrompts';
-import { Copy, CalendarDays, RotateCw } from '../../components/Icon';
+import { XauusdResultBox } from '../../components/XauusdResultBox';
+import { XauLangSelector } from '../../components/XauLangSelector';
+import { CalendarDays, RotateCw } from '../../components/Icon';
+import type { XauLang } from '../../services/xauusdPrompts';
 
 export function XauusdWeekCalSection() {
   const { loading, elapsed, run } = useGemini();
   const [timezone, setTimezone] = useState('CET (GMT+1)');
   const [weekRange, setWeekRange] = useState('');
+  const [lang, setLang] = useState<XauLang>('it');
   const [result, setResult] = useState('');
-  const [copied, setCopied] = useState(false);
 
-  async function handleGenerate() {
-    const prompt = buildWeeklyCalendarPrompt({ timezone, weekRange });
+  async function handleGenera() {
+    const prompt = buildWeeklyCalendarPrompt({ timezone, weekRange }, lang);
     const text = await run(prompt, 0.68);
     if (text) setResult(text);
-  }
-
-  async function handleCopy() {
-    await navigator.clipboard.writeText(result);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1800);
   }
 
   return (
@@ -27,39 +24,41 @@ export function XauusdWeekCalSection() {
       <div className="card">
         <div className="card-title">
           <CalendarDays size={13} />
-          Weekly Calendar
+          Calendario Settimanale
         </div>
         <p className="text-xs text-[var(--text3)] mb-4 leading-relaxed">
-          Get a complete weekly briefing on high-impact economic events affecting XAUUSD and DXY — including a table, volatility forecast, sessions to avoid, and bull/bear reversal triggers.
+          Briefing completo sugli eventi economici ad alto impatto della settimana per XAUUSD e DXY — tabella eventi, rischio volatilità, sessioni da evitare, e trigger di inversione rialzo/ribasso.
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
           <div>
-            <label>Timezone</label>
+            <label>Fuso Orario</label>
             <input
               value={timezone}
               onChange={e => setTimezone(e.target.value)}
-              placeholder="e.g. CET (GMT+1)"
+              placeholder="es. CET (GMT+1)"
             />
           </div>
           <div>
-            <label>Week (optional)</label>
+            <label>Settimana (opzionale)</label>
             <input
               value={weekRange}
               onChange={e => setWeekRange(e.target.value)}
-              placeholder="e.g. Apr 28 – May 2, 2025"
+              placeholder="es. 28 Apr – 2 Mag 2025"
             />
           </div>
         </div>
 
-        <div className="flex gap-2 mt-1">
-          <button className="btn-generate" disabled={loading} onClick={handleGenerate}>
+        <XauLangSelector value={lang} onChange={setLang} />
+
+        <div className="flex gap-2 mt-3">
+          <button className="btn-generate" disabled={loading} onClick={handleGenera}>
             {loading
-              ? <><span className="mini-spinner" /><span>Building calendar… {elapsed}s</span></>
-              : '📅 Generate Weekly Calendar'}
+              ? <><span className="mini-spinner" /><span>Generazione calendario… {elapsed}s</span></>
+              : '📅 Genera Calendario Settimanale'}
           </button>
           {result && (
-            <button onClick={() => setResult('')} className="btn-sec shrink-0 px-3" title="Clear">
+            <button onClick={() => setResult('')} className="btn-sec shrink-0 px-3" title="Cancella">
               <RotateCw size={13} />
             </button>
           )}
@@ -67,18 +66,7 @@ export function XauusdWeekCalSection() {
       </div>
 
       {result && (
-        <div className="result-box">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)]">
-            <span className="text-xs font-bold text-[var(--gold)] uppercase tracking-widest">Weekly Calendar Briefing</span>
-            <button onClick={handleCopy} className="btn-sec py-1 px-2.5 text-[10px]">
-              <Copy size={11} />
-              {copied ? 'Copied!' : 'Copy'}
-            </button>
-          </div>
-          <div className="px-4 py-4 text-sm text-[var(--text)] whitespace-pre-wrap leading-relaxed font-mono text-xs">
-            {result}
-          </div>
-        </div>
+        <XauusdResultBox result={result} lang={lang} title="Calendario Settimanale" mono />
       )}
     </div>
   );

@@ -1,12 +1,25 @@
 // ── XAUUSD AI TRADING PROMPT KIT ─────────────────────────────────────────────
 // Based on "The Complete XAUUSD AI Prompt Kit" — 8 master prompts
 
+export type XauLang = 'it' | 'en' | 'both';
+
 type F = Record<string, string>;
 
 const f = (v: string, fallback = '[non specificato]') => v?.trim() || fallback;
 
+/** Appends language directive to any prompt */
+function langSuffix(lang: XauLang): string {
+  if (lang === 'it') {
+    return '\n\nRISPONDI INTERAMENTE IN ITALIANO. Non usare l\'inglese in nessuna parte della risposta. Usa terminologia tecnica di trading standard.';
+  }
+  if (lang === 'both') {
+    return '\n\nFORNISCI L\'ANALISI IN ENTRAMBE LE LINGUE:\nPrima scrivi l\'analisi COMPLETA in ITALIANO.\nPoi inserisci esattamente questa linea di separazione (solo quella, nient\'altro): ──────────────\nPoi scrivi l\'analisi COMPLETA in INGLESE.\nEntrambi i blocchi devono essere completi e autonomi.';
+  }
+  return ''; // 'en': prompt already in English, no suffix needed
+}
+
 // ── 01 DAILY BIAS ──────────────────────────────────────────────────────────────
-export function buildDailyBiasPrompt(d: F): string {
+export function buildDailyBiasPrompt(d: F, lang: XauLang = 'it'): string {
   return `ROLE:
 You are my XAUUSD trading analyst. I will give you my current market read and you will help me structure today's trading bias.
 
@@ -33,11 +46,11 @@ Based only on what I shared above, give me:
 OUTPUT FORMAT:
 Clear headings. Each section 2-3 sentences max.
 Everything specific to the data I gave you.
-If any data is missing — tell me first.`;
+If any data is missing — tell me first.${langSuffix(lang)}`;
 }
 
 // ── 02 MACRO INTEL ─────────────────────────────────────────────────────────────
-export function buildMacroIntelPrompt(): string {
+export function buildMacroIntelPrompt(lang: XauLang = 'it'): string {
   return `ROLE:
 You are my macro market intelligence analyst. Using the most current knowledge you have, give me a structured daily briefing on Gold (XAUUSD) and the US Dollar.
 
@@ -58,11 +71,11 @@ SECTION 3 — Top 3 macro factors moving Gold right now
 SECTION 4 — Risk events in next 24-48 hours to watch
 SECTION 5 — One key takeaway for a smart Gold trader today
 
-Keep each section short and actionable. No filler. Be specific.`;
+Keep each section short and actionable. No filler. Be specific.${langSuffix(lang)}`;
 }
 
 // ── 03 WEEKLY CALENDAR ─────────────────────────────────────────────────────────
-export function buildWeeklyCalendarPrompt(d: F): string {
+export function buildWeeklyCalendarPrompt(d: F, lang: XauLang = 'it'): string {
   return `ROLE:
 You are my economic calendar analyst. Give me a complete weekly briefing on high-impact economic events affecting Gold (XAUUSD) and DXY for the upcoming week.
 
@@ -91,11 +104,11 @@ WEEK AHEAD BRIEFING:
 5. If Gold bearish — what event could reverse it
 
 Convert all times to the specified timezone.
-Flag any event with unusual potential impact on Gold.`;
+Flag any event with unusual potential impact on Gold.${langSuffix(lang)}`;
 }
 
 // ── 04 PATTERN FINDER ─────────────────────────────────────────────────────────
-export function buildPatternFinderPrompt(d: F): string {
+export function buildPatternFinderPrompt(d: F, lang: XauLang = 'it'): string {
   return `ROLE:
 You are my trading coach and pattern analyst. You are NOT here to make me feel better. You are here to find what I am doing wrong.
 
@@ -124,11 +137,11 @@ After my answers — tell me:
 STAGE 3 — ONE ACTION
 Give me ONE specific measurable thing to change next week.
 
-TONE: Honest. Direct. Kind but not soft.`;
+TONE: Honest. Direct. Kind but not soft.${langSuffix(lang)}`;
 }
 
 // ── 05 AI JOURNAL ─────────────────────────────────────────────────────────────
-export function buildJournalPrompt(d: F, history: string): string {
+export function buildJournalPrompt(d: F, history: string, lang: XauLang = 'it'): string {
   const historyBlock = history ? `\nCONVERSATION SO FAR:\n${history}\n` : '';
   return `ROLE:
 You are my dedicated trading journal. I log trades with you after each one. Your job is to build a long-term profile of me as a trader over time.
@@ -161,11 +174,11 @@ AFTER 10+ TRADES, FLAG:
 
 RULES:
 Never generic advice. Never sugarcoat.
-ONE question per trade. Remember everything.`;
+ONE question per trade. Remember everything.${langSuffix(lang)}`;
 }
 
 // ── 06 GO / NO-GO ─────────────────────────────────────────────────────────────
-export function buildGoNoGoPrompt(d: F): string {
+export function buildGoNoGoPrompt(d: F, lang: XauLang = 'it'): string {
   return `ROLE:
 You are my pre-trade validator. You are SKEPTICAL by design. Your job is to CHALLENGE my trade — not confirm my bias.
 
@@ -201,11 +214,11 @@ STEP 3 — IF GO:
 What would invalidate this trade
 Where to move SL to breakeven
 
-TONE: Direct. Protective of my capital. Assume I am emotional. Push back hard.`;
+TONE: Direct. Protective of my capital. Assume I am emotional. Push back hard.${langSuffix(lang)}`;
 }
 
 // ── 07 RISK CALCULATOR ────────────────────────────────────────────────────────
-export function buildRiskCalcPrompt(d: F): string {
+export function buildRiskCalcPrompt(d: F, lang: XauLang = 'it'): string {
   return `ROLE:
 You are my position sizing and risk manager. Make sure I never risk the wrong amount on any trade.
 
@@ -240,11 +253,11 @@ CALCULATE AND GIVE ME:
 RULES:
 Never recommend size exceeding daily limit.
 Flag over-trading. Round down to 0.01 lot.
-For XAUUSD: 1 pip = $1 per 0.01 lot.`;
+For XAUUSD: 1 pip = $1 per 0.01 lot.${langSuffix(lang)}`;
 }
 
 // ── 08 DEBRIEF ────────────────────────────────────────────────────────────────
-export function buildDebriefPrompt(d: F): string {
+export function buildDebriefPrompt(d: F, lang: XauLang = 'it'): string {
   return `ROLE:
 You are my post-trade coach. I just closed a trade. Help me debrief honestly — not celebrate wins or soften losses.
 
@@ -278,5 +291,5 @@ Give me ONE lesson from this SPECIFIC trade.
 Must be:
 → Specific to what I did here
 → Not a general trading platitude
-→ Actionable for next trade`;
+→ Actionable for next trade${langSuffix(lang)}`;
 }

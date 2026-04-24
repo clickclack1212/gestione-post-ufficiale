@@ -15,13 +15,13 @@ import { XauusdDebriefSection }  from '../sections/xauusd/XauusdDebriefSection';
 import { XauusdFreeChatSection } from '../sections/xauusd/XauusdFreeChatSection';
 
 const TABS: { id: XauusdTab; label: string; icon: string }[] = [
-  { id: 'bias',     label: 'Daily Bias',    icon: 'TrendingUp'    },
-  { id: 'macro',    label: 'Macro Intel',   icon: 'Globe'         },
-  { id: 'calendar', label: 'Week Cal',      icon: 'CalendarDays'  },
+  { id: 'bias',     label: 'Bias',          icon: 'TrendingUp'    },
+  { id: 'macro',    label: 'Macro',         icon: 'Globe'         },
+  { id: 'calendar', label: 'Calendario',    icon: 'CalendarDays'  },
   { id: 'pattern',  label: 'Pattern',       icon: 'Brain'         },
   { id: 'journal',  label: 'Journal',       icon: 'BookOpen'      },
   { id: 'gonogo',   label: 'Go/No-Go',      icon: 'Shield'        },
-  { id: 'risk',     label: 'Risk Calc',     icon: 'ClipboardList' },
+  { id: 'risk',     label: 'Rischio',       icon: 'ClipboardList' },
   { id: 'debrief',  label: 'Debrief',       icon: 'CheckCircle'   },
   { id: 'chat',     label: 'Chat',          icon: 'MessageSquare' },
 ];
@@ -48,7 +48,7 @@ export function XauusdApp() {
       {/* ── Header ── */}
       <header className="sticky top-0 z-30 bg-[var(--bg)]/95 backdrop-blur border-b border-[var(--bg3)]">
         <div className="flex items-center justify-between gap-3 px-4 py-3">
-          {/* Left: back + logo */}
+          {/* Sinistra: torna indietro + logo */}
           <div className="flex items-center gap-2 min-w-0">
             <button
               onClick={() => setScreen('landing')}
@@ -66,12 +66,12 @@ export function XauusdApp() {
             </div>
           </div>
 
-          {/* Right: model selector */}
+          {/* Destra: selettore modello */}
           <div className="relative shrink-0" ref={dropRef}>
             <button
               onClick={() => setModelOpen(v => !v)}
               className="flex items-center gap-1 px-2 py-1 rounded-[var(--radius-sm)] border border-[rgba(254,153,32,0.3)] text-[var(--gold)] bg-[rgba(254,153,32,0.08)] hover:bg-[rgba(254,153,32,0.15)] text-xs font-medium transition-colors"
-              title="Seleziona modello Gemini"
+              title="Seleziona modello AI"
             >
               <span className="hidden sm:inline">{model.label}</span>
               <span className="sm:hidden">AI</span>
@@ -101,7 +101,7 @@ export function XauusdApp() {
           </div>
         </div>
 
-        {/* Tab nav */}
+        {/* Tab di navigazione */}
         <nav className="flex border-t border-[var(--bg3)] overflow-x-auto scrollbar-hide">
           {TABS.map(tab => (
             <button
@@ -121,7 +121,7 @@ export function XauusdApp() {
         </nav>
       </header>
 
-      {/* Content */}
+      {/* Contenuto */}
       <main className="px-4 py-6 max-w-3xl mx-auto">
         {activeTab === 'bias'     && <XauusdBiasSection />}
         {activeTab === 'macro'    && <XauusdMacroSection />}
