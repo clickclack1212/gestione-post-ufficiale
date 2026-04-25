@@ -11,7 +11,7 @@ import { OttimizzaSection } from './sections/OttimizzaSection';
 import { TraduciSection } from './sections/TraduciSection';
 import { ChatSection } from './sections/ChatSection';
 import { SettingsSection } from './sections/SettingsSection';
-import { GestioneSection } from './sections/GestioneSection';
+import { SpotifyApp } from './components/SpotifyApp';
 
 export function App() {
   const { screen, activeTab } = useApp();
@@ -25,9 +25,8 @@ export function App() {
     );
   }
 
-  if (screen === 'xauusd') {
-    return <XauusdApp />;
-  }
+  if (screen === 'xauusd') return <XauusdApp />;
+  if (screen === 'spotify') return <SpotifyApp />;
 
   return (
     <div className="min-h-screen bg-[var(--bg)] text-[var(--text)] font-grotesk">
@@ -42,7 +41,6 @@ export function App() {
         {activeTab === 'translate' && <TraduciSection />}
         {activeTab === 'chat'      && <ChatSection />}
         {activeTab === 'settings'  && <SettingsSection />}
-        {activeTab === 'gestione'  && <GestioneSection />}
       </main>
 
       <Toast />

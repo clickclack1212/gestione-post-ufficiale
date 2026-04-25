@@ -34,9 +34,9 @@ const APPS: AppCard[] = [
     id: 'spotify',
     icon: <Music size={28} strokeWidth={1.5} />,
     title: 'Gestione Spotify',
-    desc: 'Gestione playlist, analisi ascolti e ottimizzazione dei contenuti audio del canale.',
-    tag: 'Prossimamente',
-    active: false,
+    desc: 'Post builder per Telegram: genera post per servizi, social proof con recensioni, promemoria e programmi referral.',
+    tag: 'Disponibile',
+    active: true,
     color: '#22c55e',
   },
   {
@@ -73,7 +73,7 @@ export function LandingPage() {
         {APPS.map(app => (
           <button
             key={app.id}
-            onClick={app.active ? () => setScreen(app.id === 'xauusd' ? 'xauusd' : 'app') : undefined}
+            onClick={app.active ? () => setScreen(app.id === 'xauusd' ? 'xauusd' : app.id === 'spotify' ? 'spotify' : 'app') : undefined}
             disabled={!app.active}
             className={`relative group text-left p-6 rounded-[var(--radius)] border transition-all duration-200
               ${app.active

@@ -1,5 +1,5 @@
-export type Tab = 'generate' | 'prog' | 'weekly' | 'calendar' | 'optimize' | 'translate' | 'chat' | 'settings' | 'gestione';
-export type AppScreen = 'landing' | 'app' | 'xauusd';
+export type Tab = 'generate' | 'prog' | 'weekly' | 'calendar' | 'optimize' | 'translate' | 'chat' | 'settings';
+export type AppScreen = 'landing' | 'app' | 'xauusd' | 'spotify';
 export type XauusdTab = 'bias' | 'macro' | 'calendar' | 'pattern' | 'journal' | 'gonogo' | 'risk' | 'debrief' | 'chat';
 export type Tone = 'assertivo' | 'hype' | 'essenziale';
 export type EmojiLevel = '1-2' | '2-4' | '4-5';
