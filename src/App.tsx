@@ -11,6 +11,7 @@ import { OttimizzaSection } from './sections/OttimizzaSection';
 import { TraduciSection } from './sections/TraduciSection';
 import { ChatSection } from './sections/ChatSection';
 import { SettingsSection } from './sections/SettingsSection';
+import { GestioneSection } from './sections/GestioneSection';
 
 export function App() {
   const { screen, activeTab } = useApp();
@@ -41,6 +42,7 @@ export function App() {
         {activeTab === 'translate' && <TraduciSection />}
         {activeTab === 'chat'      && <ChatSection />}
         {activeTab === 'settings'  && <SettingsSection />}
+        {activeTab === 'gestione'  && <GestioneSection />}
       </main>
 
       <Toast />

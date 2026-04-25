@@ -12,6 +12,7 @@ const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: 'optimize',  label: 'Ottimizza',      icon: 'Sparkles'      },
   { id: 'translate', label: 'Traduci',        icon: 'Globe'         },
   { id: 'chat',      label: 'Chat AI',        icon: 'MessageSquare' },
+  { id: 'gestione',  label: 'Spotify',        icon: 'Music'         },
   { id: 'settings',  label: 'Config',         icon: 'Settings'      },
 ];
 

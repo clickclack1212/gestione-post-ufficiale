@@ -1,5 +1,37 @@
-import type { Config, Counter } from '../types';
+import type { Config, Counter, GestioneDB } from '../types';
 import { STORE, COUNTER_KEY } from '../constants/data';
+
+const GESTIONE_KEY = 'gestione_db_v1';
+
+const GESTIONE_DEFAULTS: GestioneDB = {
+  servizi: [
+    {
+      id: 'spotify_premium_default',
+      nome: 'Spotify Premium',
+      durata: '12 mesi',
+      prezzo: '30€',
+      benefit: ['Nessuna pubblicità', 'Ascolto offline', 'Audio qualità massima', '4 account famiglia'],
+      emoji: '🎧',
+    },
+  ],
+  recensioni: [],
+  referral: [],
+  adminNotes: '',
+  botHandle: '@NegozioSpotifyBot',
+};
+
+export function getGestioneDB(): GestioneDB {
+  try {
+    const raw = localStorage.getItem(GESTIONE_KEY);
+    return raw ? { ...GESTIONE_DEFAULTS, ...JSON.parse(raw) } : GESTIONE_DEFAULTS;
+  } catch {
+    return GESTIONE_DEFAULTS;
+  }
+}
+
+export function saveGestioneDB(db: GestioneDB): void {
+  localStorage.setItem(GESTIONE_KEY, JSON.stringify(db));
+}
 
 const DEFAULTS: Config = {
   apiKey: '',

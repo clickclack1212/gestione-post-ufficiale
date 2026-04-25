@@ -1,4 +1,4 @@
-export type Tab = 'generate' | 'prog' | 'weekly' | 'calendar' | 'optimize' | 'translate' | 'chat' | 'settings';
+export type Tab = 'generate' | 'prog' | 'weekly' | 'calendar' | 'optimize' | 'translate' | 'chat' | 'settings' | 'gestione';
 export type AppScreen = 'landing' | 'app' | 'xauusd';
 export type XauusdTab = 'bias' | 'macro' | 'calendar' | 'pattern' | 'journal' | 'gonogo' | 'risk' | 'debrief' | 'chat';
 export type Tone = 'assertivo' | 'hype' | 'essenziale';
@@ -85,4 +85,40 @@ export interface SlotResult {
 export interface GeminiModel {
   id: string;
   label: string;
+}
+
+// ── Gestione Contenuti ─────────────────────────────────────────────────────
+export type ToneVoice = 'aggressivo' | 'informativo';
+export type PostVariant = 'hype' | 'seria' | 'breve';
+export type PostBuilderType = 'nuovo_servizio' | 'social_proof' | 'promemoria' | 'referral';
+
+export interface ServizioItem {
+  id: string;
+  nome: string;
+  durata: string;
+  prezzo: string;
+  benefit: string[];
+  emoji: string;
+}
+
+export interface RecensioneItem {
+  id: string;
+  nomeUtente?: string;
+  testo: string;
+  servizioId: string;
+  stelle: number;
+}
+
+export interface ReferralItem {
+  id: string;
+  obiettivo: string;
+  condizione: string;
+}
+
+export interface GestioneDB {
+  servizi: ServizioItem[];
+  recensioni: RecensioneItem[];
+  referral: ReferralItem[];
+  adminNotes: string;
+  botHandle: string;
 }
