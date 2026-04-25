@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { saveConfig } from '../services/storage';
 import { ALL_CURRENCIES, DEFAULT_LINK_IT, DEFAULT_LINK_EN } from '../constants/data';
+import { Settings, CalendarDays, Save } from '../components/Icon';
 
 export function SettingsSection() {
   const { config, setConfig, showToast } = useApp();
@@ -24,7 +25,7 @@ export function SettingsSection() {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="card">
-        <div className="card-title">⚙ Configurazione Canale</div>
+        <div className="card-title flex items-center gap-1.5"><Settings size={14} /> Configurazione Canale</div>
 
         {/* API Key */}
         <div className="space-y-1">
@@ -92,7 +93,7 @@ export function SettingsSection() {
 
       {/* Calendar settings */}
       <div className="card">
-        <div className="card-title">📅 Calendario Economico</div>
+        <div className="card-title flex items-center gap-1.5"><CalendarDays size={14} /> Calendario Economico</div>
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1">
@@ -133,8 +134,8 @@ export function SettingsSection() {
         </div>
       </div>
 
-      <button className="btn-generate w-full" onClick={handleSave}>
-        💾 Salva Configurazione
+      <button className="btn-generate w-full flex items-center justify-center gap-2" onClick={handleSave}>
+        <Save size={14} /> Salva Configurazione
       </button>
     </div>
   );

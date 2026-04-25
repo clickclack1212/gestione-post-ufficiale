@@ -11,7 +11,7 @@ import {
   Sparkles, ChevronDown, ChevronUp, CalendarRange, PlayCircle,
   ChevronRight, AlertCircle, Home, MessageSquare, Send, Music,
   LayoutGrid, ChevronLeft, Plus, Trash2, Star, Package, Users,
-  StickyNote, Store,
+  StickyNote, Store, Bell, Gift, Smartphone, Info, Minimize2,
 } from 'lucide-react';
 
 type LI = ComponentType<LucideProps>;
@@ -27,7 +27,7 @@ const MAP: Record<string, LI> = {
   Sparkles, ChevronDown, ChevronUp, CalendarRange, PlayCircle,
   ChevronRight, AlertCircle, Home, MessageSquare, Send, Music,
   LayoutGrid, ChevronLeft, Plus, Trash2, Star, Package, Users,
-  StickyNote, Store,
+  StickyNote, Store, Bell, Gift, Smartphone, Info, Minimize2,
 };
 
 export interface IconProps {
@@ -56,5 +56,5 @@ export {
   Sparkles, ChevronDown, ChevronUp, CalendarRange, PlayCircle,
   ChevronRight, AlertCircle, Home, MessageSquare, Send, Music,
   LayoutGrid, ChevronLeft, Plus, Trash2, Star, Package, Users,
-  StickyNote, Store,
+  StickyNote, Store, Bell, Gift, Smartphone, Info, Minimize2,
 } from 'lucide-react';

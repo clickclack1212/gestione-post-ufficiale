@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { Camera, X } from './Icon';
 
 interface Props {
   onPhoto: (base64: string) => void;
@@ -43,7 +44,7 @@ export function PhotoUploader({ onPhoto, onClear, preview, label = 'Allega Scree
             onClick={onClear}
             title="Rimuovi foto"
           >
-            ✕
+            <X size={10} />
           </button>
         </div>
       ) : (
@@ -70,7 +71,7 @@ export function PhotoUploader({ onPhoto, onClear, preview, label = 'Allega Scree
           tabIndex={0}
           onClick={() => inputRef.current?.click()}
         >
-          <span className="text-2xl mb-2 block">📷</span>
+          <Camera size={22} className="mb-2 text-[var(--text3)]" />
           <span className="text-xs text-[var(--text3)]">
             Clicca, trascina o incolla (Ctrl+V) un&apos;immagine
           </span>
@@ -134,10 +135,10 @@ export function MultiPhotoUploader({ onPhotos, previews, onRemove, label = 'Alle
               />
               <button
                 className="absolute top-0.5 right-0.5 bg-[var(--bg)] border border-[var(--bg3)] text-[var(--text3)]
-                  rounded-full w-5 h-5 flex items-center justify-center text-[10px] hover:text-[var(--red)] transition-colors"
+                  rounded-full w-5 h-5 flex items-center justify-center hover:text-[var(--red)] transition-colors"
                 onClick={() => onRemove(i)}
               >
-                ✕
+                <X size={9} />
               </button>
             </div>
           ))}
@@ -165,7 +166,7 @@ export function MultiPhotoUploader({ onPhotos, previews, onRemove, label = 'Alle
           }}
           onClick={() => inputRef.current?.click()}
         >
-          <span className="text-xl mb-1 block">📷</span>
+          <Camera size={20} className="mb-1 text-[var(--text3)]" />
           <span className="text-xs text-[var(--text3)]">
             Clicca, trascina o incolla (Ctrl+V) le immagini (max {max})
           </span>
